@@ -9,8 +9,18 @@ const config: Phaser.Types.Core.GameConfig = {
 	physics: {
 		default: 'arcade',
 		arcade: {
-			gravity: { y: 200 }
+			//gravity: { y: 200 }
 		}
+	},
+	input: {
+		keyboard: true,
+		gamepad: true,
+		mouse: true
+	},
+	scale: {
+		width: 1920,
+		height: 1080,
+		mode: Phaser.Scale.ScaleModes.WIDTH_CONTROLS_HEIGHT
 	},
 	scene: [HelloWorldScene]
 }
