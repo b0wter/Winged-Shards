@@ -24,7 +24,8 @@ export default class HelloWorldScene extends Phaser.Scene
 
         this.load.image('tiles', 'images/tilesets/dungeon.png')
         this.load.image('collision_tiles', 'images/tilesets/collision.png')
-        this.load.image('spaceship_01', 'images/orange_01.png')
+        this.load.image('spaceship_01', 'images/ships/orange_01.png')
+        this.load.image('projectile_01', 'images/projectiles/projectile-green.png')
         this.load.tilemapTiledJSON('map', 'maps/test.json')
     }
 
@@ -76,5 +77,31 @@ export default class HelloWorldScene extends Phaser.Scene
 
         const rightAxis = this.userInput.rightAxis()
         this.player.setAngle(rightAxis.direction) 
+
+        if(this.userInput.bumperLeft().firstFrameDown)
+            this.createShot(this.player.x, this.player.y, this.player.angle)
+    }
+
+    private createShot(x, y, direction)
+    {
+        var shot = this.physics.add.sprite(x, y, 'projectile_01')
+        shot.name = "shot"
+        shot.setAngle(direction - 90)
+        shot.setVelocityX(400 * Math.cos((direction - 90) * Phaser.Math.DEG_TO_RAD))
+        shot.setVelocityY(400 * Math.sin((direction - 90) * Phaser.Math.DEG_TO_RAD))
+        shot.setCollideWorldBounds(true)
+        const shotCollider = this.physics.add.collider(shot, this.collisions)
+
+        const lambda = (obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) : void => {
+            if(obj1.name === obj2.name && obj2.name === 'shot')
+                return
+            else if(obj1.name === 'shot')
+                obj1.destroy()
+            else if(obj2.name === 'shot')
+                obj2.destroy()
+        }
+
+        shotCollider.collideCallback = lambda
+        return shot
     }
 }
