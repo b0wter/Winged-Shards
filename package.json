@@ -25,7 +25,8 @@
 		"typescript": "^3.8.3"
 	},
 	"dependencies": {
-		"phaser": "^3.22.0"
+		"phaser": "^3.22.0",
+		"ts-nameof": "^5.0.0"
 	},
 	"parcelCleanPaths": [
 		"dist"
