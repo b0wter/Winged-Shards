@@ -1,8 +1,11 @@
 import Phaser from 'phaser'
 import Entity from './Entity'
+import { Teams } from './Teams'
 
-export default abstract class PhysicalEntity extends Entity
+export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprite
 {
+    public readonly team: Teams
+
     private _isInvulnerable = false
     get isInvulnerable() {
         return this._isInvulnerable
@@ -51,9 +54,37 @@ export default abstract class PhysicalEntity extends Entity
         this._energy = value
     }
 
-    constructor(scene, typeName, team, body)
+    get velocity() {
+        return this.body.velocity
+    }
+    set velocity(value: Phaser.Math.Vector2) {
+         this.setVelocity(value.x, value.y)
+    }
+
+    get velocityX() {
+        return this.body.velocity.x
+    }
+    set velocityX(value) {
+         this.setVelocityX(value)
+    }
+
+    get velocityY() {
+        return this.body.velocity.y
+    }
+    set velocityY(value) {
+         this.setVelocityY(value)
+    }
+
+    constructor(scene: Phaser.Scene, x: number, y, spriteKey, team, angle?: number, velocity?: number, colliderGroup?: Phaser.Physics.Arcade.Group)
     {
-        super(scene, typeName, team)
-        this.body = body
+        super(scene, x, y, spriteKey)
+        scene.add.existing(this)
+        scene.physics.add.existing(this)
+        colliderGroup?.add(this)
+        this.team = team
+        this.setAngle((angle ?? 0 ) - 90)
+        const v = velocity ?? 0
+        this.setVelocityX(v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD))
+        this.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
     }
 }

@@ -5,8 +5,8 @@ import { Teams } from  './Teams'
 
 export default class PlayerEntity extends PhysicalEntity
 {
-    constructor(scene, body)
+    constructor(scene, x, y, spriteKey, colliderGroup?: Phaser.Physics.Arcade.Group)
     {
-        super(scene, nameof(PlayerEntity), Teams.Players, body)
+        super(scene, x, y, spriteKey, Teams.Players, undefined, undefined, colliderGroup)
     }
 }

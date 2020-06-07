@@ -3,6 +3,9 @@ export enum Teams
 {
     World,
     Players,
-    Enemies,
+    Allies,
+    Enemies1,
+    Enemies2,
+    Enemies3,
     Neutral
 }

@@ -2,20 +2,27 @@ import Phaser from 'phaser'
 import Preloader from './Preloader'
 import KeyboardMouseInput from './../input/KeyboardMouseInput'
 import PlayerInput from './../input/PlayerInput'
+import PlayerEntity from './../entities/Player'
+import * as Projectile from '~/entities/Projectile'
+import { Teams } from './../entities/Teams'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
     readonly plattforms = [];
     private map!: Phaser.Tilemaps.Tilemap
-    private player!: Phaser.Physics.Arcade.Sprite
-    private collisions!: Phaser.Tilemaps.StaticTilemapLayer
+    private player!: PlayerEntity
+    private environmentCollisions!: Phaser.Tilemaps.StaticTilemapLayer
     private stage!: Phaser.Tilemaps.StaticTilemapLayer
+    private enemyProjectiles = []
+    private playerProjectiles = []
+    private enemies = []
+    private bulletsGroup?: Phaser.Physics.Arcade.Group
 
     private userInput!: PlayerInput
 
 	constructor()
 	{
-		super('hello-world')
+        super('hello-world')
 	}
 
 	preload()
@@ -32,16 +39,18 @@ export default class HelloWorldScene extends Phaser.Scene
     create()
     {
         this.map = this.createMap()
-        this.collisions = this.createCollisionTileset(this.map);
+        this.bulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
+        this.environmentCollisions = this.createCollisionTileset(this.map);
         this.stage = this.createTilesets(this.map)
         this.player = this.createPlayer();
-        this.physics.add.collider(this.player, this.collisions)
+        this.physics.add.collider(this.player, this.environmentCollisions)
         this.userInput = new KeyboardMouseInput(this, this.player)
+        this.physics.add.collider(this.bulletsGroup, this.environmentCollisions, (a, _) => { a.destroy()})
     }
 
     private createPlayer()
     {
-        var player = this.physics.add.sprite(400, 250, 'spaceship_01')
+        const player = new PlayerEntity(this, 400, 250, 'spaceship_01', undefined)
         player.setBounce(0.1)
         player.setCollideWorldBounds(true)
         return player
@@ -80,28 +89,12 @@ export default class HelloWorldScene extends Phaser.Scene
 
         if(this.userInput.bumperLeft().firstFrameDown)
             this.createShot(this.player.x, this.player.y, this.player.angle)
+
+        // overlap - physics!
     }
 
-    private createShot(x, y, direction)
+    private createShot(x, y, angle)
     {
-        var shot = this.physics.add.sprite(x, y, 'projectile_01')
-        shot.name = "shot"
-        shot.setAngle(direction - 90)
-        shot.setVelocityX(400 * Math.cos((direction - 90) * Phaser.Math.DEG_TO_RAD))
-        shot.setVelocityY(400 * Math.sin((direction - 90) * Phaser.Math.DEG_TO_RAD))
-        shot.setCollideWorldBounds(true)
-        const shotCollider = this.physics.add.collider(shot, this.collisions)
-
-        const lambda = (obj1: Phaser.GameObjects.GameObject, obj2: Phaser.GameObjects.GameObject) : void => {
-            if(obj1.name === obj2.name && obj2.name === 'shot')
-                return
-            else if(obj1.name === 'shot')
-                obj1.destroy()
-            else if(obj2.name === 'shot')
-                obj2.destroy()
-        }
-
-        shotCollider.collideCallback = lambda
-        return shot
+        var shot = Projectile.fromTemplate(this, x, y, Teams.Players, angle, Projectile.LightLaserTemplate, this.bulletsGroup)
     }
 }
