@@ -45,7 +45,7 @@ export default class HelloWorldScene extends Phaser.Scene
         this.player = this.createPlayer();
         this.physics.add.collider(this.player, this.environmentCollisions)
         this.userInput = new KeyboardMouseInput(this, this.player)
-        this.physics.add.collider(this.bulletsGroup, this.environmentCollisions, (a, _) => { a.destroy()})
+        this.physics.add.collider(this.bulletsGroup, this.environmentCollisions, (a, _) => { this.bulletsGroup?.remove(a); a.destroy()})
     }
 
     private createPlayer()

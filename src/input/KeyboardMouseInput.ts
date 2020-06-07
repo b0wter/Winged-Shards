@@ -72,7 +72,7 @@ export default class KeyboardMouseInput extends PlayerInput
 
 		let direction = 0;
 		if(this.pointer.worldX !== 0 || this.pointer.worldY !== 0)
-			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.pointer.worldX, this.pointer.worldY) * Phaser.Math.RAD_TO_DEG + 90.0
+			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.pointer.worldX, this.pointer.worldY) * Phaser.Math.RAD_TO_DEG
 
         return new AxisInput(deltaX, deltaY, direction)
 	}

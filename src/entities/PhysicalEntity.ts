@@ -82,7 +82,7 @@ export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprit
         scene.physics.add.existing(this)
         colliderGroup?.add(this)
         this.team = team
-        this.setAngle((angle ?? 0 ) - 90)
+        this.setAngle(angle ?? 0 )
         const v = velocity ?? 0
         this.setVelocityX(v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD))
         this.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
