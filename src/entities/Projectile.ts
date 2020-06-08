@@ -21,6 +21,11 @@ export class Projectile extends PhysicalEntity
         super(scene, x, y, spriteKey, team, angle, velocity, colliderGroup)
         this.setCollideWorldBounds(true)
     }
+
+    public takeDamage(_)
+    {
+        // regular projectile cannot take damage
+    }
 }
 
 export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup?: Phaser.Physics.Arcade.Group)
@@ -40,21 +45,31 @@ export function fromTemplate(scene, x, y, team, angle, template: ProjectileTempl
         )
 }
 
-class ProjectileTemplate
+export class ProjectileTemplate
 {
     public spriteKey = ''
     public velocity = 0
-    public damage = new Damage.Damage(0, 0, 0)
+    public damage = Damage.None
     public friendlyFire = false
     public ignoresShields = false
     public ignoresHull = false
+}
+
+export const EmptyTemplate: ProjectileTemplate =
+{
+    spriteKey: '',
+    velocity: 0,
+    damage: Damage.None,
+    friendlyFire: false,
+    ignoresShields: false,
+    ignoresHull: false
 }
 
 export const LightLaserTemplate : ProjectileTemplate =
 {
     spriteKey: 'projectile_01',
     velocity: 400,
-    damage: new Damage.Damage(0, 20, 0),
+    damage: new Damage.Damage(0, 20, 0, 0),
     friendlyFire: false,
     ignoresShields: false,
     ignoresHull: false

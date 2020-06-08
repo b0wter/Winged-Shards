@@ -5,6 +5,8 @@ import PlayerInput from './../input/PlayerInput'
 import PlayerEntity from './../entities/Player'
 import * as Projectile from '~/entities/Projectile'
 import { Teams } from './../entities/Teams'
+import * as Weapon from './../entities/Weapon'
+import { Enemy } from '~/entities/Enemy'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -13,10 +15,11 @@ export default class HelloWorldScene extends Phaser.Scene
     private player!: PlayerEntity
     private environmentCollisions!: Phaser.Tilemaps.StaticTilemapLayer
     private stage!: Phaser.Tilemaps.StaticTilemapLayer
-    private enemyProjectiles = []
-    private playerProjectiles = []
-    private enemies = []
-    private bulletsGroup?: Phaser.Physics.Arcade.Group
+    private playerBulletsGroup?: Phaser.Physics.Arcade.Group
+    private playersGroup?: Phaser.Physics.Arcade.Group
+    private enemyBulletsGroup?: Phaser.Physics.Arcade.Group
+    private enemiesGroup?: Phaser.Physics.Arcade.Group
+    private enemies: Enemy[] = []
 
     private userInput!: PlayerInput
 
@@ -32,6 +35,7 @@ export default class HelloWorldScene extends Phaser.Scene
         this.load.image('tiles', 'images/tilesets/dungeon.png')
         this.load.image('collision_tiles', 'images/tilesets/collision.png')
         this.load.image('spaceship_01', 'images/ships/orange_01.png')
+        this.load.image('spaceship_02', 'images/ships/red_01.png')
         this.load.image('projectile_01', 'images/projectiles/projectile-green.png')
         this.load.tilemapTiledJSON('map', 'maps/test.json')
     }
@@ -39,13 +43,29 @@ export default class HelloWorldScene extends Phaser.Scene
     create()
     {
         this.map = this.createMap()
-        this.bulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
+        this.playersGroup = this.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: true})
+        this.playerBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
+        this.enemiesGroup = this.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: true})
+        this.enemyBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
         this.environmentCollisions = this.createCollisionTileset(this.map);
         this.stage = this.createTilesets(this.map)
+
         this.player = this.createPlayer();
         this.physics.add.collider(this.player, this.environmentCollisions)
+
+        const enemy = this.createEnemy()
+        this.enemies.push(enemy)
+        this.physics.add.collider(enemy, this.environmentCollisions)
+
         this.userInput = new KeyboardMouseInput(this, this.player)
-        this.physics.add.collider(this.bulletsGroup, this.environmentCollisions, (a, _) => { this.bulletsGroup?.remove(a); a.destroy()})
+
+        this.physics.add.collider(this.playerBulletsGroup, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
+        this.physics.add.collider(this.enemyBulletsGroup, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
+
+        this.physics.add.collider(this.playerBulletsGroup, this.enemiesGroup, this.playerBulletHitsEnemy)
+        this.physics.add.collider(this.playerBulletsGroup, this.playersGroup, (bullet, enemy) => console.log('friendly fire players'))
+        this.physics.add.collider(this.enemyBulletsGroup, this.playersGroup, (bullet, player) => console.log('player hit'))
+        this.physics.add.collider(this.enemyBulletsGroup, this.enemiesGroup, (bullet, enemy) => console.log('friendly fire enemies'))
     }
 
     private createPlayer()
@@ -53,7 +73,15 @@ export default class HelloWorldScene extends Phaser.Scene
         const player = new PlayerEntity(this, 400, 250, 'spaceship_01', undefined)
         player.setBounce(0.1)
         player.setCollideWorldBounds(true)
+        const weapon = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.LightLaser)
+        player.primaryEquipmentGroup.push(weapon)
         return player
+    }
+
+    private createEnemy()
+    {
+        const enemy = new Enemy(this, 400, 700, 'spaceship_02', 0, this.enemiesGroup, 40, 20, 10)
+        return enemy
     }
 
     private createMap()
@@ -87,14 +115,18 @@ export default class HelloWorldScene extends Phaser.Scene
         const rightAxis = this.userInput.rightAxis()
         this.player.setAngle(rightAxis.direction) 
 
-        if(this.userInput.bumperLeft().firstFrameDown)
-            this.createShot(this.player.x, this.player.y, this.player.angle)
+        this.player.update(t, dt, this.userInput)
 
         // overlap - physics!
     }
 
-    private createShot(x, y, angle)
+    private playerBulletHitsEnemy(bullet, target)
     {
-        var shot = Projectile.fromTemplate(this, x, y, Teams.Players, angle, Projectile.LightLaserTemplate, this.bulletsGroup)
+        console.log('enemy hit')
+        const projectile = bullet as Projectile.Projectile
+        const enemy = target as Enemy
+        enemy.takeDamage(projectile.damage)
+        this.playerBulletsGroup?.remove(bullet)
+        bullet.destroy()
     }
 }
