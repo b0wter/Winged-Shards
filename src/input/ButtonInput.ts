@@ -8,12 +8,6 @@ export default class ButtonInput
                 )
     { }
 
-    static FromKey(key: Phaser.Input.Keyboard.Key) : ButtonInput
-    {
-        const justDown = Phaser.Input.Keyboard.JustDown(key)
-        return new ButtonInput(key.isDown, key.getDuration(), justDown)
-    }
-
     static FromRightMouseButton(pointer: Phaser.Input.Pointer, lastFrameDown: boolean)
     {
         const rightButtonDown = pointer.rightButtonDown();
@@ -24,4 +18,6 @@ export default class ButtonInput
     {
         return new ButtonInput(pointer.primaryDown, pointer.downTime, !lastFrameDown && pointer.primaryDown)
     }
+
+    public static Empty() { return new ButtonInput(false, 0, false) }
 }

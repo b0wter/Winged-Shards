@@ -1,9 +1,10 @@
 import Phaser from 'phaser'
-import Entity from './Entity'
 import { Teams } from './Teams'
 import * as Damage from './DamageType'
+import ClampedValue from '~/utilities/ClampedValue'
+import ClampedNumber from '~/utilities/ClampedNumber'
 
-export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprite
+export default abstract class PhysicalEntity extends Phaser.GameObjects.Container
 {
     public readonly team: Teams
 
@@ -23,73 +24,90 @@ export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprit
         this._isMassive = value
     }
 
-    private _shields = 0.0
     get shields() {
-        return this._shields
+        return this._shields.current
     }
     set shields(value: number) {
-        this._shields = Math.max(0, value)
+        this._shields.current = value
+        this.shieldSprite.alpha = this._shields.percentage
     }
     public get hasShieldsLeft() : boolean { return this.shields > 0 }
+    public get shieldValue() { return this._shields }
 
-    protected _hull = 0.0
     get hull() {
-        return this._hull
+        return this._hull.current
     }
     set hull(value: number){
-        this._hull = Math.max(0, value)
+        this._hull.current = value
     }
-    public get hasHullLeft() : boolean { return this.hull > 0 }
+    public get hasHullLeft() : boolean { return this._hull.isNotMinimum() }
+    public get hullValue() { return this._hull }
     
-    protected _structure = 0.0
     get structure() {
-        return this._structure
+        return this._structure.current
     } 
     set structure(value: number) {
-        this._structure = Math.max(0, value)
+        this._structure.current = value
     }
     public get hasStructureLeft() : boolean { return this.structure > 0 }
+    public get structureValue() { return this._structure }
 
-    protected _energy = 0.0
-    get energy() {
-        return this._energy
+    get heat() {
+        return this._heat.current
     }
-    set energy(value: number) {
-        this._energy = value
+    set heat(value: number) {
+        this._heat.current = value
     }
+    public get heatValue() { return this._heat }
 
-    get velocity() {
-        return this.body.velocity
-    }
-    set velocity(value: Phaser.Math.Vector2) {
-         this.setVelocity(value.x, value.y)
-    }
+    public readonly mainSprite: Phaser.Physics.Arcade.Sprite
+    public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
 
-    get velocityX() {
-        return this.body.velocity.x
-    }
-    set velocityX(value) {
-         this.setVelocityX(value)
-    }
-
-    get velocityY() {
-        return this.body.velocity.y
-    }
-    set velocityY(value) {
-         this.setVelocityY(value)
-    }
-
-    constructor(scene: Phaser.Scene, x: number, y, spriteKey, team, angle?: number, velocity?: number, colliderGroup?: Phaser.Physics.Arcade.Group)
+    constructor(scene: Phaser.Scene, 
+                x: number, y: number, 
+                spriteKey, 
+                team, 
+                private _shields: ClampedNumber,
+                private _hull: ClampedNumber,
+                private _structure: ClampedNumber,
+                private _heat: ClampedNumber,
+                angle?: number, 
+                velocity?: number, 
+                colliderGroup?: Phaser.Physics.Arcade.Group)
     {
-        super(scene, x, y, spriteKey)
+        super(scene, x, y, undefined)
+        this.setSize(64, 64)
+        // this.setInteractive(new Phaser.Geom.Circle(0, 0, 64))
+        //this.input.hitArea.setTo(10, 10, 10, 10)
+        scene.physics.world.enable(this)
+        scene.physics.world.enableBody(this)
+        this.team = team
+        this.mainSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, spriteKey)
+        this.shieldSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, 'shield_circular')
+        this.add(this.mainSprite)
+        this.add(this.shieldSprite)
+        colliderGroup?.add(this)
+        scene.add.existing(this)
+        this.setAngle(angle ?? 0 )
+        const v = velocity ?? 0
+        const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
+        const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
+
+        const body = this.body as Phaser.Physics.Arcade.Body
+        body.setVelocity(vX, vY)
+        body.immovable = true
+
+        //(this.body as Phaser.Physics.Arcade.Body).setVelocity(vX, vY)
+        //(this.body as Phaser.Physics.Arcade.Body).immovable = true
+        /*
         scene.add.existing(this)
         scene.physics.add.existing(this)
         colliderGroup?.add(this)
         this.team = team
-        this.setAngle(angle ?? 0 )
-        const v = velocity ?? 0
-        this.setVelocityX(v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD))
-        this.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
+        this.mainSprite.setVelocityX(v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD))
+        this.mainSprite.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
+        this.mainSprite.setBounce(0)
+        */
     }
 
     public takeDamage(damage: Damage.Damage)
@@ -114,9 +132,10 @@ export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprit
             const [remainingStructure, remainingDamage] = this.takeSpecificDamage(damage, Damage.EnergyToStructure, Damage.PhysicalToStructure, Damage.ExplosionToStructure, Damage.HeatToStructure, this.structure)
             remainder = remainingDamage
             this.structure = remainingStructure
-            if(this.structure <= 0)
-                this.kill()
         }
+
+        if(this.structure <= 0)
+            this.kill()
     }
 
     protected takeSpecificDamage(damage: Damage.Damage, energyModifiation: number, projectileModification: number, explosionModification: number, heatModification: number, hitpoints: number) : [number, Damage.Damage]
@@ -149,6 +168,23 @@ export default abstract class PhysicalEntity extends Phaser.Physics.Arcade.Sprit
     public kill()
     {
         console.log('An entity has been destroyed.', this)
+        if(this.killEffect)
+            this.killEffect()
         this.destroy()
+    }
+
+    protected killEffect() { }
+
+    public setVelocityAndAngle(v, angle)
+    {
+        const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
+        const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
+        this.setVelocity(vX, vY)
+    }
+
+    public setVelocity(x, y)
+    {
+        const body = this.body as Phaser.Physics.Arcade.Body
+        body?.setVelocity(x, y)
     }
 }

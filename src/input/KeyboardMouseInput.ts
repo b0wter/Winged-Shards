@@ -16,14 +16,33 @@ export default class KeyboardMouseInput extends PlayerInput
 	private readonly action2Key: Phaser.Input.Keyboard.Key
 	private readonly action3Key: Phaser.Input.Keyboard.Key
 	private readonly action4Key: Phaser.Input.Keyboard.Key
+	private action1IsDown = false
+	private action2IsDown = false
+	private action3IsDown = false
+	private action4IsDown = false
+	private action1Input = ButtonInput.Empty()
+	private action2Input = ButtonInput.Empty()
+	private action3Input = ButtonInput.Empty()
+	private action4Input = ButtonInput.Empty()
 
 	private readonly digital1Key: Phaser.Input.Keyboard.Key
 	private readonly digital2Key: Phaser.Input.Keyboard.Key
 	private readonly digital3Key: Phaser.Input.Keyboard.Key
 	private readonly digital4Key: Phaser.Input.Keyboard.Key
+	private digital1IsDown = false
+	private digital2IsDown = false
+	private digital3IsDown = false
+	private digital4IsDown = false
+	private digital1Input = ButtonInput.Empty()
+	private digital2Input = ButtonInput.Empty()
+	private digital3Input = ButtonInput.Empty()
+	private digital4Input = ButtonInput.Empty()
+
+	private bumperLeftInput = ButtonInput.Empty()
+	private bumperRightInput = ButtonInput.Empty()
 
 	constructor(scene: Phaser.Scene, 
-				private player: Phaser.Physics.Arcade.Sprite)
+				private player: Phaser.GameObjects.Container)
 	{
 		super()
 		this.cursor = scene.input.keyboard.addKeys({up: KeyCodes.W, down: KeyCodes.S, left: KeyCodes.A, right: KeyCodes.D}) //scene.input.keyboard.createCursorKeys()
@@ -82,26 +101,62 @@ export default class KeyboardMouseInput extends PlayerInput
 		return new TriggerAxisInput(0, 0)
 	}
 
-	action1() { return ButtonInput.FromKey(this.action1Key) }
-	action2() { return ButtonInput.FromKey(this.action2Key) }
-	action3() { return ButtonInput.FromKey(this.action3Key) }
-	action4() { return ButtonInput.FromKey(this.action4Key) }
+	private createButtonInput(key: Phaser.Input.Keyboard.Key, lastFirstDown, setFirstDown) 
+	{ 
+		const isDown = key.isDown
+		const duration = key.getDuration()
+		const firstDown = (isDown === true) && (lastFirstDown === false)
+		setFirstDown(key.isDown)
+		const input = new ButtonInput(isDown, duration, firstDown)
+		return input
+	}
 
-	bumperLeft()  
+	private setAction1() { this.action1Input = this.createButtonInput(this.action1Key, this.action1IsDown, (isDown) => this.action1IsDown = isDown)}
+	private setAction2() { this.action2Input = this.createButtonInput(this.action2Key, this.action2IsDown, (isDown) => this.action2IsDown = isDown)}
+	private setAction3() { this.action3Input = this.createButtonInput(this.action3Key, this.action3IsDown, (isDown) => this.action3IsDown = isDown)}
+	private setAction4() { this.action4Input = this.createButtonInput(this.action4Key, this.action4IsDown, (isDown) => this.action4IsDown = isDown)}
+	get action1() { return this.action1Input }
+	get action2() { return this.action2Input }
+	get action3() { return this.action3Input }
+	get action4() { return this.action4Input }
+
+	setBumperLeft()  
 	{ 
 		const bi = ButtonInput.FromLeftMouseButton(this.pointer, this.pointerLeftDown) 
 		this.pointerLeftDown = bi.isDown
-		return bi
+		this.bumperLeftInput = bi
 	}
-	bumperRight() 
+	get bumperLeft() { return this.bumperLeftInput }
+	setBumperRight() 
 	{
 		const bi = ButtonInput.FromRightMouseButton(this.pointer, this.pointerRightDown)
 		this.pointerRightDown = bi.isDown
-		return bi
+		this.bumperRightInput = bi
 	}
+	get bumperRight() { return this.bumperRightInput }
 
-	digital1() { return ButtonInput.FromKey(this.digital1Key) }
-	digital2() { return ButtonInput.FromKey(this.digital2Key) }
-	digital3() { return ButtonInput.FromKey(this.digital3Key) }
-	digital4() { return ButtonInput.FromKey(this.digital4Key) }
+	private setDigital1() { return this.createButtonInput(this.digital1Key, this.digital1IsDown, (isDown) => this.digital1IsDown = isDown)}
+	private setDigital2() { return this.createButtonInput(this.digital2Key, this.digital2IsDown, (isDown) => this.digital2IsDown = isDown)}
+	private setDigital3() { return this.createButtonInput(this.digital3Key, this.digital3IsDown, (isDown) => this.digital3IsDown = isDown)}
+	private setDigital4() { return this.createButtonInput(this.digital4Key, this.digital4IsDown, (isDown) => this.digital4IsDown = isDown)}
+	get digital1() { return this.digital1Input }
+	get digital2() { return this.digital2Input }
+	get digital3() { return this.digital3Input }
+	get digital4() { return this.digital4Input }
+
+	public update()
+	{
+		this.setAction1()
+		this.setAction2()
+		this.setAction3()
+		this.setAction4()
+
+		this.setDigital1()
+		this.setDigital2()
+		this.setDigital3()
+		this.setDigital4()
+
+		this.setBumperLeft()
+		this.setBumperRight()
+	}
 }

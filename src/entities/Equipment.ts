@@ -7,9 +7,15 @@ export default abstract class Equipment
      */
     get cooldown() { return this._cooldown }
 
+    /**
+     * Amount of heat generated per trigger.
+     */
+    get heatPerTrigger() { return this._heatPerTrigger }
+
     private lastUsedAt = 0
 
-    constructor(protected _cooldown: number)
+    constructor(protected _cooldown: number,
+                protected _heatPerTrigger: number)
     {
         //
     }

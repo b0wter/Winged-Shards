@@ -25,6 +25,7 @@ export class Weapon extends Equipment
     constructor(private scene: Phaser.Scene,
                 private collider: Phaser.Physics.Arcade.Group,
                 private projectile: Projectile.ProjectileTemplate, 
+                heatPerShot: number,
                 _cooldown: number,
                 private spread: WeaponSpread,
                 private team: Teams,
@@ -32,7 +33,7 @@ export class Weapon extends Equipment
                 private _mountPointOffsetY: number
                )
     {
-        super(_cooldown)
+        super(_cooldown, heatPerShot)
     }
 
     /**
@@ -51,12 +52,13 @@ export class WeaponTemplate
     public cooldown: number = 1000
     public projectile: Projectile.ProjectileTemplate = Projectile.EmptyTemplate
     public projectilesPerShot = 1
+    public heatPerShot = 1
     public spread: WeaponSpread = NoSpread
 }
 
 export function fromTemplate(scene, collider, team, t: WeaponTemplate, mountPointOffsetX = 0, mountPointOffsetY = 0) : Weapon
 {
-    const w = new Weapon(scene, collider, t.projectile, t.cooldown, t.spread, team, mountPointOffsetX, mountPointOffsetY)
+    const w = new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, team, mountPointOffsetX, mountPointOffsetY)
     return w
 }
 
@@ -66,5 +68,6 @@ export const LightLaser : WeaponTemplate =
     cooldown: 200,
     projectile: Projectile.LightLaserTemplate,
     projectilesPerShot: 1,
+    heatPerShot: 5,
     spread: NoSpread
 }
