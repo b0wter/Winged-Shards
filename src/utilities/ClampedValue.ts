@@ -34,6 +34,8 @@ export default class ClampedValue<T>
 
     get percentage() { return this._divide(this.current, this.max) }
 
+    get remaining() { return this._subtract(this.max, this.current) }
+
     private readonly onChangeListeners: ClampedValueCallback<T>[] = []
     private readonly onMinimumListeners: ClampedValueCallback<T>[] = []
     private readonly onMaximumListeners: ClampedValueCallback<T>[] = []

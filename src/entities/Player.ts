@@ -19,19 +19,23 @@ export default class PlayerEntity extends PhysicalEntity
     
     constructor(scene: Phaser.Scene, x: number, y: number, spriteKey: string, colliderGroup?: Phaser.Physics.Arcade.Group)
     {
-        super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), undefined, undefined, colliderGroup)
+        super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), 5, undefined, undefined, colliderGroup)
     }
 
     private triggerEquipmentGroup(group: Equipment[], t: number)
     {
         group.forEach(x => { 
-            x.trigger(this.x, this.y, this.angle, t)
-            this.heatValue.add(x.heatPerTrigger)
+            if(x.heatPerTrigger <= this.remainingHeatBudget)
+            {
+                x.trigger(this.x, this.y, this.angle, t)
+                this.heatValue.add(x.heatPerTrigger)
+            }
         })
     }
 
     public update(t: number, dt: number, input: PlayerInput)
     {
+        super.internalUpdate(t, dt)
         if(input === undefined)
             return;
 

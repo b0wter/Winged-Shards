@@ -59,6 +59,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         this._heat.current = value
     }
     public get heatValue() { return this._heat }
+    public get remainingHeatBudget() { return this.heatValue.remaining }
 
     public readonly mainSprite: Phaser.Physics.Arcade.Sprite
     public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
@@ -71,6 +72,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 private _hull: ClampedNumber,
                 private _structure: ClampedNumber,
                 private _heat: ClampedNumber,
+                private _heatDissipationPerSecond: number,
                 angle?: number, 
                 velocity?: number, 
                 colliderGroup?: Phaser.Physics.Arcade.Group)
@@ -108,6 +110,12 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         this.mainSprite.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
         this.mainSprite.setBounce(0)
         */
+    }
+
+    protected internalUpdate(d: number, dt: number)
+    {
+        const heatReduction = dt * this._heatDissipationPerSecond / 1000
+        this.heatValue.substract(heatReduction)
     }
 
     public takeDamage(damage: Damage.Damage)

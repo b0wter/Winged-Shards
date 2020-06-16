@@ -11,7 +11,7 @@ export class Enemy extends PhysicalEntity
 
     constructor(scene: Phaser.Scene, x, y, spriteKey, angle, collider, shields: number, hull: number, structure: number)
     {
-        super(scene, x, y, spriteKey, Teams.Enemies, new ClampedNumber(shields), new ClampedNumber(hull), new ClampedNumber(structure), new ClampedNumber(Number.MAX_SAFE_INTEGER), angle, 0, collider)
+        super(scene, x, y, spriteKey, Teams.Enemies, new ClampedNumber(shields), new ClampedNumber(hull), new ClampedNumber(structure), new ClampedNumber(Number.MAX_SAFE_INTEGER), Number.MAX_SAFE_INTEGER, angle, 0, collider)
         this.shields = shields
         this.hull = hull
         this.structure = structure

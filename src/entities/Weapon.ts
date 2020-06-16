@@ -68,6 +68,6 @@ export const LightLaser : WeaponTemplate =
     cooldown: 200,
     projectile: Projectile.LightLaserTemplate,
     projectilesPerShot: 1,
-    heatPerShot: 5,
+    heatPerShot: 4,
     spread: NoSpread
 }
