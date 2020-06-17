@@ -21,6 +21,10 @@ export class Enemy extends PhysicalEntity
 
     private _ai = new DefaultEnemyAi(300, 800, true)
 
+    private static Counter = 0
+
+    public readonly Name: string
+
     constructor(scene: Phaser.Scene, x, y, spriteKey, angle, collider, private _weaponCollider: Phaser.Physics.Arcade.Group, shields: number, hull: number, structure: number)
     {
         super(scene, x, y, spriteKey, Teams.Enemies, new ClampedNumber(shields), new ClampedNumber(hull), new ClampedNumber(structure), new ClampedNumber(Number.MAX_SAFE_INTEGER), 2, Number.MAX_SAFE_INTEGER, angle, 0, collider)
@@ -28,6 +32,8 @@ export class Enemy extends PhysicalEntity
         this.hull = hull
         this.structure = structure
         this.angle = 90
+        this.Name = "Enemy_" + Enemy.Counter
+        Enemy.Counter++
     }
 
     protected killEffect()
@@ -52,7 +58,8 @@ export class Enemy extends PhysicalEntity
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
         const ai = this._ai.compute(t, dt, this, players)
-        if(players === undefined || players === null || players.length === 0) return
+        if(players === undefined || players === null || players.length === 0) 
+            return
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
@@ -78,7 +85,11 @@ export class Enemy extends PhysicalEntity
 
     private firePrimaryWeapon(t: number)
     {
-        this.primaryWeapon.trigger(this.x, this.y, this.angle, t)
+        const offset = this.mainSprite.width
+        const offsetX = offset * Math.cos(this.rotation)
+        const offsetY = offset * Math.sin(this.rotation)
+
+        this.primaryWeapon.trigger(this.x + offsetX, this.y + offsetY, this.angle, t)
     }
 }
 

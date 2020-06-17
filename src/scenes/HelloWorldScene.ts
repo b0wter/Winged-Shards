@@ -212,9 +212,9 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private enemyBulletHitsEnemy(bullet, target)
     {
-        console.log("Enemy friendly fire")
         const projectile = bullet as Projectile.Projectile
         const enemy = target as Enemy
+        console.log(`Enemy friendly fire (target: ${enemy.Name})` )
         if(projectile.friendlyFire) {
             enemy.takeDamage(projectile.damage)
         }

@@ -51,6 +51,11 @@ export class Weapon extends Equipment
     {
         //
     }
+
+    protected mountOffset()
+    {
+        return new Phaser.Math.Vector2(this.mountPointOffsetX, this.mountPointOffsetY)
+    }
 }
 
 export class WeaponTemplate

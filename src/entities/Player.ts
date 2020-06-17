@@ -31,8 +31,8 @@ export default class PlayerEntity extends PhysicalEntity
         group.forEach(x => { 
             if(x.heatPerTrigger <= this.remainingHeatBudget)
             {
-                x.trigger(this.x, this.y, this.angle, t)
-                this.heatValue.add(x.heatPerTrigger)
+                const heatGenerated = x.trigger(this.x, this.y, this.angle, t)
+                this.heatValue.add(heatGenerated)
             }
         })
     }
@@ -56,17 +56,17 @@ export default class PlayerEntity extends PhysicalEntity
         if(input === undefined)
             return;
         let group: Equipment[] = []
-        if(input.bumperLeft.firstFrameDown)
+        if(input.bumperLeft.isDown)
             group = this.primaryEquipmentGroup
-        else if(input.bumperRight.firstFrameDown)
+        else if(input.bumperRight.isDown)
             group = this.secondaryEquipmentGroup
-        else if(input.action1.firstFrameDown)
+        else if(input.action1.isDown)
             group = this.tertiaryEquipmentGroup
-        else if(input.action2.firstFrameDown)
+        else if(input.action2.isDown)
             group = this.quaternaryEquipmentGroup
-        else if(input.action3.firstFrameDown)
+        else if(input.action3.isDown)
             group = this.quinaryEquipmentGroup
-        else if(input.action4.firstFrameDown)
+        else if(input.action4.isDown)
             group = this.senaryEquipmentGroup
 
         this.triggerEquipmentGroup(group, t)
