@@ -28,38 +28,59 @@ export class Weapon extends Equipment
                 heatPerShot: number,
                 _cooldown: number,
                 private spread: WeaponSpread,
+                private initialDelay: number,
+                private delayBetweenShots: number,
                 private team: Teams,
                 private _mountPointOffsetX: number,
                 private _mountPointOffsetY: number
                )
     {
         super(_cooldown, heatPerShot)
+        if(this.team !== Teams.Players) this.cooldownModifier = 2
     }
 
     /**
-     * Tries to shoot this weapon. Will check for cooldown and other things.
+     * Tries to shoot this weapon. Does not run a cooldown check!
      */
     protected internalTrigger(x, y, angle, time) {
         const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle)
         Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this.team, angle, this.projectile, this.collider)
     }
-                
+
+    public update(t: number, dt: number)
+    {
+        //
+    }
 }
 
 export class WeaponTemplate
 {
     public name = "<WeaponTemplate>"
-    public cooldown: number = 1000
+    public cooldown: number = Number.MAX_SAFE_INTEGER
     public projectile: Projectile.ProjectileTemplate = Projectile.EmptyTemplate
-    public projectilesPerShot = 1
-    public heatPerShot = 1
+    public projectilesPerShot = 0
+    public heatPerShot = 0
     public spread: WeaponSpread = NoSpread
+    public initialDelay = Number.MAX_SAFE_INTEGER
+    public delayBetweenShots = Number.MAX_SAFE_INTEGER
 }
 
 export function fromTemplate(scene, collider, team, t: WeaponTemplate, mountPointOffsetX = 0, mountPointOffsetY = 0) : Weapon
 {
-    const w = new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, team, mountPointOffsetX, mountPointOffsetY)
-    return w
+    return new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, t.initialDelay, t.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
+}
+
+export const DummyWeapon : WeaponTemplate =
+{
+    name : "Dummy Weapon",
+    cooldown : Number.MAX_SAFE_INTEGER,
+    projectile : Projectile.EmptyTemplate,
+    projectilesPerShot : 0,
+    heatPerShot : 0,
+    spread : NoSpread,
+    initialDelay : Number.MAX_SAFE_INTEGER,
+    delayBetweenShots: Number.MAX_SAFE_INTEGER
+
 }
 
 export const LightLaser : WeaponTemplate =
@@ -69,5 +90,7 @@ export const LightLaser : WeaponTemplate =
     projectile: Projectile.LightLaserTemplate,
     projectilesPerShot: 1,
     heatPerShot: 4,
-    spread: NoSpread
+    spread: NoSpread,
+    initialDelay: 0,
+    delayBetweenShots: 0
 }

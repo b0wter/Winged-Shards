@@ -12,12 +12,6 @@ import HullBar from './HullBar';
 import HeatBar from './HeatBar';
 import StatusBar from './StatusBar';
 
-interface Callback
-{
-    plate: PlayerPlate
-
-}
-
 export default class PlayerPlate
 {
     private shieldBar: HorizontalStatusBar
@@ -34,9 +28,9 @@ export default class PlayerPlate
         structure.addChangeListener(this.updateStructure.bind(this))
         heat.addChangeListener(this.updateHeat.bind(this))
         this.shieldBar      = new ShieldBar     (scene, x, y, 400, shield.min, shield.max, shield.current)
-        this.hullBar        = new HullBar       (scene, x, this.shieldBar.y + 2 + this.shieldBar.height / 2, 400, hull.min, hull.max, hull.current)
-        this.structureBar   = new StructureBar  (scene, x, this.hullBar.y + 2 + this.hullBar.height / 2, 400, structure.min, structure.max, structure.current)
-        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + 2 + this.shieldBar.width / 2, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 8, heat.min, heat.max, heat.current)
+        this.hullBar        = new HullBar       (scene, x, this.shieldBar.y + 2 + this.shieldBar.height / 1, 400, hull.min, hull.max, hull.current)
+        this.structureBar   = new StructureBar  (scene, x, this.hullBar.y + 2 + this.hullBar.height / 1, 400, structure.min, structure.max, structure.current)
+        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + 2 + this.shieldBar.width / 1, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 4, heat.min, heat.max, heat.current)
         this.bars = [ this.shieldBar, this.hullBar, this.structureBar, this.heatBar ]
         this.bars.forEach(x => scene.add.existing(x))
     }

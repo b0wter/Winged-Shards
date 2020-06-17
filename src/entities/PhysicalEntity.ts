@@ -4,6 +4,8 @@ import * as Damage from './DamageType'
 import ClampedValue from '~/utilities/ClampedValue'
 import ClampedNumber from '~/utilities/ClampedNumber'
 
+type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
+
 export default abstract class PhysicalEntity extends Phaser.GameObjects.Container
 {
     public readonly team: Teams
@@ -29,7 +31,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     }
     set shields(value: number) {
         this._shields.current = value
-        this.shieldSprite.alpha = this._shields.percentage
     }
     public get hasShieldsLeft() : boolean { return this.shields > 0 }
     public get shieldValue() { return this._shields }
@@ -64,6 +65,13 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     public readonly mainSprite: Phaser.Physics.Arcade.Sprite
     public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
 
+    private readonly killedCallbacks: PhysicalEntityCallbacks[] = []
+
+    /**
+     * Deactives any updates (both from the game logic as well as player input).
+     */
+    protected inactive = false
+
     constructor(scene: Phaser.Scene, 
                 x: number, y: number, 
                 spriteKey, 
@@ -72,6 +80,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 private _hull: ClampedNumber,
                 private _structure: ClampedNumber,
                 private _heat: ClampedNumber,
+                private _shieldRegenerationPerSecond: number,
                 private _heatDissipationPerSecond: number,
                 angle?: number, 
                 velocity?: number, 
@@ -86,6 +95,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         this.team = team
         this.mainSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, spriteKey)
         this.shieldSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, 'shield_circular')
+        this._shields.addChangeListener((v) => this.shieldSprite.alpha = v.percentage)
         this.add(this.mainSprite)
         this.add(this.shieldSprite)
         colliderGroup?.add(this)
@@ -116,6 +126,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     {
         const heatReduction = dt * this._heatDissipationPerSecond / 1000
         this.heatValue.substract(heatReduction)
+
+        const shieldRecharge = dt * this._shieldRegenerationPerSecond / 1000
+        this.shieldValue.add(shieldRecharge)
     }
 
     public takeDamage(damage: Damage.Damage)
@@ -179,6 +192,8 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         if(this.killEffect)
             this.killEffect()
         this.destroy()
+        this.inactive = true
+        this.killedCallbacks.forEach(x => x(this))
     }
 
     protected killEffect() { }
@@ -194,5 +209,17 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     {
         const body = this.body as Phaser.Physics.Arcade.Body
         body?.setVelocity(x, y)
+    }
+
+    public addKilledCallback(c: PhysicalEntityCallbacks)
+    {
+        this.killedCallbacks.push(c)
+    }
+
+    public removeKilledCallback(c: PhysicalEntityCallbacks)
+    {
+        this.killedCallbacks.forEach( (item, index) => {
+            if(item === c) this.killedCallbacks.splice(index,1);
+          });        
     }
 }

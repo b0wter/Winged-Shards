@@ -8,8 +8,8 @@ const DefaultBorder = Phaser.Display.Color.HexStringToColor("#FFFFFF")
 
 export default class StructureBar extends HorizontalStatusBar
 {
-    constructor(scene, x, y, width, min, max, current = -1)
+    constructor(scene, x, y, width, min, max, current = -1, height = DefaultBarHeight, borderSize = DefaultBorderSize)
     {
-        super(scene, x, y, width, DefaultBarHeight, DefaultBorderSize, DefaultBackground, DefaultForeground, min, max, current, DefaultBorder)
+        super(scene, x, y, width, height, borderSize, DefaultBackground, DefaultForeground, min, max, current, DefaultBorder)
     }
 }

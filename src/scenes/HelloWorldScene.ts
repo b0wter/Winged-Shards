@@ -68,9 +68,9 @@ export default class HelloWorldScene extends Phaser.Scene
         this.playersGroup.add(this.player)
         this.physics.add.collider(this.player, this.environmentCollisions)
 
-        const enemy = this.createEnemy()
-        this.enemies.push(enemy)
-        this.physics.add.collider(enemy, this.environmentCollisions)
+        this.createEnemy(400, 700)
+        this.createEnemy(600, 700)
+        this.createEnemy(1000, 700)
 
         this.userInput = new KeyboardMouseInput(this, this.player)
 
@@ -79,8 +79,8 @@ export default class HelloWorldScene extends Phaser.Scene
 
         this.physics.add.collider(this.playerBulletsGroup, this.enemiesGroup, this.playerBulletHitsEnemy)
         this.physics.add.collider(this.playerBulletsGroup, this.playersGroup, (bullet, enemy) => console.log('friendly fire players'))
-        this.physics.add.collider(this.enemyBulletsGroup, this.playersGroup, (bullet, player) => console.log('player hit'))
-        this.physics.add.collider(this.enemyBulletsGroup, this.enemiesGroup, (bullet, enemy) => console.log('friendly fire enemies'))
+        this.physics.add.collider(this.enemyBulletsGroup, this.playersGroup, this.enemyBulletHitsPlayer)
+        this.physics.add.collider(this.enemyBulletsGroup, this.enemiesGroup, this.enemyBulletHitsEnemy)
         this.physics.add.collider(this.playersGroup, this.enemiesGroup, (player, enemy) => console.log('Player and enemy collided.'))
 
         this.createInterface(this.player)
@@ -114,10 +114,20 @@ export default class HelloWorldScene extends Phaser.Scene
         return player
     }
 
-    private createEnemy()
+    private createEnemy(x, y)
     {
-        const enemy = new Enemy(this, 400, 700, 'spaceship_02', 0, this.enemiesGroup, 40, 20, 10)
-        return enemy
+        const enemy = new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
+        enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
+        this.enemies.push(enemy)
+        this.physics.add.collider(enemy, this.environmentCollisions)
+    }
+
+    private removeEnemy(e: Enemy)
+    {
+        if(e === undefined) return
+        this.enemies.forEach( (item, index) => {
+            if(item === e) this.enemies.splice(index,1);
+        }); 
     }
 
     private createMap()
@@ -182,12 +192,34 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private playerBulletHitsEnemy(bullet, target)
     {
-        console.log('enemy hit')
+        console.log("Player hit enemy!")
         const projectile = bullet as Projectile.Projectile
         const enemy = target as Enemy
         enemy.takeDamage(projectile.damage)
         this.playerBulletsGroup?.remove(bullet)
         bullet.destroy()
+    }
+
+    private enemyBulletHitsPlayer(bullet, target)
+    {
+        console.log("Enemy hit players!")
+        const projectile = bullet as Projectile.Projectile
+        const player = target as PlayerEntity
+        player.takeDamage(projectile.damage)
+        this.enemyBulletsGroup?.remove(bullet)
+        bullet.destroy()
+    }
+
+    private enemyBulletHitsEnemy(bullet, target)
+    {
+        console.log("Enemy friendly fire")
+        const projectile = bullet as Projectile.Projectile
+        const enemy = target as Enemy
+        if(projectile.friendlyFire) {
+            enemy.takeDamage(projectile.damage)
+        }
+        this.enemyBulletsGroup?.remove(bullet)
+        projectile.destroy()
     }
 
     public computeWallIntersection(ray: Phaser.Geom.Line)

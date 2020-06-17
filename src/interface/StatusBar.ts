@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { UI_TEXT_DEPTH, UI_ELEMENTS_DEPTH } from '~/utilities/Constants'
 
 export default abstract class StatusBar extends Phaser.GameObjects.Graphics
 {
@@ -11,6 +12,8 @@ export default abstract class StatusBar extends Phaser.GameObjects.Graphics
     get percentage() { return this.current / this.max }
     get width() { return this._width }
     get height() { return this._height }
+
+    protected text: Phaser.GameObjects.Text
 
     constructor(scene: Phaser.Scene,
                 x: number, y: number,
@@ -26,9 +29,11 @@ export default abstract class StatusBar extends Phaser.GameObjects.Graphics
                 )
     {
         super(scene)
-        console.log('creating status bar')
-        this.x = x; 
+        this.depth = UI_ELEMENTS_DEPTH
+        this.x = x;
         this.y = y;
+        this.text = scene.add.text(x, y, "")
+        this.text.depth = UI_TEXT_DEPTH
         if(_current === -1) 
             this._current = _max
         else
@@ -42,17 +47,20 @@ export default abstract class StatusBar extends Phaser.GameObjects.Graphics
 
         // border (fills entire rectangle since it's easier)
         this.fillStyle(this._borderColor.color)
-        this.fillRect(this.x, this.y, this.width, this.height)
+        this.fillRect(0, 0, this.width, this.height)
 
         // background
         this.fillStyle(this._backgroundColor.color)
-        this.fillRect(this.x + this._border, this.y + this._border, this.width - (2 * this._border), this.height - (2 * this._border))
+        this.fillRect(this._border, this._border, this.width - (2 * this._border), this.height - (2 * this._border))
 
         // actual content
         this.fillStyle(this._foregroundColor.color)
 
-        this.fillBar(this.x + this._border, this.y + this._border, this.width - (2 * this._border), this.height - (2 * this._border))
+        this.fillBar(this._border, this._border, this.width - (2 * this._border), this.height - (2 * this._border))
+        // The text is offset independently from the actual status bar and as such needs the global coordinates of the content!
+        this.writeText(this._border + this.x, this._border + this.y, this.width - (2 * this._border), this.height - (2 * this._border))
     }
 
     protected abstract fillBar(x: number, y: number, width: number, height: number)
+    protected abstract writeText(x: number, y: number, width: number, height: number)
 }

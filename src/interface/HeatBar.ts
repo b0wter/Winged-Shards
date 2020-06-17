@@ -8,8 +8,8 @@ const DefaultBorder = Phaser.Display.Color.HexStringToColor("#F57900")
 
 export default class HeatBar extends VerticalStatusBar
 {
-    constructor(scene, x, y, height, min, max, current = -1)
+    constructor(scene, x, y, height, min, max, current = -1, width = DefaultBarWidth, borderSize = DefaultBorderSize)
     {
-        super(scene, x, y, DefaultBarWidth, height, DefaultBorderSize, DefaultBackground, DefaultForeground, min, max, current, DefaultBorder)
+        super(scene, x, y, width, height, borderSize, DefaultBackground, DefaultForeground, min, max, current, DefaultBorder)
     }
 }
