@@ -5,13 +5,21 @@ import PhysicalEntity from './PhysicalEntity'
 import PlayerEntity from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
 import { Weapon, WeaponTemplate, DummyWeapon, LightLaser, fromTemplate as weaponTemplate } from './Weapon'
+import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 
 export class Enemy extends PhysicalEntity
 {
     private testBool = true
-    private angularSpeed = 120
 
-    private primaryWeapon = weaponTemplate(this.scene, this._weaponCollider, this.team, LightLaser, 0, 0)
+    public get angularSpeed() { return this._angularSpeed }
+    private _angularSpeed = 120
+
+    public get primaryWeapon() { return this._primaryWeapon }
+    private _primaryWeapon = weaponTemplate(this.scene, this._weaponCollider, this.team, LightLaser, 0, 0)
+
+    public get allWeapons() { return [ this.primaryWeapon ] }
+
+    private _ai = new DefaultEnemyAi(300, 800, true)
 
     constructor(scene: Phaser.Scene, x, y, spriteKey, angle, collider, private _weaponCollider: Phaser.Physics.Arcade.Group, shields: number, hull: number, structure: number)
     {
@@ -43,15 +51,12 @@ export class Enemy extends PhysicalEntity
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
+        const ai = this._ai.compute(t, dt, this, players)
         if(players === undefined || players === null || players.length === 0) return
-        const nearestPlayer = players.sort(p => Phaser.Math.Distance.Between(p.x, p.y, this.x, this.y))[0]
-
-        // Angle the enemy wants too look at because that's where the player is.
-        const targetLookAt = Phaser.Math.Angle.Between(this.x, this.y, nearestPlayer.x, nearestPlayer.y) * Phaser.Math.RAD_TO_DEG
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
-        const difference = Phaser.Math.Angle.ShortestBetween(this.angle, targetLookAt)
+        const difference = Phaser.Math.Angle.ShortestBetween(this.angle, ai.desiredAngle)
 
         const sign = Math.sign(difference)
         // The maximum amount of turning possible in dt. This needs to be clamped.

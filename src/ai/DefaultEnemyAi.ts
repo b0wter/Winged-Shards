@@ -1,4 +1,8 @@
 import EnemyAi from './EnemyAi';
+import PlayerEntity from '~/entities/Player';
+import AiResult from './AiResult';
+import { Enemy } from '~/entities/Enemy';
+import Equipment from '~/entities/Equipment';
 
 export default class DefaultEnemyAi extends EnemyAi
 {
@@ -23,4 +27,37 @@ export default class DefaultEnemyAi extends EnemyAi
         super()
     }
             
+    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[]) : AiResult
+    {
+        if(enemy === undefined) return AiResult.Empty()
+        if(players === undefined || players === null || players.length === 0) return AiResult.Empty()
+        const nearestPlayer = players.sort(p => Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y))[0]
+        const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer)
+        const desiredVelocity = this.move()
+        const triggers = enemy.allWeapons.map(this.shouldTrigger.bind(this))
+        return new AiResult(desiredAngle, desiredVelocity, triggers)
+    }
+
+    /**
+     * 
+     * @param x X coordinate of this entity
+     * @param y Y coordinate of this entity
+     * @param angle Angle of the this entity
+     * @param player Player this entity wants to target
+     */
+    private turnToPlayer(dt, x, y, angle, angularSpeed, player: PlayerEntity)
+    {
+        const targetLookAt = Phaser.Math.Angle.Between(x, y, player.x, player.y) * Phaser.Math.RAD_TO_DEG
+        return targetLookAt
+    }
+
+    private move()
+    {
+        return new Phaser.Math.Vector2(0, 0)
+    }
+
+    private shouldTrigger(e: Equipment) : [Equipment, boolean]
+    {
+        return [e, this.shootAlways];
+    }
 }
