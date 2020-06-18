@@ -91,10 +91,22 @@ export const DummyWeapon : WeaponTemplate =
 export const LightLaser : WeaponTemplate =
 {
     name: "Light Laser",
-    cooldown: 200,
+    cooldown: 333,
     projectile: Projectile.LightLaserTemplate,
     projectilesPerShot: 1,
     heatPerShot: 4,
+    spread: NoSpread,
+    initialDelay: 0,
+    delayBetweenShots: 0
+}
+
+export const FusionGun : WeaponTemplate = 
+{
+    name: "Fusion Gun",
+    cooldown: 2000,
+    projectile: Projectile.FusionGunTemplate,
+    projectilesPerShot: 1,
+    heatPerShot: 50,
     spread: NoSpread,
     initialDelay: 0,
     delayBetweenShots: 0

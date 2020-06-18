@@ -6,11 +6,10 @@ import PlayerEntity from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
 import { Weapon, WeaponTemplate, DummyWeapon, LightLaser, fromTemplate as weaponTemplate } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
+import HelloWorldScene from '~/scenes/HelloWorldScene'
 
 export class Enemy extends PhysicalEntity
 {
-    private testBool = true
-
     public get angularSpeed() { return this._angularSpeed }
     private _angularSpeed = 120
 
@@ -19,7 +18,7 @@ export class Enemy extends PhysicalEntity
 
     public get allWeapons() { return [ this.primaryWeapon ] }
 
-    private _ai = new DefaultEnemyAi(300, 800, true)
+    private _ai = new DefaultEnemyAi(300, 800, 1000, true)
 
     private static Counter = 0
 
@@ -61,6 +60,8 @@ export class Enemy extends PhysicalEntity
         if(players === undefined || players === null || players.length === 0) 
             return
 
+        const los = this.seesPlayer(players[0])
+
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
         const difference = Phaser.Math.Angle.ShortestBetween(this.angle, ai.desiredAngle)
@@ -76,11 +77,7 @@ export class Enemy extends PhysicalEntity
     private seesPlayer(player: PlayerEntity)
     {
         const ray = new Phaser.Geom.Line(this.x, this.y, player.x, player.y)
-        if(this.testBool)
-        {
-            //var intersects = (this.scene as HelloWorldScene).computeWallIntersection(ray)
-            this.testBool = true
-        }
+        var intersects = (this.scene as HelloWorldScene).computeWallIntersection(ray)
     }
 
     private firePrimaryWeapon(t: number)

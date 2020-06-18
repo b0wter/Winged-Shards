@@ -19,8 +19,11 @@ export default class DefaultEnemyAi extends EnemyAi
      */
     get shootAlways() { return this._shootAlways }
 
+    get activityDistance() { return this._activityDistance }
+
     constructor(private _minimalDistance: number,
                 private _maximalDistance: number,
+                private _activityDistance: number,
                 private _shootAlways: boolean = false
                 )
     {
@@ -29,9 +32,14 @@ export default class DefaultEnemyAi extends EnemyAi
             
     public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[]) : AiResult
     {
+
+        // add a class-level active flag?
+        
+
         if(enemy === undefined) return AiResult.Empty()
         if(players === undefined || players === null || players.length === 0) return AiResult.Empty()
-        const nearestPlayer = players.sort(p => Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y))[0]
+        const nearestPlayer = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
+                                     .filter(x => x[1] <= this._activityDistance).sort(x => x[1])[0][0]
         const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer)
         const desiredVelocity = this.move()
         const triggers = enemy.allWeapons.map(this.shouldTrigger.bind(this))

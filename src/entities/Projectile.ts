@@ -11,23 +11,26 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     get ignoresHull() { return this._ignoresHull }
     get team() { return this._team }
     get lifetime() { return this._lifetime}
+    get pierces() { return this._pierces }
 
     constructor(scene, x, y, spriteKey, angle, velocity: number | undefined, 
                 protected _team: Teams,
                 protected _damage: Damage.Damage,
-                private colliderGroup?: Phaser.Physics.Arcade.Group,
-                protected _friendlyFire: boolean = false,
-                protected _ignoresShields: boolean = false,
-                protected _ignoresHull: boolean = false,
-                protected _lifetime: number = 0
+                private _colliderGroup: Phaser.Physics.Arcade.Group,
+                protected _friendlyFire: boolean,
+                protected _ignoresShields: boolean,
+                protected _ignoresHull: boolean,
+                protected _lifetime: number,
+                protected _pierces: boolean
                 )
     {
         // the super call needs to be the first thing that is done, thus we cannot compute v_x and v_y beforehand.
         super(scene, x, y, spriteKey)
         scene.add.existing(this)
         scene.physics.add.existing(this)
-        colliderGroup?.add(this)
+        this._colliderGroup?.add(this)
         this.setAngle(angle)
+        this.setImmovable(true)
         const v = velocity ?? 0
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
@@ -50,12 +53,12 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
 
     public kill()
     {
-        this.colliderGroup?.remove(this)
+        this._colliderGroup?.remove(this)
         this.destroy()
     }
 }
 
-export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup?: Phaser.Physics.Arcade.Group)
+export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group)
 {
     return new Projectile(
         scene,
@@ -69,7 +72,8 @@ export function fromTemplate(scene, x, y, team, angle, template: ProjectileTempl
         template.friendlyFire, 
         template.ignoresShields, 
         template.ignoresHull,
-        template.lifetime
+        template.lifetime,
+        template.pierces
         )
 }
 
@@ -82,6 +86,7 @@ export class ProjectileTemplate
     public ignoresShields = false
     public ignoresHull = false
     public lifetime = 0
+    public pierces = false
 }
 
 export const EmptyTemplate: ProjectileTemplate =
@@ -92,7 +97,8 @@ export const EmptyTemplate: ProjectileTemplate =
     friendlyFire: false,
     ignoresShields: false,
     ignoresHull: false,
-    lifetime: 0
+    lifetime: 0,
+    pierces: false
 }
 
 export const LightLaserTemplate : ProjectileTemplate =
@@ -103,5 +109,18 @@ export const LightLaserTemplate : ProjectileTemplate =
     friendlyFire: false,
     ignoresShields: false,
     ignoresHull: false,
-    lifetime: 1500
+    lifetime: 1500,
+    pierces: false
+}
+
+export const FusionGunTemplate : ProjectileTemplate =
+{
+    spriteKey: 'fusion_01',
+    velocity: 200,
+    damage: new Damage.Damage(0, 200, 0, 50),
+    friendlyFire: false,
+    ignoresHull: false,
+    ignoresShields: false,
+    lifetime: 2500,
+    pierces: true
 }

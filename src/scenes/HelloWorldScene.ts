@@ -48,6 +48,7 @@ export default class HelloWorldScene extends Phaser.Scene
         this.load.image('debris', 'images/effects/debris.png')
         this.load.image('particle_blue', 'images/effects/particle-blue.png')
         this.load.image('particle_red', 'images/effects/particle-red.png')
+        this.load.image('fusion_01', 'images/projectiles/fusion-01.png')
         this.load.spritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
         this.load.tilemapTiledJSON('map', 'maps/test.json')
     }
@@ -110,7 +111,9 @@ export default class HelloWorldScene extends Phaser.Scene
         const player = new PlayerEntity(this, 400, 250, 'spaceship_01', undefined)
         //player.mainSprite.setCollideWorldBounds(true)
         const weapon = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.LightLaser)
+        const fusionGun = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.FusionGun)
         player.primaryEquipmentGroup.push(weapon)
+        player.secondaryEquipmentGroup.push(fusionGun)
         return player
     }
 
@@ -197,7 +200,8 @@ export default class HelloWorldScene extends Phaser.Scene
         const enemy = target as Enemy
         enemy.takeDamage(projectile.damage)
         this.playerBulletsGroup?.remove(bullet)
-        bullet.destroy()
+        if(!projectile.pierces)
+            bullet.destroy()
     }
 
     private enemyBulletHitsPlayer(bullet, target)
@@ -207,7 +211,8 @@ export default class HelloWorldScene extends Phaser.Scene
         const player = target as PlayerEntity
         player.takeDamage(projectile.damage)
         this.enemyBulletsGroup?.remove(bullet)
-        bullet.destroy()
+        if(!projectile.pierces)
+            bullet.destroy()
     }
 
     private enemyBulletHitsEnemy(bullet, target)
@@ -219,12 +224,18 @@ export default class HelloWorldScene extends Phaser.Scene
             enemy.takeDamage(projectile.damage)
         }
         this.enemyBulletsGroup?.remove(bullet)
-        projectile.destroy()
+        if(!projectile.pierces)
+            bullet.destroy()
     }
 
     public computeWallIntersection(ray: Phaser.Geom.Line)
     {
-        return false;
+        //const collider = this.physics.add.collider(ray, this.environmentCollisions)
+        return true
+        // getTilesWithinShape() <-----------
+
+
+        /*
         const start = ray.getPointA()
         const end = ray.getPointB()
         const tileSize = this.map.tileHeight
@@ -249,5 +260,6 @@ export default class HelloWorldScene extends Phaser.Scene
         while(remainingDistance > 0)
         console.log(breaker)
         return false
+        */
     }
 }
