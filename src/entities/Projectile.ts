@@ -117,7 +117,7 @@ export const FusionGunTemplate : ProjectileTemplate =
 {
     spriteKey: 'fusion_01',
     velocity: 200,
-    damage: new Damage.Damage(0, 200, 0, 50),
+    damage: new Damage.Damage(0, 10, 0, 0), //new Damage.Damage(0, 200, 0, 50),
     friendlyFire: false,
     ignoresHull: false,
     ignoresShields: false,
