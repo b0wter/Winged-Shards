@@ -89,40 +89,34 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     {
         super(scene, x, y, undefined)
         this.setSize(64, 64)
-        // this.setInteractive(new Phaser.Geom.Circle(0, 0, 64))
-        //this.input.hitArea.setTo(10, 10, 10, 10)
         scene.physics.world.enable(this)
-        scene.physics.world.enableBody(this)
         this.team = team
+
         this.mainSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, spriteKey)
+        this.add(this.mainSprite)
+
         this.shieldSprite = new Phaser.Physics.Arcade.Sprite(scene, 0, 0, 'shield_circular')
         this._shields.addChangeListener((v) => this.shieldSprite.alpha = v.percentage)
-        this.add(this.mainSprite)
         this.add(this.shieldSprite)
+
         colliderGroup?.add(this)
         scene.add.existing(this)
+
+        this.setAngleAndVelocity(angle, velocity)
+
+        this.name = Guid.create().toString()
+    }
+
+    private setAngleAndVelocity(angle, velocity)
+    {
         this.setAngle(angle ?? 0 )
         const v = velocity ?? 0
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
-
         const body = this.body as Phaser.Physics.Arcade.Body
         body.setVelocity(vX, vY)
         body.setImmovable(true)
-
-        this.name = Guid.create().toString()
-
-        //(this.body as Phaser.Physics.Arcade.Body).setVelocity(vX, vY)
-        //(this.body as Phaser.Physics.Arcade.Body).immovable = true
-        /*
-        scene.add.existing(this)
-        scene.physics.add.existing(this)
-        colliderGroup?.add(this)
-        this.team = team
-        this.mainSprite.setVelocityX(v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD))
-        this.mainSprite.setVelocityY(v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD))
-        this.mainSprite.setBounce(0)
-        */
+        console.log(body)
     }
 
     protected internalUpdate(d: number, dt: number)

@@ -66,7 +66,6 @@ export default class HelloWorldScene extends Phaser.Scene
         this.stage = this.createTilesets(this.map)
 
         this.player = this.createPlayer();
-        this.playersGroup.add(this.player)
         this.physics.add.collider(this.player, this.environmentCollisions)
 
         this.createEnemy(400, 700)
@@ -108,7 +107,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createPlayer()
     {
-        const player = new PlayerEntity(this, 400, 250, 'spaceship_01', undefined)
+        const player = new PlayerEntity(this, 400, 250, 'spaceship_01', this.playersGroup!)
         const weapon = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.LightLaser, 0, 0, player)
         const fusionGun = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.FusionGun, 0, 0, player)
         player.primaryEquipmentGroup.push(weapon)
