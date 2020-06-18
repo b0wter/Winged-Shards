@@ -3,6 +3,7 @@ import { Teams } from './Teams'
 import * as Damage from './DamageType'
 import ClampedValue from '~/utilities/ClampedValue'
 import ClampedNumber from '~/utilities/ClampedNumber'
+import { Guid } from "guid-typescript";
 
 type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
 
@@ -107,7 +108,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
 
         const body = this.body as Phaser.Physics.Arcade.Body
         body.setVelocity(vX, vY)
-        body.immovable = true
+        body.setImmovable(true)
+
+        this.name = Guid.create().toString()
 
         //(this.body as Phaser.Physics.Arcade.Body).setVelocity(vX, vY)
         //(this.body as Phaser.Physics.Arcade.Body).immovable = true

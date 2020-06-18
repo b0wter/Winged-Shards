@@ -22,8 +22,6 @@ export default class PlayerEntity extends PhysicalEntity
     constructor(scene: Phaser.Scene, x: number, y: number, spriteKey: string, colliderGroup?: Phaser.Physics.Arcade.Group)
     {
         super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200, 0, 0), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), 2, 5, undefined, undefined, colliderGroup)
-
-        //(this.body as Phaser.Physics.Arcade.Body).immovable = true
     }
 
     private triggerEquipmentGroup(group: Equipment[], t: number)

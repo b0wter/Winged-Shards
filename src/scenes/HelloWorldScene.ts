@@ -109,9 +109,8 @@ export default class HelloWorldScene extends Phaser.Scene
     private createPlayer()
     {
         const player = new PlayerEntity(this, 400, 250, 'spaceship_01', undefined)
-        //player.mainSprite.setCollideWorldBounds(true)
-        const weapon = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.LightLaser)
-        const fusionGun = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.FusionGun)
+        const weapon = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.LightLaser, 0, 0, player)
+        const fusionGun = Weapon.fromTemplate(this, this.playerBulletsGroup, Teams.Players, Weapon.FusionGun, 0, 0, player)
         player.primaryEquipmentGroup.push(weapon)
         player.secondaryEquipmentGroup.push(fusionGun)
         return player
@@ -195,37 +194,20 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private playerBulletHitsEnemy(bullet, target)
     {
-        console.log("Player hit enemy!")
-        const projectile = bullet as Projectile.Projectile
-        const enemy = target as Enemy
-        enemy.takeDamage(projectile.damage)
-        this.playerBulletsGroup?.remove(bullet)
-        if(!projectile.pierces)
-            bullet.destroy()
+        const p  = bullet as Projectile.Projectile
+        p?.hit(target)
     }
 
     private enemyBulletHitsPlayer(bullet, target)
     {
-        console.log("Enemy hit players!")
-        const projectile = bullet as Projectile.Projectile
-        const player = target as PlayerEntity
-        player.takeDamage(projectile.damage)
-        this.enemyBulletsGroup?.remove(bullet)
-        if(!projectile.pierces)
-            bullet.destroy()
+        const p  = bullet as Projectile.Projectile
+        p?.hit(target)
     }
 
     private enemyBulletHitsEnemy(bullet, target)
     {
-        const projectile = bullet as Projectile.Projectile
-        const enemy = target as Enemy
-        console.log(`Enemy friendly fire (target: ${enemy.Name})` )
-        if(projectile.friendlyFire) {
-            enemy.takeDamage(projectile.damage)
-        }
-        this.enemyBulletsGroup?.remove(bullet)
-        if(!projectile.pierces)
-            bullet.destroy()
+        const p  = bullet as Projectile.Projectile
+        p?.hit(target)
     }
 
     public computeWallIntersection(ray: Phaser.Geom.Line)

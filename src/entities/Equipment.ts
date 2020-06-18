@@ -1,3 +1,4 @@
+import { Teams } from './Teams'
 
 
 export default abstract class Equipment
@@ -17,7 +18,10 @@ export default abstract class Equipment
     protected cooldownModifier = 1
 
     constructor(protected _cooldown: number,
-                protected _heatPerTrigger: number)
+                protected _heatPerTrigger: number,
+                protected _ownerId: string,
+                protected _team : Teams
+                )
     {
         //
     }

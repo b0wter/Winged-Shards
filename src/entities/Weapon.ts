@@ -3,6 +3,7 @@ import * as Damage from './DamageType'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
 import Equipment from './Equipment'
+import PhysicalEntity from './PhysicalEntity'
 
 export interface None { }
 export const NoSpread : None = { }
@@ -30,13 +31,14 @@ export class Weapon extends Equipment
                 private spread: WeaponSpread,
                 private initialDelay: number,
                 private delayBetweenShots: number,
-                private team: Teams,
+                team: Teams,
                 private _mountPointOffsetX: number,
-                private _mountPointOffsetY: number
+                private _mountPointOffsetY: number,
+                ownerId: string
                )
     {
-        super(_cooldown, heatPerShot)
-        if(this.team !== Teams.Players) this.cooldownModifier = 2
+        super(_cooldown, heatPerShot, ownerId, team)
+        if(this._team !== Teams.Players) this.cooldownModifier = 2
     }
 
     /**
@@ -44,7 +46,7 @@ export class Weapon extends Equipment
      */
     protected internalTrigger(x, y, angle, time) {
         const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle)
-        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this.team, angle, this.projectile, this.collider)
+        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.collider, this._ownerId)
     }
 
     public update(t: number, dt: number)
@@ -70,9 +72,9 @@ export class WeaponTemplate
     public delayBetweenShots = Number.MAX_SAFE_INTEGER
 }
 
-export function fromTemplate(scene, collider, team, t: WeaponTemplate, mountPointOffsetX = 0, mountPointOffsetY = 0) : Weapon
+export function fromTemplate(scene, collider, team, t: WeaponTemplate, mountPointOffsetX, mountPointOffsetY, owner: PhysicalEntity) : Weapon
 {
-    return new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, t.initialDelay, t.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
+    return new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, t.initialDelay, t.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY, owner.name)
 }
 
 export const DummyWeapon : WeaponTemplate =
@@ -103,7 +105,7 @@ export const LightLaser : WeaponTemplate =
 export const FusionGun : WeaponTemplate = 
 {
     name: "Fusion Gun",
-    cooldown: 2000,
+    cooldown: 3000,
     projectile: Projectile.FusionGunTemplate,
     projectilesPerShot: 1,
     heatPerShot: 50,

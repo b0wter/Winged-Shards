@@ -12,6 +12,9 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     get team() { return this._team }
     get lifetime() { return this._lifetime}
     get pierces() { return this._pierces }
+    get pierceHitsContinuously() { return this._pierceHitsContinuously }
+
+    private piercedEnemyIds: string[] = []
 
     constructor(scene, x, y, spriteKey, angle, velocity: number | undefined, 
                 protected _team: Teams,
@@ -21,7 +24,9 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _ignoresShields: boolean,
                 protected _ignoresHull: boolean,
                 protected _lifetime: number,
-                protected _pierces: boolean
+                protected _pierces: boolean,
+                protected _pierceHitsContinuously: boolean,
+                protected _ownerId: string
                 )
     {
         // the super call needs to be the first thing that is done, thus we cannot compute v_x and v_y beforehand.
@@ -46,6 +51,47 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         }
     }
 
+    /**
+     * Handles the hit interaction. Return value indicates wether this projectile was destroyed
+     * in the process and can safely be removed from any tracking collection.
+     * @param e Entity that was hit by this projectile.
+     */
+    public hit(e: PhysicalEntity) : boolean
+    {
+        if(this._ownerId === e.name)
+            return false
+
+        if(this.team === e.team && this.friendlyFire === false)
+            return false
+        
+        if(this.pierces)
+        {
+            if(this.piercedEnemyIds.includes(e.name))
+                return false
+
+            // adding the entity id to this likst makes sure it is not hit again
+            // continuously hitting projectiles are not added to this list and hit multiple times
+            if(!this.pierceHitsContinuously)
+                this.piercedEnemyIds.push(e.name)
+
+            e.takeDamage(this.damage)
+            if(this.pierces) {
+                return false
+            } else {
+                this.kill()
+                return true
+            }
+
+        }
+        else
+        {
+            e.takeDamage(this.damage)   
+            this.kill()
+            return true
+        }
+    }
+
+
     public takeDamage(_)
     {
         // regular projectile cannot take damage
@@ -58,7 +104,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group)
+export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group, ownerId: string)
 {
     return new Projectile(
         scene,
@@ -73,7 +119,9 @@ export function fromTemplate(scene, x, y, team, angle, template: ProjectileTempl
         template.ignoresShields, 
         template.ignoresHull,
         template.lifetime,
-        template.pierces
+        template.pierces,
+        template.pierceHitsContinuously,
+        ownerId
         )
 }
 
@@ -87,6 +135,7 @@ export class ProjectileTemplate
     public ignoresHull = false
     public lifetime = 0
     public pierces = false
+    public pierceHitsContinuously = false
 }
 
 export const EmptyTemplate: ProjectileTemplate =
@@ -98,7 +147,8 @@ export const EmptyTemplate: ProjectileTemplate =
     ignoresShields: false,
     ignoresHull: false,
     lifetime: 0,
-    pierces: false
+    pierces: false,
+    pierceHitsContinuously: false
 }
 
 export const LightLaserTemplate : ProjectileTemplate =
@@ -110,17 +160,19 @@ export const LightLaserTemplate : ProjectileTemplate =
     ignoresShields: false,
     ignoresHull: false,
     lifetime: 1500,
-    pierces: false
+    pierces: false,
+    pierceHitsContinuously: false
 }
 
 export const FusionGunTemplate : ProjectileTemplate =
 {
     spriteKey: 'fusion_01',
     velocity: 200,
-    damage: new Damage.Damage(0, 10, 0, 0), //new Damage.Damage(0, 200, 0, 50),
+    damage: new Damage.Damage(0, 200, 0, 50),
     friendlyFire: false,
     ignoresHull: false,
     ignoresShields: false,
     lifetime: 2500,
-    pierces: true
+    pierces: true,
+    pierceHitsContinuously: false
 }

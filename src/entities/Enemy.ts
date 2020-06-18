@@ -14,15 +14,11 @@ export class Enemy extends PhysicalEntity
     private _angularSpeed = 120
 
     public get primaryWeapon() { return this._primaryWeapon }
-    private _primaryWeapon = weaponTemplate(this.scene, this._weaponCollider, this.team, LightLaser, 0, 0)
+    private _primaryWeapon = weaponTemplate(this.scene, this._weaponCollider, this.team, LightLaser, 0, 0, this)
 
     public get allWeapons() { return [ this.primaryWeapon ] }
 
     private _ai = new DefaultEnemyAi(300, 800, 1000, true)
-
-    private static Counter = 0
-
-    public readonly Name: string
 
     constructor(scene: Phaser.Scene, x, y, spriteKey, angle, collider, private _weaponCollider: Phaser.Physics.Arcade.Group, shields: number, hull: number, structure: number)
     {
@@ -31,8 +27,6 @@ export class Enemy extends PhysicalEntity
         this.hull = hull
         this.structure = structure
         this.angle = 90
-        this.Name = "Enemy_" + Enemy.Counter
-        Enemy.Counter++
     }
 
     protected killEffect()
@@ -82,7 +76,8 @@ export class Enemy extends PhysicalEntity
 
     private firePrimaryWeapon(t: number)
     {
-        const offset = this.mainSprite.width
+        const body = (this.body as Phaser.Physics.Arcade.Body)
+        const offset = body.width ?? 0
         const offsetX = offset * Math.cos(this.rotation)
         const offsetY = offset * Math.sin(this.rotation)
 
