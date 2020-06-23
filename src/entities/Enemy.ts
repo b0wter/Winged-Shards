@@ -4,29 +4,47 @@ import { Damage } from './DamageType'
 import PhysicalEntity from './PhysicalEntity'
 import PlayerEntity from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
-import { Weapon, WeaponTemplate, DummyWeapon, LightLaser, fromTemplate as weaponTemplate } from './Weapon'
+import { Weapon, WeaponTemplate, DummyWeapon, LightLaser } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 import HelloWorldScene from '~/scenes/HelloWorldScene'
+import { Equipment, EquipmentTemplate } from './Equipment'
 
 export class Enemy extends PhysicalEntity
 {
     public get angularSpeed() { return this._angularSpeed }
     private _angularSpeed = 120
 
-    public get primaryWeapon() { return this._primaryWeapon }
-    private _primaryWeapon = weaponTemplate(this.scene, this._weaponCollider, this.team, LightLaser, 0, 0, this)
-
-    public get allWeapons() { return [ this.primaryWeapon ] }
+    public get velocity() { const b = this.body as Phaser.Physics.Arcade.Body; return b.velocity ?? new Phaser.Math.Vector2(0,0)}
 
     private _ai = new DefaultEnemyAi(300, 800, 1000, true)
 
-    constructor(scene: Phaser.Scene, x, y, spriteKey, angle, collider, private _weaponCollider: Phaser.Physics.Arcade.Group, shields: number, hull: number, structure: number)
+    public get equipment() { return this._equipment }
+
+    constructor(scene: Phaser.Scene, 
+                x, y, 
+                spriteKey, 
+                angle, 
+                collider, 
+                private _weaponCollider: Phaser.Physics.Arcade.Group, 
+                shields: ClampedNumber, 
+                hull: ClampedNumber, 
+                structure: ClampedNumber, 
+                private _equipment: Equipment[]
+               )
     {
-        super(scene, x, y, spriteKey, Teams.Enemies, new ClampedNumber(shields), new ClampedNumber(hull), new ClampedNumber(structure), new ClampedNumber(Number.MAX_SAFE_INTEGER), 2, Number.MAX_SAFE_INTEGER, angle, 0, collider)
-        this.shields = shields
-        this.hull = hull
-        this.structure = structure
-        this.angle = 90
+        super(scene, 
+              x, y, 
+              spriteKey, 
+              Teams.Enemies, 
+              shields,
+              hull,
+              structure,
+              new ClampedNumber(Number.MAX_SAFE_INTEGER), 
+              2, 
+              Number.MAX_SAFE_INTEGER, 
+              angle, 
+              0, 
+              collider)
     }
 
     protected killEffect()
@@ -45,7 +63,6 @@ export class Enemy extends PhysicalEntity
     {
         super.internalUpdate(t, dt)
         this.updatePlayerInteraction(t, dt, players)
-        this.firePrimaryWeapon(t)
     }
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
@@ -66,6 +83,8 @@ export class Enemy extends PhysicalEntity
         turning = sign === 1 ? Math.min(turning, difference) : Math.max(turning, difference)
 
         this.angle += turning
+
+        ai.equipmentTriggers.forEach(x => { if(x[1]) { this.fireWeapon(t, x[0]) }} )
     }
 
     private seesPlayer(player: PlayerEntity)
@@ -74,37 +93,39 @@ export class Enemy extends PhysicalEntity
         var intersects = (this.scene as HelloWorldScene).computeWallIntersection(ray)
     }
 
-    private firePrimaryWeapon(t: number)
+    private fireWeapon(t: number, e: Equipment)
     {
         const body = (this.body as Phaser.Physics.Arcade.Body)
-        const offset = body.width ?? 0
+        const offset = (body.width / 2) ?? 0
         const offsetX = offset * Math.cos(this.rotation)
         const offsetY = offset * Math.sin(this.rotation)
 
-        this.primaryWeapon.trigger(this.x + offsetX, this.y + offsetY, this.angle, t)
+        e.trigger(this.x + offsetX, this.y + offsetY, this.angle, t, this.name)
     }
-}
-
-export function fromTemplate(scene, x, y, angle, template: EnemyTemplate, colliderGroup: Phaser.Physics.Arcade.Group, weaponColliderGroup: Phaser.Physics.Arcade.Group)
-{
-    return new Enemy(
-        scene,
-        x, y, 
-        template.spriteKey, 
-        angle, 
-        colliderGroup,
-        weaponColliderGroup,
-        template.shield,
-        template.hull,
-        template.structure
-        )
 }
 
 class EnemyTemplate
 {
-    public spriteKey = ''
+    public name = ""
+    public spriteKey = ""
     public shield = 0
     public hull = 0
     public structure = 0
-    public weapon = DummyWeapon
+    public equipment : EquipmentTemplate[] = [ DummyWeapon ]
+
+    public instatiate(scene, x, y, angle, collider, bulletsCollider)
+    {
+        const equipment = this.equipment.map(x => x.instantiate(scene, bulletsCollider, Teams.Enemies, 0, 0))
+        return new Enemy(scene, x, y, this.spriteKey, angle, collider, bulletsCollider, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), equipment)
+    }
 }
+
+export const LightFighter : EnemyTemplate =
+    Object.assign(new EnemyTemplate(), {
+        name: "light_fighter",
+        spriteKey : "spaceship_02",
+        shield: 40,
+        hull: 20,
+        structure: 10,
+        equipment: [ LightLaser ]
+    })

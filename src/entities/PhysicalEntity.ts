@@ -35,6 +35,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     }
     public get hasShieldsLeft() : boolean { return this.shields > 0 }
     public get shieldValue() { return this._shields }
+    private _shields: ClampedNumber
 
     get hull() {
         return this._hull.current
@@ -44,7 +45,8 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     }
     public get hasHullLeft() : boolean { return this._hull.isNotMinimum() }
     public get hullValue() { return this._hull }
-    
+    private _hull: ClampedNumber
+
     get structure() {
         return this._structure.current
     } 
@@ -53,6 +55,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     }
     public get hasStructureLeft() : boolean { return this.structure > 0 }
     public get structureValue() { return this._structure }
+    private _structure: ClampedNumber
 
     get heat() {
         return this._heat.current
@@ -62,6 +65,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     }
     public get heatValue() { return this._heat }
     public get remainingHeatBudget() { return this.heatValue.remaining }
+    private _heat: ClampedNumber
 
     public readonly mainSprite: Phaser.Physics.Arcade.Sprite
     public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
@@ -77,10 +81,10 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 x: number, y: number, 
                 spriteKey, 
                 team, 
-                private _shields: ClampedNumber,
-                private _hull: ClampedNumber,
-                private _structure: ClampedNumber,
-                private _heat: ClampedNumber,
+                shields: ClampedNumber,
+                hull: ClampedNumber,
+                structure: ClampedNumber,
+                heat: ClampedNumber,
                 private _shieldRegenerationPerSecond: number,
                 private _heatDissipationPerSecond: number,
                 angle?: number, 
@@ -88,6 +92,12 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 colliderGroup?: Phaser.Physics.Arcade.Group)
     {
         super(scene, x, y, undefined)
+
+        this._shields = shields
+        this._hull = hull
+        this._structure = structure
+        this._heat = heat
+
         this.setSize(64, 64)
         scene.physics.world.enable(this)
         this.team = team
@@ -116,7 +126,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         const body = this.body as Phaser.Physics.Arcade.Body
         body.setVelocity(vX, vY)
         body.setImmovable(true)
-        console.log(body)
     }
 
     protected internalUpdate(d: number, dt: number)

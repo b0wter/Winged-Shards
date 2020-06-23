@@ -1,4 +1,4 @@
-import Equipment from './../entities/Equipment'
+import { Equipment } from './../entities/Equipment'
 
 export default class AiResult
 {
@@ -8,13 +8,11 @@ export default class AiResult
 
     get equipmentTriggers() { return this._equipmentTriggers }
 
-    constructor(private _desiredAngle = 0,
-                private _desiredVelocity = Phaser.Math.Vector2.ZERO,
-                private _equipmentTriggers : [Equipment, boolean][] = []
+    constructor(private _desiredAngle,
+                private _desiredVelocity,
+                private _equipmentTriggers : [Equipment, boolean][]
                )
     {
         //
     }
-
-    public static Empty() { return new AiResult() }
 }

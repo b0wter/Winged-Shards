@@ -1,7 +1,7 @@
 import { Teams } from './Teams'
+import PhysicalEntity from './PhysicalEntity'
 
-
-export default abstract class Equipment
+export abstract class Equipment
 {
     /**
      * Cooldown in milliseconds.
@@ -19,7 +19,6 @@ export default abstract class Equipment
 
     constructor(protected _cooldown: number,
                 protected _heatPerTrigger: number,
-                protected _ownerId: string,
                 protected _team : Teams
                 )
     {
@@ -33,12 +32,12 @@ export default abstract class Equipment
      * @param angle Angle of the entity
      * @param time current game time, needed to cooldowns
      */
-    public trigger(x, y, angle, time) : number
+    public trigger(x, y, angle, time, ownerId) : number
     {
         const passed = time - this.lastUsedAt
         if(passed > this.cooldown * this.cooldownModifier) {
             const offset = this.mountOffset()
-            this.internalTrigger(x + offset.x, y + offset.y, angle, time)
+            this.internalTrigger(x + offset.x, y + offset.y, angle, time, ownerId)
             this.lastUsedAt = time
             return this.heatPerTrigger
         }
@@ -47,10 +46,15 @@ export default abstract class Equipment
 
     public abstract update(t, dt)
 
-    protected abstract internalTrigger(x, y, angle, time)
+    protected abstract internalTrigger(x, y, angle, time, ownerId)
 
     protected mountOffset()
     {
         return new Phaser.Math.Vector2(0, 0)
     }
 }
+
+export abstract class EquipmentTemplate
+{
+    public abstract instantiate(scene, collider, team, mountPointOffsetX, mountPointOffsetY)
+} 

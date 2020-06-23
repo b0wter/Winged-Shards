@@ -3,7 +3,7 @@ import ClampedValue from './ClampedValue';
 export default class ClampedNumber extends ClampedValue<number>
 {
 
-    constructor(max: number, min?: number, current?: number, onChange?: () => void, onMin?: () => void, onMax?: () => void)
+    constructor(max: number, min?: number, current?: number)
     {
         super(
             min ?? 0,
@@ -13,10 +13,7 @@ export default class ClampedNumber extends ClampedValue<number>
             function(a: number, b: number) { return a - b},
             function(a: number, b: number) { return a / b },
             function(a: number, b: number) { return a <= b},
-            function(a: number, b: number) { return a >= b },
-            onChange,
-            onMin,
-            onMax
+            function(a: number, b: number) { return a >= b }
         )
     }
 }

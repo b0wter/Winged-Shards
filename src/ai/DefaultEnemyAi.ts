@@ -2,7 +2,7 @@ import EnemyAi from './EnemyAi';
 import PlayerEntity from '~/entities/Player';
 import AiResult from './AiResult';
 import { Enemy } from '~/entities/Enemy';
-import Equipment from '~/entities/Equipment';
+import { Equipment } from '~/entities/Equipment';
 
 export default class DefaultEnemyAi extends EnemyAi
 {
@@ -36,13 +36,17 @@ export default class DefaultEnemyAi extends EnemyAi
         // add a class-level active flag?
         
 
-        if(enemy === undefined) return AiResult.Empty()
-        if(players === undefined || players === null || players.length === 0) return AiResult.Empty()
-        const nearestPlayer = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
-                                     .filter(x => x[1] <= this._activityDistance).sort(x => x[1])[0][0]
+        if(enemy === undefined) return this.inactivityAiResult(enemy)
+        if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
+        const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
+                                     .filter(x => x[1] <= (this.active ? Number.MAX_SAFE_INTEGER : this._activityDistance)).sort(x => x[1])
+
+        if(playersInRange.length === 0) return this.inactivityAiResult(enemy)
+        this.active = true
+        const nearestPlayer = playersInRange[0][0]
         const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer)
         const desiredVelocity = this.move()
-        const triggers = enemy.allWeapons.map(this.shouldTrigger.bind(this))
+        const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
         return new AiResult(desiredAngle, desiredVelocity, triggers)
     }
 
@@ -66,6 +70,6 @@ export default class DefaultEnemyAi extends EnemyAi
 
     private shouldTrigger(e: Equipment) : [Equipment, boolean]
     {
-        return [e, this.shootAlways];
+        return [e, this.active && this.shootAlways];
     }
 }

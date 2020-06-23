@@ -10,11 +10,13 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     get ignoresShields() { return this._ignoresShields }
     get ignoresHull() { return this._ignoresHull }
     get team() { return this._team }
-    get lifetime() { return this._lifetime}
+    get range() { return this._range }
     get pierces() { return this._pierces }
     get pierceHitsContinuously() { return this._pierceHitsContinuously }
 
     private piercedEnemyIds: string[] = []
+    private _originX: number
+    private _originY: number
 
     constructor(scene, x, y, spriteKey, angle, velocity: number | undefined, 
                 protected _team: Teams,
@@ -23,10 +25,12 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _friendlyFire: boolean,
                 protected _ignoresShields: boolean,
                 protected _ignoresHull: boolean,
-                protected _lifetime: number,
+                protected _range: number,
                 protected _pierces: boolean,
                 protected _pierceHitsContinuously: boolean,
-                protected _ownerId: string
+                protected _ownerId: string,
+                protected _angularSpeed: number,
+                protected _size: Phaser.Math.Vector2
                 )
     {
         // the super call needs to be the first thing that is done, thus we cannot compute v_x and v_y beforehand.
@@ -41,14 +45,19 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
         this.setVelocity(vX, vY)
         this.setCollideWorldBounds(true)
-        this.lifetimeTimer(this._lifetime)
+        this._originX = x
+        this._originY = y
+        if(_size !== Phaser.Math.Vector2.ZERO)
+            this.body.setSize(_size.x, _size.y)
     }
 
-    private lifetimeTimer(lifetime: number)
+    public update(t: number, dt: number)
     {
-        if(lifetime > 0) {
-            setTimeout(() => this.kill(), lifetime)
-        }
+        const distance = Phaser.Math.Distance.Between(this.x, this.y, this._originX, this._originY)
+        if(distance >= this._range)
+            this.kill()
+
+        this.angle += dt * this._angularSpeed / 1000
     }
 
     /**
@@ -118,10 +127,12 @@ export function fromTemplate(scene, x, y, team, angle, template: ProjectileTempl
         template.friendlyFire, 
         template.ignoresShields, 
         template.ignoresHull,
-        template.lifetime,
+        template.range,
         template.pierces,
         template.pierceHitsContinuously,
-        ownerId
+        ownerId,
+        template.angularSpeed,
+        template.size
         )
 }
 
@@ -133,9 +144,11 @@ export class ProjectileTemplate
     public friendlyFire = false
     public ignoresShields = false
     public ignoresHull = false
-    public lifetime = 0
+    public range = 0
     public pierces = false
     public pierceHitsContinuously = false
+    public angularSpeed = 0
+    public size = Phaser.Math.Vector2.ZERO
 }
 
 export const EmptyTemplate: ProjectileTemplate =
@@ -146,9 +159,11 @@ export const EmptyTemplate: ProjectileTemplate =
     friendlyFire: false,
     ignoresShields: false,
     ignoresHull: false,
-    lifetime: 0,
+    range: 0,
     pierces: false,
-    pierceHitsContinuously: false
+    pierceHitsContinuously: false,
+    angularSpeed : 0,
+    size: Phaser.Math.Vector2.ZERO
 }
 
 export const LightLaserTemplate : ProjectileTemplate =
@@ -159,9 +174,11 @@ export const LightLaserTemplate : ProjectileTemplate =
     friendlyFire: false,
     ignoresShields: false,
     ignoresHull: false,
-    lifetime: 1500,
+    range: 500,
     pierces: false,
-    pierceHitsContinuously: false
+    pierceHitsContinuously: false,
+    angularSpeed: 0,
+    size: new Phaser.Math.Vector2(23, 9)
 }
 
 export const FusionGunTemplate : ProjectileTemplate =
@@ -172,7 +189,9 @@ export const FusionGunTemplate : ProjectileTemplate =
     friendlyFire: false,
     ignoresHull: false,
     ignoresShields: false,
-    lifetime: 2500,
+    range: 1000,
     pierces: true,
-    pierceHitsContinuously: false
+    pierceHitsContinuously: false,
+    angularSpeed: 45,
+    size: new Phaser.Math.Vector2(44, 44)
 }

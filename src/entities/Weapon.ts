@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import * as Damage from './DamageType'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
-import Equipment from './Equipment'
+import { Equipment, EquipmentTemplate } from './Equipment'
 import PhysicalEntity from './PhysicalEntity'
 
 export interface None { }
@@ -34,19 +34,18 @@ export class Weapon extends Equipment
                 team: Teams,
                 private _mountPointOffsetX: number,
                 private _mountPointOffsetY: number,
-                ownerId: string
                )
     {
-        super(_cooldown, heatPerShot, ownerId, team)
+        super(_cooldown, heatPerShot, team)
         if(this._team !== Teams.Players) this.cooldownModifier = 2
     }
 
     /**
      * Tries to shoot this weapon. Does not run a cooldown check!
      */
-    protected internalTrigger(x, y, angle, time) {
+    protected internalTrigger(x, y, angle, time, owner) {
         const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle)
-        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.collider, this._ownerId)
+        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.collider, owner)
     }
 
     public update(t: number, dt: number)
@@ -60,56 +59,59 @@ export class Weapon extends Equipment
     }
 }
 
-export class WeaponTemplate
+export class WeaponTemplate extends EquipmentTemplate
 {
-    public name = "<WeaponTemplate>"
-    public cooldown: number = Number.MAX_SAFE_INTEGER
-    public projectile: Projectile.ProjectileTemplate = Projectile.EmptyTemplate
-    public projectilesPerShot = 0
-    public heatPerShot = 0
-    public spread: WeaponSpread = NoSpread
-    public initialDelay = Number.MAX_SAFE_INTEGER
-    public delayBetweenShots = Number.MAX_SAFE_INTEGER
-}
 
-export function fromTemplate(scene, collider, team, t: WeaponTemplate, mountPointOffsetX, mountPointOffsetY, owner: PhysicalEntity) : Weapon
-{
-    return new Weapon(scene, collider, t.projectile, t.heatPerShot, t.cooldown, t.spread, t.initialDelay, t.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY, owner.name)
+    public readonly name = "<WeaponTemplate>"
+    public readonly cooldown: number = Number.MAX_SAFE_INTEGER
+    public readonly projectile: Projectile.ProjectileTemplate = Projectile.EmptyTemplate
+    public readonly projectilesPerShot = 0
+    public readonly heatPerShot = 0
+    public readonly spread: WeaponSpread = NoSpread
+    public readonly initialDelay = Number.MAX_SAFE_INTEGER
+    public readonly delayBetweenShots = Number.MAX_SAFE_INTEGER
+
+    public instantiate(scene, collider, team, mountPointOffsetX, mountPointOffsetY) : Weapon
+    {
+        return new Weapon(scene, collider, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
+    }
 }
 
 export const DummyWeapon : WeaponTemplate =
-{
-    name : "Dummy Weapon",
-    cooldown : Number.MAX_SAFE_INTEGER,
-    projectile : Projectile.EmptyTemplate,
-    projectilesPerShot : 0,
-    heatPerShot : 0,
-    spread : NoSpread,
-    initialDelay : Number.MAX_SAFE_INTEGER,
-    delayBetweenShots: Number.MAX_SAFE_INTEGER
-
-}
+    Object.assign(new WeaponTemplate(),
+    {
+        name : "Dummy Weapon",
+        cooldown : Number.MAX_SAFE_INTEGER,
+        projectile : Projectile.EmptyTemplate,
+        projectilesPerShot : 0,
+        heatPerShot : 0,
+        spread : NoSpread,
+        initialDelay : Number.MAX_SAFE_INTEGER,
+        delayBetweenShots: Number.MAX_SAFE_INTEGER
+    })
 
 export const LightLaser : WeaponTemplate =
-{
-    name: "Light Laser",
-    cooldown: 333,
-    projectile: Projectile.LightLaserTemplate,
-    projectilesPerShot: 1,
-    heatPerShot: 4,
-    spread: NoSpread,
-    initialDelay: 0,
-    delayBetweenShots: 0
-}
+    Object.assign(new WeaponTemplate(),
+    {
+        name: "Light Laser",
+        cooldown: 333,
+        projectile: Projectile.LightLaserTemplate,
+        projectilesPerShot: 1,
+        heatPerShot: 4,
+        spread: NoSpread,
+        initialDelay: 0,
+        delayBetweenShots: 0
+    })
 
 export const FusionGun : WeaponTemplate = 
-{
-    name: "Fusion Gun",
-    cooldown: 3000,
-    projectile: Projectile.FusionGunTemplate,
-    projectilesPerShot: 1,
-    heatPerShot: 50,
-    spread: NoSpread,
-    initialDelay: 0,
-    delayBetweenShots: 0
-}
+    Object.assign(new WeaponTemplate(),
+    {
+        name: "Fusion Gun",
+        cooldown: 3000,
+        projectile: Projectile.FusionGunTemplate,
+        projectilesPerShot: 1,
+        heatPerShot: 50,
+        spread: NoSpread,
+        initialDelay: 0,
+        delayBetweenShots: 0
+    })

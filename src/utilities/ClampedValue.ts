@@ -47,18 +47,9 @@ export default class ClampedValue<T>
                 private _subtract: (a: T, b: T) => T,
                 private _divide: (a: T, b: T) => T,
                 private _lessOrEqual: (a: T, b: T) => boolean,
-                private _greaterOrEqual: (a: T, b: T) => boolean,
-                onChange?: ClampedValueCallback<T>,
-                onMin?: ClampedValueCallback<T>,
-                onMax?: ClampedValueCallback<T>
+                private _greaterOrEqual: (a: T, b: T) => boolean
                 )
     {
-        if(onMin !== undefined)
-            this.onMinimumListeners.push(onMin)
-        if(onMax !== undefined)
-            this.onMaximumListeners.push(onMax)
-        if(onChange !== undefined)
-            this.onChangeListeners.push(onChange)
         this.current = _current
     }
 
