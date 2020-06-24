@@ -100,6 +100,14 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         }
     }
 
+    /**
+     * Applies the multiplicator to the damage of this projectile.
+     * @param x Multiplicator
+     */
+    public scaleDamage(x: number)
+    {
+        this.damage.scale(x)
+    }
 
     public takeDamage(_)
     {
@@ -113,7 +121,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-export function fromTemplate(scene, x, y, team, angle, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group, ownerId: string)
+export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group, ownerId: string)
 {
     return new Projectile(
         scene,

@@ -71,7 +71,7 @@ export class WeaponTemplate extends EquipmentTemplate
     public readonly initialDelay = Number.MAX_SAFE_INTEGER
     public readonly delayBetweenShots = Number.MAX_SAFE_INTEGER
 
-    public instantiate(scene, collider, team, mountPointOffsetX, mountPointOffsetY) : Weapon
+    public instantiate(scene: Phaser.Scene, collider: Phaser.Physics.Arcade.Group, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
     {
         return new Weapon(scene, collider, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
     }

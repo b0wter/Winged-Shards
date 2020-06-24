@@ -60,27 +60,35 @@ export default class HelloWorldScene extends Phaser.Scene
     {
 
         this.map = this.createMap()
-        this.playersGroup = this.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: true})
-        this.playerBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
-        this.enemiesGroup = this.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: true})
-        this.enemyBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
-        this.environmentCollisions = this.createCollisionTileset(this.map);
+        //this.playersGroup = this.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: true})
+        //this.playerBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
+        //this.enemiesGroup = this.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: true})
+        //this.enemyBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
+        //this.environmentCollisions = this.createCollisionTileset(this.map);
+        const environmentCollisions = this.createCollisionTileset(this.map)
+        this.colliders = new ColliderCollection(this, 
+                                                environmentCollisions, 
+                                                this.playerBulletHitsPlayer.bind(this),
+                                                this.playerBulletHitsEnemy.bind(this),
+                                                this.enemyBulletHitsEnemy.bind(this),
+                                                this.enemyBulletHitsPlayer.bind(this)
+                                                )
         this.stage = this.createTilesets(this.map)
 
         this.createEntities(this.map.objects)
 
-        this.players.forEach(p => this.physics.add.collider(p, this.environmentCollisions))
+        this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
 
         this.userInput = new KeyboardMouseInput(this, this.players[0])
 
-        this.physics.add.collider(this.playerBulletsGroup, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
-        this.physics.add.collider(this.enemyBulletsGroup, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
+        this.physics.add.collider(this.colliders.playerProjectiles, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
+        this.physics.add.collider(this.colliders.enemyProjectiles, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
 
-        this.physics.add.collider(this.playerBulletsGroup, this.enemiesGroup, this.playerBulletHitsEnemy)
-        this.physics.add.collider(this.playerBulletsGroup, this.playersGroup, (bullet, enemy) => console.log('friendly fire players'))
-        this.physics.add.collider(this.enemyBulletsGroup, this.playersGroup, this.enemyBulletHitsPlayer)
-        this.physics.add.collider(this.enemyBulletsGroup, this.enemiesGroup, this.enemyBulletHitsEnemy)
-        this.physics.add.collider(this.playersGroup, this.enemiesGroup, (player, enemy) => console.log('Player and enemy collided.'))
+        this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.enemies, this.playerBulletHitsEnemy)
+        this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.players, (bullet, enemy) => console.log('friendly fire players'))
+        this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.players, this.enemyBulletHitsPlayer)
+        this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.enemies, this.enemyBulletHitsEnemy)
+        this.physics.add.collider(this.colliders.players, this.colliders.enemies, (player, enemy) => console.log('Player and enemy collided.'))
 
     }
 
@@ -121,9 +129,9 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createPlayer(x, y, angle)
     {
-        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.playersGroup!)
-        const weapon = Weapon.LightLaser.instantiate(this, this.playerBulletsGroup, Teams.Players, 0, 0)
-        const fusionGun = Weapon.FusionGun.instantiate(this, this.playerBulletsGroup, Teams.Players, 0, 0)
+        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.players)
+        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.playerProjectiles, Teams.Players, 0, 0)
+        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.playerProjectiles, Teams.Players, 0, 0)
         player.primaryEquipmentGroup.push(weapon)
         player.secondaryEquipmentGroup.push(fusionGun)
         this.createInterface(player)
@@ -132,7 +140,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createEnemy(x, y, angle)
     {
-        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.enemiesGroup, this.enemyBulletsGroup) //new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
+        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.enemies, this.colliders.enemyProjectiles) //new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         this.enemies.push(enemy)
         this.physics.add.collider(enemy, this.environmentCollisions)
@@ -196,21 +204,28 @@ export default class HelloWorldScene extends Phaser.Scene
         // overlap - physics!
     }
 
+    private playerBulletHitsPlayer(bullet, target)
+    {
+        const p = bullet as Projectile.Projectile
+        p.scaleDamage(0.33)
+        p?.hit(target)
+    }
+
     private playerBulletHitsEnemy(bullet, target)
     {
-        const p  = bullet as Projectile.Projectile
+        const p = bullet as Projectile.Projectile
         p?.hit(target)
     }
 
     private enemyBulletHitsPlayer(bullet, target)
     {
-        const p  = bullet as Projectile.Projectile
+        const p = bullet as Projectile.Projectile
         p?.hit(target)
     }
 
     private enemyBulletHitsEnemy(bullet, target)
     {
-        const p  = bullet as Projectile.Projectile
+        const p = bullet as Projectile.Projectile
         p?.hit(target)
     }
 

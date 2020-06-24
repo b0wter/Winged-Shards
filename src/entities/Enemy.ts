@@ -113,7 +113,7 @@ class EnemyTemplate
     public structure = 0
     public equipment : EquipmentTemplate[] = [ DummyWeapon ]
 
-    public instatiate(scene, x, y, angle, collider, bulletsCollider)
+    public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, collider: Phaser.Physics.Arcade.Group, bulletsCollider: Phaser.Physics.Arcade.Group)
     {
         const equipment = this.equipment.map(x => x.instantiate(scene, bulletsCollider, Teams.Enemies, 0, 0))
         return new Enemy(scene, x, y, this.spriteKey, angle, collider, bulletsCollider, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), equipment)

@@ -33,6 +33,18 @@ export class Damage
                 protected _explosion: Explosion,
                 protected _heat: Heat)
     { }
+
+    /**
+     * Applies the multiplicator to all damages types of this Damage instance.
+     * @param x Multiplicator
+     */
+    public scale(x: number)
+    {
+        this._energy *= x
+        this._physical *= x
+        this._explosion *= x
+        this._heat *= x
+    }
 }
 
 export const None = new Damage(0, 0, 0, 0)

@@ -32,8 +32,8 @@ export default class ColliderCollection
 
     private addCollisionCallbacks(playerHitsPlayer, playerHitsEnemy, enemyHitsEnemy, enemyHitsPlayer)
     {
-        this._scene.physics.add.collider(this.players, this.environment, (a, _) => { this.playerProjectiles.remove(a); a.destroy()})
-        this._scene.physics.add.collider(this.enemies, this.environment, (a, _) => { this.enemyProjectiles.remove(a); a.destroy()})
+        this._scene.physics.add.collider(this.playerProjectiles, this.environment, (a, _) => { this.playerProjectiles.remove(a); a.destroy()})
+        this._scene.physics.add.collider(this.enemyProjectiles, this.environment, (a, _) => { this.enemyProjectiles.remove(a); a.destroy()})
         this._scene.physics.add.collider(this.playerProjectiles, this.enemyProjectiles, playerHitsEnemy)
         this._scene.physics.add.collider(this.playerProjectiles, this.players, playerHitsPlayer)
         this._scene.physics.add.collider(this.enemyProjectiles, this.players, enemyHitsPlayer)
