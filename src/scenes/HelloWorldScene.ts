@@ -13,8 +13,10 @@ import StructureBar from '../interface/StructureBar'
 import HeatBar from '~/interface/HeatBar'
 import PlayerPlate from '~/interface/PlayerPlate'
 import { ColliderCollection, AddPlayerFunc, AddEnemyFunc } from './ColliderCollection'
+import BaseScene from './BaseScene'
+import GameplayScene from './GameplayScene'
 
-export default class HelloWorldScene extends Phaser.Scene
+export default class HelloWorldScene extends GameplayScene
 {
     readonly plattforms = [];
     private map!: Phaser.Tilemaps.Tilemap
