@@ -129,9 +129,9 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createPlayer(x, y, angle)
     {
-        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc())
-        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc(), Teams.Players, 0, 0)
-        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc(), Teams.Players, 0, 0)
+        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
+        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
+        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
         player.primaryEquipmentGroup.push(weapon)
         player.secondaryEquipmentGroup.push(fusionGun)
         this.createInterface(player)
@@ -140,7 +140,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createEnemy(x, y, angle)
     {
-        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.addEntityFunc().bind(this.colliders), this.colliders.addProjectileFunc().bind(this.colliders)) //new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
+        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.addEntityFunc, this.colliders.addProjectileFunc)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         this.enemies.push(enemy)
         this.physics.add.collider(enemy, this.environmentCollisions)

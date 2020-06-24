@@ -110,7 +110,7 @@ export class ColliderCollection
         }
     }
 
-    public addEntityFunc() : AddEntityFunc
+    public get addEntityFunc() : AddEntityFunc
     {
         return this.addEntity.bind(this)
     }
@@ -122,7 +122,7 @@ export class ColliderCollection
         //TODO: add kill callback
     }
 
-    public addPlayerProjectileFunc() : AddPlayerProjectileFunc
+    public get addPlayerProjectileFunc() : AddPlayerProjectileFunc
     {
         return this.addPlayerProjectile.bind(this)
     }
@@ -134,7 +134,7 @@ export class ColliderCollection
         //TODO: add kill callback
     }
 
-    public addEnemyProjectileFunc() : AddEnemyProjectileFunc
+    public get addEnemyProjectileFunc() : AddEnemyProjectileFunc
     {
         return this.addEnemyProjectile.bind(this)
     }
@@ -164,7 +164,7 @@ export class ColliderCollection
         }
     }
 
-    public addProjectileFunc() : AddProjectileFunc
+    public get addProjectileFunc() : AddProjectileFunc
     {
         return this.addProjectile.bind(this)
     }
