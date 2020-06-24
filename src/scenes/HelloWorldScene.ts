@@ -21,10 +21,6 @@ export default class HelloWorldScene extends Phaser.Scene
     private players: PlayerEntity[] = []
     private environmentCollisions!: Phaser.Tilemaps.StaticTilemapLayer
     private stage!: Phaser.Tilemaps.StaticTilemapLayer
-    private playerBulletsGroup?: Phaser.Physics.Arcade.Group
-    private playersGroup?: Phaser.Physics.Arcade.Group
-    private enemyBulletsGroup?: Phaser.Physics.Arcade.Group
-    private enemiesGroup?: Phaser.Physics.Arcade.Group
     private enemies: Enemy[] = []
     private numberOfPlayers = 1
 
@@ -58,13 +54,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
     create()
     {
-
         this.map = this.createMap()
-        //this.playersGroup = this.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: true})
-        //this.playerBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
-        //this.enemiesGroup = this.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: true})
-        //this.enemyBulletsGroup = this.physics.add.group({ classType: Projectile.Projectile, runChildUpdate: true, collideWorldBounds: true})
-        //this.environmentCollisions = this.createCollisionTileset(this.map);
         const environmentCollisions = this.createCollisionTileset(this.map)
         this.colliders = new ColliderCollection(this, 
                                                 environmentCollisions, 
@@ -74,22 +64,9 @@ export default class HelloWorldScene extends Phaser.Scene
                                                 this.enemyBulletHitsPlayer.bind(this)
                                                 )
         this.stage = this.createTilesets(this.map)
-
         this.createEntities(this.map.objects)
-
         this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
-
         this.userInput = new KeyboardMouseInput(this, this.players[0])
-
-        //this.physics.add.collider(this.colliders.playerProjectiles, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
-        //this.physics.add.collider(this.colliders.enemyProjectiles, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
-
-        //this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.enemies, this.playerBulletHitsEnemy)
-        //this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.players, (bullet, enemy) => console.log('friendly fire players'))
-        //this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.players, this.enemyBulletHitsPlayer)
-        //this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.enemies, this.enemyBulletHitsEnemy)
-        //this.physics.add.collider(this.colliders.players, this.colliders.enemies, (player, enemy) => console.log('Player and enemy collided.'))
-
     }
 
     private createEntities(layers: Phaser.Tilemaps.ObjectLayer[])
