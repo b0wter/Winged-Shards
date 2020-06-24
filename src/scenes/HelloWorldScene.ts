@@ -12,6 +12,7 @@ import ShieldBar from '../interface/ShieldBar'
 import StructureBar from '../interface/StructureBar'
 import HeatBar from '~/interface/HeatBar'
 import PlayerPlate from '~/interface/PlayerPlate'
+import ColliderCollection from './ColliderCollection'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -28,6 +29,8 @@ export default class HelloWorldScene extends Phaser.Scene
     private numberOfPlayers = 1
 
     private userInput!: PlayerInput
+
+    private colliders!: ColliderCollection
 
 	constructor()
 	{
