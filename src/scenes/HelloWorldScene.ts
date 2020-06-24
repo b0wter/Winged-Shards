@@ -18,17 +18,6 @@ import GameplayScene from './GameplayScene'
 
 export default class HelloWorldScene extends GameplayScene
 {
-    readonly plattforms = [];
-    private map!: Phaser.Tilemaps.Tilemap
-    private players: PlayerEntity[] = []
-    private stage!: Phaser.Tilemaps.StaticTilemapLayer
-    private enemies: Enemy[] = []
-    private numberOfPlayers = 1
-
-    private userInput!: PlayerInput
-
-    private colliders!: ColliderCollection
-
 	constructor()
 	{
         super('hello-world')
@@ -64,10 +53,10 @@ export default class HelloWorldScene extends GameplayScene
                                                 this.enemyBulletHitsEnemy.bind(this),
                                                 this.enemyBulletHitsPlayer.bind(this)
                                                 )
-        this.stage = this.createTilesets(this.map)
+        this.baseLayer = this.createTilesets(this.map)
         this.createEntities(this.map.objects)
         this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
-        this.userInput = new KeyboardMouseInput(this, this.players[0])
+        this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
     }
 
     private createEntities(layers: Phaser.Tilemaps.ObjectLayer[])
@@ -160,22 +149,15 @@ export default class HelloWorldScene extends GameplayScene
     update(t: number, dt: number)
     {
         const player = this.players[0]
-        this.userInput.update()
+        this.userInputs.forEach(x => x.update())
 
-        const leftAxis = this.userInput.leftAxis()
+        const leftAxis = this.userInputs[0].leftAxis()
         player.setVelocity(leftAxis.horizontal * 200, leftAxis.vertical * 200)
 
-        const rightAxis = this.userInput.rightAxis()
+        const rightAxis = this.userInputs[0].rightAxis()
         player.setAngle(rightAxis.direction) 
 
-        player.update(t, dt, this.userInput)
-
-        if (this.userInput.action1.firstFrameDown) {
-            this.explode(player.x, player.y)
-        }
-
-        if (this.userInput.action2.firstFrameDown) {
-        }
+        player.update(t, dt, this.userInputs[0])
 
         this.enemies.forEach(x => x.update(t, dt, [ player ]))
         // overlap - physics!
