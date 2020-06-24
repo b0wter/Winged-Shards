@@ -96,7 +96,7 @@ export class Enemy extends PhysicalEntity
     private fireWeapon(t: number, e: Equipment)
     {
         const body = (this.body as Phaser.Physics.Arcade.Body)
-        const offset = (body.width / 2) ?? 0
+        const offset = 0 //(body.width / 2) ?? 0
         const offsetX = offset * Math.cos(this.rotation)
         const offsetY = offset * Math.sin(this.rotation)
 

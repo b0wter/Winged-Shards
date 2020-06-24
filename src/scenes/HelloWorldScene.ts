@@ -21,7 +21,6 @@ export default class HelloWorldScene extends GameplayScene
     readonly plattforms = [];
     private map!: Phaser.Tilemaps.Tilemap
     private players: PlayerEntity[] = []
-    private environmentCollisions!: Phaser.Tilemaps.StaticTilemapLayer
     private stage!: Phaser.Tilemaps.StaticTilemapLayer
     private enemies: Enemy[] = []
     private numberOfPlayers = 1
@@ -122,7 +121,6 @@ export default class HelloWorldScene extends GameplayScene
         const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.addEntityFunc, this.colliders.addProjectileFunc)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         this.enemies.push(enemy)
-        this.physics.add.collider(enemy, this.environmentCollisions)
     }
 
     private removeEnemy(e: Enemy)

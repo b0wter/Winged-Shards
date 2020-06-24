@@ -46,7 +46,9 @@ export class ColliderCollection
         this._scene.physics.add.collider(this.playerProjectiles, this.players, playerHitsPlayer)
         this._scene.physics.add.collider(this.enemyProjectiles, this.players, enemyHitsPlayer)
         this._scene.physics.add.collider(this.enemyProjectiles, this.enemies, enemyHitsEnemy)
-        this._scene.physics.add.collider(this.players, this.enemies, (player, enemy) => console.log('Player and enemy collided.'))
+        this._scene.physics.add.collider(this.players, this.enemies, (player, enemy) => {(player as PhysicalEntity)?.setVelocity(0,0); (enemy as PhysicalEntity)?.setVelocity(0, 0)})
+        this._scene.physics.add.collider(this.players, this.players, (a, b) => (b as PhysicalEntity)?.setVelocity(0,0))
+        this._scene.physics.add.collider(this.enemies, this.enemies, (a, b) => (b as PhysicalEntity)?.setVelocity(0,0))
     }
 
     public addPlayer(player: PlayerEntity)
@@ -117,7 +119,7 @@ export class ColliderCollection
 
     public addPlayerProjectile(projectile: Projectile)
     {
-        this._scene.physics.add.collider(projectile, this.environment)
+        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => bullet.destroy())
         this.playerProjectiles.add(projectile)
         //TODO: add kill callback
     }
@@ -129,7 +131,7 @@ export class ColliderCollection
 
     public addEnemyProjectile(projectile: Projectile)
     {
-        this._scene.physics.add.collider(projectile, this.environment)
+        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => bullet.destroy())
         this.enemyProjectiles.add(projectile)
         //TODO: add kill callback
     }

@@ -93,6 +93,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 velocity?: number,)
     {
         super(scene, x, y, undefined)
+        this.name = Guid.create().toString()
 
         this._shields = shields
         this._hull = hull
@@ -115,7 +116,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
 
         this.setAngleAndVelocity(angle, velocity)
 
-        this.name = Guid.create().toString()
     }
 
     private setAngleAndVelocity(angle, velocity)
