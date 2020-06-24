@@ -4,6 +4,7 @@ import * as Projectile from './Projectile'
 import { Teams } from './Teams'
 import { Equipment, EquipmentTemplate } from './Equipment'
 import PhysicalEntity from './PhysicalEntity'
+import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export interface None { }
 export const NoSpread : None = { }
@@ -24,7 +25,7 @@ export class Weapon extends Equipment
     get mountPointOffsetY() { return this._mountPointOffsetY }
 
     constructor(private scene: Phaser.Scene,
-                private collider: Phaser.Physics.Arcade.Group,
+                private colliderFunc: AddProjectileFunc,
                 private projectile: Projectile.ProjectileTemplate, 
                 heatPerShot: number,
                 _cooldown: number,
@@ -45,7 +46,7 @@ export class Weapon extends Equipment
      */
     protected internalTrigger(x, y, angle, time, owner) {
         const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle)
-        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.collider, owner)
+        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.colliderFunc, owner)
     }
 
     public update(t: number, dt: number)
@@ -71,9 +72,9 @@ export class WeaponTemplate extends EquipmentTemplate
     public readonly initialDelay = Number.MAX_SAFE_INTEGER
     public readonly delayBetweenShots = Number.MAX_SAFE_INTEGER
 
-    public instantiate(scene: Phaser.Scene, collider: Phaser.Physics.Arcade.Group, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
+    public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
     {
-        return new Weapon(scene, collider, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
     }
 }
 

@@ -2,6 +2,7 @@ import Phaser, { Physics } from 'phaser'
 import PhysicalEntity from './PhysicalEntity'
 import * as Damage from './DamageType'
 import { Teams } from './Teams'
+import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite
 {
@@ -21,7 +22,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     constructor(scene, x, y, spriteKey, angle, velocity: number | undefined, 
                 protected _team: Teams,
                 protected _damage: Damage.Damage,
-                private _colliderGroup: Phaser.Physics.Arcade.Group,
+                private _colliderFunc: AddProjectileFunc,
                 protected _friendlyFire: boolean,
                 protected _ignoresShields: boolean,
                 protected _ignoresHull: boolean,
@@ -37,7 +38,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         super(scene, x, y, spriteKey)
         scene.add.existing(this)
         scene.physics.add.existing(this)
-        this._colliderGroup?.add(this)
+        this._colliderFunc(this)
         this.setAngle(angle)
         this.setImmovable(true)
         const v = velocity ?? 0
@@ -116,12 +117,11 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
 
     public kill()
     {
-        this._colliderGroup?.remove(this)
         this.destroy()
     }
 }
 
-export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, template: ProjectileTemplate, colliderGroup: Phaser.Physics.Arcade.Group, ownerId: string)
+export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, template: ProjectileTemplate, colliderFunc: AddProjectileFunc, ownerId: string)
 {
     return new Projectile(
         scene,
@@ -131,7 +131,7 @@ export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Te
         template.velocity, 
         team, 
         template.damage, 
-        colliderGroup,
+        colliderFunc,
         template.friendlyFire, 
         template.ignoresShields, 
         template.ignoresHull,

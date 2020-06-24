@@ -12,7 +12,7 @@ import ShieldBar from '../interface/ShieldBar'
 import StructureBar from '../interface/StructureBar'
 import HeatBar from '~/interface/HeatBar'
 import PlayerPlate from '~/interface/PlayerPlate'
-import ColliderCollection from './ColliderCollection'
+import { ColliderCollection, AddPlayerFunc, AddEnemyFunc } from './ColliderCollection'
 
 export default class HelloWorldScene extends Phaser.Scene
 {
@@ -81,14 +81,14 @@ export default class HelloWorldScene extends Phaser.Scene
 
         this.userInput = new KeyboardMouseInput(this, this.players[0])
 
-        this.physics.add.collider(this.colliders.playerProjectiles, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
-        this.physics.add.collider(this.colliders.enemyProjectiles, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
+        //this.physics.add.collider(this.colliders.playerProjectiles, this.environmentCollisions, (a, _) => { this.playerBulletsGroup?.remove(a); a.destroy()})
+        //this.physics.add.collider(this.colliders.enemyProjectiles, this.environmentCollisions, (a, _) => { this.enemyBulletsGroup?.remove(a); a.destroy()})
 
-        this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.enemies, this.playerBulletHitsEnemy)
-        this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.players, (bullet, enemy) => console.log('friendly fire players'))
-        this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.players, this.enemyBulletHitsPlayer)
-        this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.enemies, this.enemyBulletHitsEnemy)
-        this.physics.add.collider(this.colliders.players, this.colliders.enemies, (player, enemy) => console.log('Player and enemy collided.'))
+        //this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.enemies, this.playerBulletHitsEnemy)
+        //this.physics.add.collider(this.colliders.playerProjectiles, this.colliders.players, (bullet, enemy) => console.log('friendly fire players'))
+        //this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.players, this.enemyBulletHitsPlayer)
+        //this.physics.add.collider(this.colliders.enemyProjectiles, this.colliders.enemies, this.enemyBulletHitsEnemy)
+        //this.physics.add.collider(this.colliders.players, this.colliders.enemies, (player, enemy) => console.log('Player and enemy collided.'))
 
     }
 
@@ -129,9 +129,9 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createPlayer(x, y, angle)
     {
-        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.players)
-        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.playerProjectiles, Teams.Players, 0, 0)
-        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.playerProjectiles, Teams.Players, 0, 0)
+        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc())
+        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc(), Teams.Players, 0, 0)
+        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc(), Teams.Players, 0, 0)
         player.primaryEquipmentGroup.push(weapon)
         player.secondaryEquipmentGroup.push(fusionGun)
         this.createInterface(player)
@@ -140,7 +140,7 @@ export default class HelloWorldScene extends Phaser.Scene
 
     private createEnemy(x, y, angle)
     {
-        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.enemies, this.colliders.enemyProjectiles) //new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
+        const enemy = EnemyLightFighter.instatiate(this, x, y, angle, this.colliders.addEntityFunc().bind(this.colliders), this.colliders.addProjectileFunc().bind(this.colliders)) //new Enemy(this, x, y, 'spaceship_02', 0, this.enemiesGroup!, this.enemyBulletsGroup!, 40, 20, 10)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         this.enemies.push(enemy)
         this.physics.add.collider(enemy, this.environmentCollisions)

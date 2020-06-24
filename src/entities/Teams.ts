@@ -5,7 +5,5 @@ export enum Teams
     Players,
     Allies,
     Enemies,
-    Enemies2,
-    Enemies3,
     Neutral
 }

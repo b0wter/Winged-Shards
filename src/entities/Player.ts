@@ -7,6 +7,7 @@ import PlayerInput from './../input/PlayerInput'
 import { Equipment } from './Equipment'
 import { Damage } from './DamageType'
 import ClampedNumber from '~/utilities/ClampedNumber'
+import { AddEntityFunc } from '~/scenes/ColliderCollection'
 
 export default class PlayerEntity extends PhysicalEntity
 {
@@ -19,9 +20,9 @@ export default class PlayerEntity extends PhysicalEntity
     
     private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
 
-    constructor(scene: Phaser.Scene, x: number, y: number, angle: number, spriteKey: string, colliderGroup?: Phaser.Physics.Arcade.Group)
+    constructor(scene: Phaser.Scene, x: number, y: number, angle: number, spriteKey: string, colliderGroupFunc: AddEntityFunc)
     {
-        super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), 2, 5, angle, undefined, colliderGroup)
+        super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), 2, 5, colliderGroupFunc, angle, undefined)
     }
 
     private triggerEquipmentGroup(group: Equipment[], t: number)

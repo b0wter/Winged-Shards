@@ -8,6 +8,7 @@ import { Weapon, WeaponTemplate, DummyWeapon, LightLaser } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 import HelloWorldScene from '~/scenes/HelloWorldScene'
 import { Equipment, EquipmentTemplate } from './Equipment'
+import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export class Enemy extends PhysicalEntity
 {
@@ -21,11 +22,10 @@ export class Enemy extends PhysicalEntity
     public get equipment() { return this._equipment }
 
     constructor(scene: Phaser.Scene, 
-                x, y, 
-                spriteKey, 
-                angle, 
-                collider, 
-                private _weaponCollider: Phaser.Physics.Arcade.Group, 
+                x: number, y: number, 
+                spriteKey: string, 
+                angle: number, 
+                collider: AddEntityFunc, 
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
@@ -42,9 +42,9 @@ export class Enemy extends PhysicalEntity
               new ClampedNumber(Number.MAX_SAFE_INTEGER), 
               2, 
               Number.MAX_SAFE_INTEGER, 
-              angle, 
-              0, 
-              collider)
+              collider,
+              angle,
+              0)
     }
 
     protected killEffect()
@@ -113,10 +113,10 @@ class EnemyTemplate
     public structure = 0
     public equipment : EquipmentTemplate[] = [ DummyWeapon ]
 
-    public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, collider: Phaser.Physics.Arcade.Group, bulletsCollider: Phaser.Physics.Arcade.Group)
+    public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
-        const equipment = this.equipment.map(x => x.instantiate(scene, bulletsCollider, Teams.Enemies, 0, 0))
-        return new Enemy(scene, x, y, this.spriteKey, angle, collider, bulletsCollider, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), equipment)
+        const equipment = this.equipment.map(x => x.instantiate(scene, bulletsColliderFunc, Teams.Enemies, 0, 0))
+        return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), equipment)
     }
 }
 

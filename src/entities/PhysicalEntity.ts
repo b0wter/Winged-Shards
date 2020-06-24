@@ -4,6 +4,7 @@ import * as Damage from './DamageType'
 import ClampedValue from '~/utilities/ClampedValue'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Guid } from "guid-typescript";
+import { AddEntityFunc } from '~/scenes/ColliderCollection'
 
 type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
 
@@ -87,9 +88,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 heat: ClampedNumber,
                 private _shieldRegenerationPerSecond: number,
                 private _heatDissipationPerSecond: number,
+                colliderGroupFunc: AddEntityFunc,
                 angle?: number, 
-                velocity?: number, 
-                colliderGroup?: Phaser.Physics.Arcade.Group)
+                velocity?: number,)
     {
         super(scene, x, y, undefined)
 
@@ -109,7 +110,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         this._shields.addChangeListener((v) => this.shieldSprite.alpha = v.percentage)
         this.add(this.shieldSprite)
 
-        colliderGroup?.add(this)
+        colliderGroupFunc(this, team)
         scene.add.existing(this)
 
         this.setAngleAndVelocity(angle, velocity)

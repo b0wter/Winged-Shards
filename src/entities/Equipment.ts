@@ -1,5 +1,6 @@
 import { Teams } from './Teams'
 import PhysicalEntity from './PhysicalEntity'
+import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export abstract class Equipment
 {
@@ -56,5 +57,5 @@ export abstract class Equipment
 
 export abstract class EquipmentTemplate
 {
-    public abstract instantiate(scene, collider, team, mountPointOffsetX, mountPointOffsetY)
+    public abstract instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number)
 } 
