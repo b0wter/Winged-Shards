@@ -50,7 +50,6 @@ export default class PlayerEntity extends PhysicalEntity
         super.internalUpdate(t, dt)
         this.updateEquipment(t, dt, this.x, this.y, this.angle)
         this.handleInput(input, t)
-
     }
 
     private updateEquipment(t, dt, x, y, angle)

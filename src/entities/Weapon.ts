@@ -14,15 +14,6 @@ export type WeaponSpread = None | Angular | Parallel
 
 export class Weapon extends Equipment
 {
-    /**
-     * Position of this weapon relative to the ship its placed on.
-     */
-    get mountPointOffsetX() { return this._mountPointOffsetX }
-
-    /**
-     * Position of this weapon relative to the ship its placed on.
-     */
-    get mountPointOffsetY() { return this._mountPointOffsetY }
 
     constructor(private scene: Phaser.Scene,
                 private colliderFunc: AddProjectileFunc,
@@ -33,11 +24,11 @@ export class Weapon extends Equipment
                 private initialDelay: number,
                 private delayBetweenShots: number,
                 team: Teams,
-                private _mountPointOffsetX: number,
-                private _mountPointOffsetY: number,
+                mountPointOffsetX: number,
+                mountPointOffsetY: number
                )
     {
-        super(_cooldown, heatPerShot, team)
+        super(_cooldown, heatPerShot, team, mountPointOffsetX, mountPointOffsetY)
         if(this._team !== Teams.Players) this.cooldownModifier = 2
     }
 
@@ -45,8 +36,7 @@ export class Weapon extends Equipment
      * Tries to shoot this weapon. Does not run a cooldown check!
      */
     protected internalTrigger(x, y, angle, time, owner) {
-        const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle)
-        Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.colliderFunc, owner)
+        Projectile.fromTemplate(this.scene, x, y, this._team, angle, this.projectile, this.colliderFunc, owner)
     }
 
     protected internalUpdate(t: number, dt: number)

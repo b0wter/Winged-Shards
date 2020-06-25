@@ -147,10 +147,14 @@ export default abstract class GameplayScene extends BaseScene
     private createPlayer(x, y, angle, template)
     {
         const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
-        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
+        const laser1 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20)
+        const laser2 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20)
+        const laser3 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0)
         const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
-        player.primaryEquipmentGroup.push(weapon)
-        player.secondaryEquipmentGroup.push(fusionGun)
+        player.primaryEquipmentGroup.push(laser1)
+        player.primaryEquipmentGroup.push(laser2)
+        player.primaryEquipmentGroup.push(laser3)
+        player.tertiaryEquipmentGroup.push(fusionGun)
         this.createInterface(player, this.playerInterfaces)
         return player
     }

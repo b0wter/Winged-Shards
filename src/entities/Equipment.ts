@@ -17,6 +17,16 @@ export abstract class Equipment
      */
     get heatPerTrigger() { return this._heatPerTrigger}
 
+    /**
+     * Position of this equipment relative to the ship its placed on.
+     */
+    get mountPointOffsetX() { return this._mountPointOffsetX }
+
+    /**
+     * Position of this equipment relative to the ship its placed on.
+     */
+    get mountPointOffsetY() { return this._mountPointOffsetY }
+
     private lastUsedAt = 0
 
     protected cooldownModifier = 1
@@ -26,7 +36,9 @@ export abstract class Equipment
 
     constructor(protected _cooldown: number,
                 protected _heatPerTrigger: number,
-                protected _team : Teams
+                protected _team : Teams,
+                protected _mountPointOffsetX: number,
+                protected _mountPointOffsetY: number
                 )
     {
         //
@@ -43,7 +55,7 @@ export abstract class Equipment
     {
         const passed = time - this.lastUsedAt
         if(passed > this.cooldown * this.cooldownModifier) {
-            const offset = this.mountOffset()
+            const offset = Phaser.Math.Rotate({x: this.mountPointOffsetX, y: this.mountPointOffsetY}, angle * Phaser.Math.DEG_TO_RAD)
             this.internalTrigger(x + offset.x, y + offset.y, angle, time, ownerId)
             this.lastUsedAt = time
             return this.heatPerTrigger
