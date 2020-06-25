@@ -8,11 +8,15 @@ import * as Weapon from '~/entities/Weapon';
 import { Teams } from '~/entities/Teams';
 import { Projectile } from '~/entities/Projectile';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
+import TilemapDefinition from './TilemapDefinition';
+import { Game } from 'phaser';
 
 export default abstract class GameplayScene extends BaseScene
 {
-    private readonly PlayerSpawnTag = "spawn_player"
-    private readonly EnemySpawnTag = "spawn_enemy"
+    private static readonly PlayerSpawnTag = "spawn_player"
+    private static readonly EnemySpawnTag = "spawn_enemy"
+    private static readonly EntitiesTag = "entities"
+    private static readonly PathTag = "path"
 
     /**
      * Contains all active PlayerEntity instances.
@@ -49,6 +53,10 @@ export default abstract class GameplayScene extends BaseScene
 
     protected abstract get mapName()
 
+    protected abstract get tilemapDefinitions()
+
+    protected abstract get collisionTilemapDefinition()
+
     constructor(name: string)
     {
         super(name)
@@ -57,7 +65,7 @@ export default abstract class GameplayScene extends BaseScene
     create()
     {
         this.map = this.createMap(this.mapName)
-        const environmentCollisions = this.createCollisionTilemapLayer(this.map, 'collision', 'collision', 'collision_tiles') //this.createCollisionTileset(this.map)
+        const environmentCollisions = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
         this.colliders = new ColliderCollection(this, 
                                                 environmentCollisions, 
                                                 this.playerBulletHitsPlayer.bind(this),
@@ -65,7 +73,7 @@ export default abstract class GameplayScene extends BaseScene
                                                 this.enemyBulletHitsEnemy.bind(this),
                                                 this.enemyBulletHitsPlayer.bind(this)
                                                 )
-        this.baseLayer = this.createTilemapLayer(this.map, 'base_layer', 'dungeon', 'tiles') //this.createTilesets(this.map)
+        this.baseLayer = this.createTilemapLayer(this.map, this.tilemapDefinitions[0]) 
         this.createEntities(this.map.objects)
         this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
         this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
@@ -105,9 +113,9 @@ export default abstract class GameplayScene extends BaseScene
 
     protected createEntities(layers: Phaser.Tilemaps.ObjectLayer[])
     {
-        const playerSpawn = "spawn_player"
-        const enemySpawn = "spawn_enemy"
-        const layer = layers.find(x => x.name === "entities")
+        const playerSpawn = GameplayScene.PlayerSpawnTag
+        const enemySpawn = GameplayScene.EnemySpawnTag
+        const layer = layers.find(x => x.name === GameplayScene.EntitiesTag)
         layer?.objects.forEach(x => { 
             if(x.type === playerSpawn) { 
                 if(this.players.length < this.numberOfPlayers)
@@ -143,6 +151,23 @@ export default abstract class GameplayScene extends BaseScene
         this.enemies.forEach( (item, index) => {
             if(item === e) this.enemies.splice(index,1);
         }); 
+    }
+
+    update(t: number, dt: number)
+    {
+        const player = this.players[0]
+        this.userInputs.forEach(x => x.update())
+
+        const leftAxis = this.userInputs[0].leftAxis()
+        player.setVelocity(leftAxis.horizontal * 200, leftAxis.vertical * 200)
+
+        const rightAxis = this.userInputs[0].rightAxis()
+        player.setAngle(rightAxis.direction) 
+
+        player.update(t, dt, this.userInputs[0])
+
+        this.enemies.forEach(x => x.update(t, dt, [ player ]))
+        // overlap - physics!
     }
 
     private playerBulletHitsPlayer(bullet, target)

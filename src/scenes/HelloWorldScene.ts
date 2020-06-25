@@ -16,10 +16,14 @@ import { ColliderCollection, AddPlayerFunc, AddEnemyFunc } from './ColliderColle
 import BaseScene from './BaseScene'
 import GameplayScene from './GameplayScene'
 import { PreloadRessourceList } from './PreloadRessourcePair'
+import TilemapDefinition from './TilemapDefinition'
 
 export default class HelloWorldScene extends GameplayScene
 {
     protected get mapName() { return "map" }
+
+    protected get tilemapDefinitions() { return [ new TilemapDefinition("base_layer", "dungeon", "tiles") ]}
+    protected get collisionTilemapDefinition() { return new TilemapDefinition("collision", "collision", "collision_tiles")}
 
 	constructor()
 	{
@@ -43,25 +47,6 @@ export default class HelloWorldScene extends GameplayScene
         pairs.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
         pairs.addTilemap('map', 'maps/test.json')
         return pairs
-    }
-
-
-
-    update(t: number, dt: number)
-    {
-        const player = this.players[0]
-        this.userInputs.forEach(x => x.update())
-
-        const leftAxis = this.userInputs[0].leftAxis()
-        player.setVelocity(leftAxis.horizontal * 200, leftAxis.vertical * 200)
-
-        const rightAxis = this.userInputs[0].rightAxis()
-        player.setAngle(rightAxis.direction) 
-
-        player.update(t, dt, this.userInputs[0])
-
-        this.enemies.forEach(x => x.update(t, dt, [ player ]))
-        // overlap - physics!
     }
 
     public computeWallIntersection(ray: Phaser.Geom.Line)
