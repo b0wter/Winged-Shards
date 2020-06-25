@@ -51,7 +51,7 @@ export default class PlayerPlate
         this.shieldBar      = new ShieldBar     (scene, x, y, 300, shield.min, shield.max, shield.current)
         this.hullBar        = new HullBar       (scene, x, this.shieldBar.y + PlayerPlate.VerticalMargin + this.shieldBar.height, this.shieldBar.width, hull.min, hull.max, hull.current)
         this.structureBar   = new StructureBar  (scene, x, this.hullBar.y + PlayerPlate.VerticalMargin + this.hullBar.height, this.shieldBar.width, structure.min, structure.max, structure.current)
-        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + PlayerPlate.HorizontalMargin + this.shieldBar.width, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 4, heat.min, heat.max, heat.current)
+        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + PlayerPlate.HorizontalMargin + this.shieldBar.width, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 2 * PlayerPlate.VerticalMargin, heat.min, heat.max, heat.current)
         this.bars = [ this.shieldBar, this.hullBar, this.structureBar, this.heatBar ]
 
         const cooldownBars = this.addEquipmentStatusBars(scene, equipment, this.heatBar.x + this.heatBar.width + PlayerPlate.HorizontalMargin, y, this.shieldBar.height)
