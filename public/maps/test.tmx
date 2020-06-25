@@ -311,6 +311,7 @@
   <object id="1" name="spawn_01" type="spawn_enemy" x="832" y="288">
    <properties>
     <property name="angle" type="float" value="90"/>
+    <property name="ship_type" value="light_fighter"/>
    </properties>
    <point/>
   </object>
