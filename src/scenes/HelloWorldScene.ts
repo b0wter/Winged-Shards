@@ -49,6 +49,11 @@ export default class HelloWorldScene extends GameplayScene
         return pairs
     }
 
+    protected sceneSpecificUpdate(t: number, dt: number)
+    {
+        //
+    }
+
     public computeWallIntersection(ray: Phaser.Geom.Line)
     {
         //const collider = this.physics.add.collider(ray, this.environmentCollisions)

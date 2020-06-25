@@ -41,5 +41,16 @@ export default abstract class BaseScene extends Scene
         return layer
     }
 
+    protected readPropertyFromObjectLayerObject<T>(object: Phaser.Types.Tilemaps.TiledObject, property: string, fallback: T) : T
+    {
+        if(object === undefined)
+            return fallback
+        if(object.properties === undefined || object.properties.length === 0)
+            return fallback
+
+        const val = object.properties.find(x => x.name === property).value ?? fallback
+        return val as T
+    }
+
     protected abstract createPreloadRessourcePairs() : PreloadRessourceList
 }

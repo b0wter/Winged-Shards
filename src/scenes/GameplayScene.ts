@@ -119,10 +119,14 @@ export default abstract class GameplayScene extends BaseScene
         layer?.objects.forEach(x => { 
             if(x.type === playerSpawn) { 
                 if(this.players.length < this.numberOfPlayers)
-                    this.players.push(this.createPlayer(x.x, x.y, x.properties?.find(p => p.name === "angle").value ?? 0, undefined));
+                {
+                    const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
+                    this.players.push(this.createPlayer(x.x, x.y, angle, undefined));
+                }
             }
             else if(x.type === enemySpawn) {
-                this.createEnemy(x.x, x.y, x.properties?.find(p => p.name === "angle").value ?? 0, LightFighter)
+                const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
+                this.createEnemy(x.x, x.y, angle, LightFighter)
             }
         })
     }
@@ -168,7 +172,11 @@ export default abstract class GameplayScene extends BaseScene
 
         this.enemies.forEach(x => x.update(t, dt, [ player ]))
         // overlap - physics!
+
+        this.sceneSpecificUpdate(t, dt)
     }
+
+    protected abstract sceneSpecificUpdate(t: number, dt: number)
 
     private playerBulletHitsPlayer(bullet, target)
     {
