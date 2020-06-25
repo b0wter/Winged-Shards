@@ -116,7 +116,7 @@ export default abstract class GameplayScene extends BaseScene
         const originOffset = new Phaser.Math.Vector2(5, 5)
         const marginBetweenPlates = 50
         const indexOffset = existingPlates.length > 0 ? existingPlates[existingPlates.length - 1].end + marginBetweenPlates : 0 
-        const plate = new PlayerPlate(this, originOffset.x + indexOffset, originOffset.y, player.shieldValue, player.hullValue, player.structureValue, player.heatValue)
+        const plate = new PlayerPlate(this, originOffset.x + indexOffset, originOffset.y, player.shieldValue, player.hullValue, player.structureValue, player.heatValue, player.indexedEquipment)
         existingPlates.push(plate)
         return plate
     }
@@ -135,9 +135,7 @@ export default abstract class GameplayScene extends BaseScene
         layer?.objects.forEach(x => { 
             if(x.type === playerSpawn) { 
                 if(this.players.length < this.numberOfPlayers)
-                {
-                    this.players.push(this.createPlayer(x.x, x.y, 0, undefined, this.collisionLayer));
-                }
+                    this.players.push(this.createPlayer(x.x, x.y, 0, undefined));
             }
             else if(x.type === enemySpawn) {
                 const properties = EnemyTiledObject.fromTileObject(x)
@@ -146,7 +144,7 @@ export default abstract class GameplayScene extends BaseScene
         })
     }
 
-    private createPlayer(x, y, angle, template, environment: Phaser.Tilemaps.StaticTilemapLayer)
+    private createPlayer(x, y, angle, template)
     {
         const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
         const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)

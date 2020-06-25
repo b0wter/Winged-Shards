@@ -49,7 +49,7 @@ export class Weapon extends Equipment
         Projectile.fromTemplate(this.scene, x + offset.x, y + offset.y, this._team, angle, this.projectile, this.colliderFunc, owner)
     }
 
-    public update(t: number, dt: number)
+    protected internalUpdate(t: number, dt: number)
     {
         //
     }

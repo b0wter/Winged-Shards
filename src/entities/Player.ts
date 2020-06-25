@@ -12,12 +12,20 @@ import { AddEntityFunc } from '~/scenes/ColliderCollection'
 export default class PlayerEntity extends PhysicalEntity
 {
     public readonly primaryEquipmentGroup: Equipment[] = []
+    public get primaryEquipment() { return this.primaryEquipmentGroup[0] } 
     public readonly secondaryEquipmentGroup: Equipment[] = []
+    public get secondaryEquipment() { return this.secondaryEquipmentGroup[0] } 
     public readonly tertiaryEquipmentGroup: Equipment[] = []
+    public get tertiaryEquipment() { return this.tertiaryEquipmentGroup[0] } 
     public readonly quaternaryEquipmentGroup: Equipment[] = []
+    public get quaternaryEquipment() { return this.quaternaryEquipmentGroup[0] } 
     public readonly quinaryEquipmentGroup: Equipment[] = []
+    public get quinaryEquipment() { return this.quinaryEquipmentGroup[0] } 
     public readonly senaryEquipmentGroup: Equipment[] = []
+    public get senaryEquipment() { return this.senaryEquipmentGroup[0] } 
     
+    public get indexedEquipment() : [number, Equipment][] { return [[0, this.primaryEquipment], [1, this.secondaryEquipment], [2, this.tertiaryEquipment], [3, this.quaternaryEquipment], [4, this.quinaryEquipment], [5. ,this.senaryEquipment]] }
+
     private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
 
     constructor(scene: Phaser.Scene, x: number, y: number, angle: number, spriteKey: string, colliderGroupFunc: AddEntityFunc)
