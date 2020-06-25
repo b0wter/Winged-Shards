@@ -30,7 +30,7 @@ export default class DefaultEnemyAi extends EnemyAi
         super()
     }
             
-    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[]) : AiResult
+    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[], seesPlayer: (PlayerEntity) => boolean) : AiResult
     {
 
         // add a class-level active flag?
@@ -38,12 +38,15 @@ export default class DefaultEnemyAi extends EnemyAi
 
         if(enemy === undefined) return this.inactivityAiResult(enemy)
         if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
+        /*
         const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
                                      .filter(x => x[1] <= (this.active ? Number.MAX_SAFE_INTEGER : this._activityDistance)).sort(x => x[1])
+                                     */
+        const playersInRange = players.filter(p => seesPlayer(p)).sort(p => Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y))
 
         if(playersInRange.length === 0) return this.inactivityAiResult(enemy)
         this.active = true
-        const nearestPlayer = playersInRange[0][0]
+        const nearestPlayer = playersInRange[0]//[0]
         const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer)
         const desiredVelocity = this.move()
         const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))

@@ -57,8 +57,11 @@ export default class HelloWorldScene extends GameplayScene
     public computeWallIntersection(ray: Phaser.Geom.Line)
     {
         //const collider = this.physics.add.collider(ray, this.environmentCollisions)
-        return true
+        //return true
         // getTilesWithinShape() <-----------
+        const tiles = this.collisionLayer.getTilesWithinShape(ray)
+        return tiles.every(t => t.index === -1)
+        //console.log(tiles)
 
 
         /*

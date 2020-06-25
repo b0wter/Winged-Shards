@@ -5,7 +5,7 @@ import { Enemy } from '~/entities/Enemy';
 
 export default abstract class EnemyAi extends Ai
 {
-    public abstract compute(x: number, y: number, enemey: Enemy, players: PlayerEntity[]) : AiResult | undefined
+    public abstract compute(x: number, y: number, enemey: Enemy, players: PlayerEntity[], seesPlayer: (PlayerEntity) => boolean) : AiResult
 
     protected active = false
 

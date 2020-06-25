@@ -67,12 +67,12 @@ export class Enemy extends PhysicalEntity
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
-        const ai = this._ai.compute(t, dt, this, players)
+        const ai = this._ai.compute(t, dt, this, players, this.seesPlayer.bind(this))
         if(players === undefined || players === null || players.length === 0) 
             return
 
-        const los = this.seesPlayer(players[0])
 
+        const seesPlayer = this.seesPlayer(players[0])
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
         const difference = Phaser.Math.Angle.ShortestBetween(this.angle, ai.desiredAngle)
@@ -87,10 +87,11 @@ export class Enemy extends PhysicalEntity
         ai.equipmentTriggers.forEach(x => { if(x[1]) { this.fireWeapon(t, x[0]) }} )
     }
 
-    private seesPlayer(player: PlayerEntity)
+    private seesPlayer(player: PlayerEntity) : boolean
     {
         const ray = new Phaser.Geom.Line(this.x, this.y, player.x, player.y)
         var intersects = (this.scene as HelloWorldScene).computeWallIntersection(ray)
+        return intersects
     }
 
     private fireWeapon(t: number, e: Equipment)
