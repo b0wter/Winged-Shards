@@ -10,6 +10,7 @@ import { Projectile } from '~/entities/Projectile';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import TilemapDefinition from './TilemapDefinition';
 import { Game } from 'phaser';
+import EnemyTiledObject from '~/utilities/EnemyTiledObject';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -135,14 +136,12 @@ export default abstract class GameplayScene extends BaseScene
             if(x.type === playerSpawn) { 
                 if(this.players.length < this.numberOfPlayers)
                 {
-                    const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
-                    this.players.push(this.createPlayer(x.x, x.y, angle, undefined, this.collisionLayer));
+                    this.players.push(this.createPlayer(x.x, x.y, 0, undefined, this.collisionLayer));
                 }
             }
             else if(x.type === enemySpawn) {
-                const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
-                const type = this.readPropertyFromObjectLayerObject(x, GameplayScene.EnemyShipTypeTag, "")
-                this.createEnemy(x.x, x.y, angle, EnemyTemplates[type])
+                const properties = EnemyTiledObject.fromTileObject(x)
+                this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.shipType])
             }
         })
     }

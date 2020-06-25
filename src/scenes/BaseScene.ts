@@ -41,7 +41,7 @@ export default abstract class BaseScene extends Scene
         return layer
     }
 
-    protected readPropertyFromObjectLayerObject<T>(object: Phaser.Types.Tilemaps.TiledObject, property: string, fallback: T) : T
+    protected readPropertyFromObjectLayerObject<T>(object: Phaser.Types.Tilemaps.TiledObject, property: string, fallback: T)
     {
         if(object === undefined)
             return fallback
@@ -49,7 +49,7 @@ export default abstract class BaseScene extends Scene
             return fallback
 
         const val = object.properties.find(x => x.name === property)?.value ?? fallback
-        return val as T
+        return val
     }
 
     protected abstract createPreloadRessourcePairs() : PreloadRessourceList
