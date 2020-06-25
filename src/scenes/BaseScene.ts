@@ -48,7 +48,7 @@ export default abstract class BaseScene extends Scene
         if(object.properties === undefined || object.properties.length === 0)
             return fallback
 
-        const val = object.properties.find(x => x.name === property).value ?? fallback
+        const val = object.properties.find(x => x.name === property)?.value ?? fallback
         return val as T
     }
 

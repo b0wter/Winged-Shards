@@ -129,3 +129,7 @@ export const LightFighter : EnemyTemplate =
         structure: 10,
         equipment: [ LightLaser ]
     })
+
+export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 
+    "light_fighter": LightFighter 
+}

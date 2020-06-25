@@ -1,6 +1,6 @@
 import BaseScene from './BaseScene';
 import PlayerEntity from '~/entities/Player';
-import { Enemy, EnemyTemplate, LightFighter } from '~/entities/Enemy';
+import { Enemy, EnemyTemplate, LightFighter, EnemyTemplates } from '~/entities/Enemy';
 import PlayerInput from '~/input/PlayerInput';
 import { ColliderCollection } from './ColliderCollection';
 import PlayerPlate from '~/interface/PlayerPlate';
@@ -15,6 +15,7 @@ export default abstract class GameplayScene extends BaseScene
 {
     private static readonly PlayerSpawnTag = "spawn_player"
     private static readonly EnemySpawnTag = "spawn_enemy"
+    private static readonly EnemyShipTypeTag = "ship_type"
     private static readonly EntitiesTag = "entities"
     private static readonly PathTag = "path"
 
@@ -49,12 +50,26 @@ export default abstract class GameplayScene extends BaseScene
     /**
      * Main layer of this level's tilemap.
      */
-    protected baseLayer!: Phaser.Tilemaps.StaticTilemapLayer
+    protected readonly layers: Phaser.Tilemaps.StaticTilemapLayer[] = []
 
+    /**
+     * Tilemap layer used for collisions with the map itself.
+     */
+    protected collisionLayer!: Phaser.Tilemaps.StaticTilemapLayer
+
+    /**
+     * Name of this map's ressource key.
+     */
     protected abstract get mapName()
 
-    protected abstract get tilemapDefinitions()
+    /**
+     * Contains the definitions of all tilesets required to render this map.
+     */
+    protected abstract get tilemapDefinitions() : TilemapDefinition[]
 
+    /**
+     * Single tilemap definition for the collision layer.
+     */
     protected abstract get collisionTilemapDefinition()
 
     constructor(name: string)
@@ -65,17 +80,17 @@ export default abstract class GameplayScene extends BaseScene
     create()
     {
         this.map = this.createMap(this.mapName)
-        const environmentCollisions = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
+        this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
         this.colliders = new ColliderCollection(this, 
-                                                environmentCollisions, 
+                                                this.collisionLayer, 
                                                 this.playerBulletHitsPlayer.bind(this),
                                                 this.playerBulletHitsEnemy.bind(this),
                                                 this.enemyBulletHitsEnemy.bind(this),
                                                 this.enemyBulletHitsPlayer.bind(this)
                                                 )
-        this.baseLayer = this.createTilemapLayer(this.map, this.tilemapDefinitions[0]) 
+        this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
         this.createEntities(this.map.objects)
-        this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
+        //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
         this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
     }
 
@@ -121,17 +136,18 @@ export default abstract class GameplayScene extends BaseScene
                 if(this.players.length < this.numberOfPlayers)
                 {
                     const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
-                    this.players.push(this.createPlayer(x.x, x.y, angle, undefined));
+                    this.players.push(this.createPlayer(x.x, x.y, angle, undefined, this.collisionLayer));
                 }
             }
             else if(x.type === enemySpawn) {
                 const angle = this.readPropertyFromObjectLayerObject(x, "angle", 0)
-                this.createEnemy(x.x, x.y, angle, LightFighter)
+                const type = this.readPropertyFromObjectLayerObject(x, GameplayScene.EnemyShipTypeTag, "")
+                this.createEnemy(x.x, x.y, angle, EnemyTemplates[type])
             }
         })
     }
 
-    private createPlayer(x, y, angle, template)
+    private createPlayer(x, y, angle, template, environment: Phaser.Tilemaps.StaticTilemapLayer)
     {
         const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
         const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)

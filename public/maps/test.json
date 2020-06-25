@@ -1,4 +1,4 @@
-{ "compressionlevel":0,
+{ "compressionlevel":-1,
  "editorsettings":
     {
      "export":
@@ -327,9 +327,39 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
                          "name":"angle",
                          "type":"float",
                          "value":90
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -345,9 +375,39 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
                          "name":"angle",
                          "type":"float",
                          "value":90
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -361,6 +421,42 @@
                  "id":4,
                  "name":"spawn_03",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
+                         "name":"angle",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
+                        }],
                  "rotation":0,
                  "type":"spawn_enemy",
                  "visible":true,
@@ -373,6 +469,42 @@
                  "id":5,
                  "name":"spawn_04",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
+                         "name":"angle",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
+                        }],
                  "rotation":0,
                  "type":"spawn_enemy",
                  "visible":true,
@@ -387,9 +519,39 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
                          "name":"angle",
                          "type":"float",
                          "value":45
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -405,9 +567,39 @@
                  "point":true,
                  "properties":[
                         {
+                         "name":"ai",
+                         "type":"string",
+                         "value":"default"
+                        }, 
+                        {
                          "name":"angle",
                          "type":"float",
                          "value":90
+                        }, 
+                        {
+                         "name":"heat_percentage",
+                         "type":"float",
+                         "value":0
+                        }, 
+                        {
+                         "name":"hull_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"shield_percentage",
+                         "type":"float",
+                         "value":100
+                        }, 
+                        {
+                         "name":"ship_type",
+                         "type":"string",
+                         "value":"light_fighter"
+                        }, 
+                        {
+                         "name":"structure_percentage",
+                         "type":"float",
+                         "value":100
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
