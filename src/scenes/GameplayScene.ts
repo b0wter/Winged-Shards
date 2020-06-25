@@ -1,16 +1,28 @@
 import BaseScene from './BaseScene';
 import PlayerEntity from '~/entities/Player';
-import { Enemy } from '~/entities/Enemy';
+import { Enemy, EnemyTemplate, LightFighter } from '~/entities/Enemy';
 import PlayerInput from '~/input/PlayerInput';
 import { ColliderCollection } from './ColliderCollection';
+import PlayerPlate from '~/interface/PlayerPlate';
+import * as Weapon from '~/entities/Weapon';
+import { Teams } from '~/entities/Teams';
+import { Projectile } from '~/entities/Projectile';
+import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 
-export default class GameplayScene extends BaseScene
+export default abstract class GameplayScene extends BaseScene
 {
+    private readonly PlayerSpawnTag = "spawn_player"
+    private readonly EnemySpawnTag = "spawn_enemy"
+
     /**
      * Contains all active PlayerEntity instances.
      * This collection is irrelevant for collision detection.
      */
     protected players: PlayerEntity[] = []
+    /**
+     * Contains the individual interface for the players.
+     */
+    protected playerInterfaces: PlayerPlate[] = []
     /**
      * Contains all active Enemy instances.
      * This collection is irrelevant for collision detection.
@@ -35,8 +47,126 @@ export default class GameplayScene extends BaseScene
      */
     protected baseLayer!: Phaser.Tilemaps.StaticTilemapLayer
 
+    protected abstract get mapName()
+
     constructor(name: string)
     {
         super(name)
+    }
+    
+    create()
+    {
+        this.map = this.createMap(this.mapName)
+        const environmentCollisions = this.createCollisionTilemapLayer(this.map, 'collision', 'collision', 'collision_tiles') //this.createCollisionTileset(this.map)
+        this.colliders = new ColliderCollection(this, 
+                                                environmentCollisions, 
+                                                this.playerBulletHitsPlayer.bind(this),
+                                                this.playerBulletHitsEnemy.bind(this),
+                                                this.enemyBulletHitsEnemy.bind(this),
+                                                this.enemyBulletHitsPlayer.bind(this)
+                                                )
+        this.baseLayer = this.createTilemapLayer(this.map, 'base_layer', 'dungeon', 'tiles') //this.createTilesets(this.map)
+        this.createEntities(this.map.objects)
+        this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
+        this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
+    }
+
+    protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
+    {
+        return new ColliderCollection(this, 
+            environment, 
+            playerBulletHitsPlayer.bind(this),
+            playerBulletHitsEnemy.bind(this),
+            enemyBulletHitsEnemy.bind(this),
+            enemyBulletHitsPlayer.bind(this)
+            )
+    }
+
+    /**
+     * Creates an interface plate for the given player. Will also add the new plate to `existingPlates`.
+     * @param player The PlayerEntity which will be linked to this PlayerPlate instance. Is required to set the necessary callbacks.
+     * @param existingPlates Array of already existing PlayerPlates. This is required to position the new plate accordingly.
+     */
+    protected createInterface(player: PlayerEntity, existingPlates: PlayerPlate[])
+    {
+        const originOffset = new Phaser.Math.Vector2(5, 5)
+        const marginBetweenPlates = 50
+        const indexOffset = existingPlates.length > 0 ? existingPlates[existingPlates.length - 1].end + marginBetweenPlates : 0 
+        const plate = new PlayerPlate(this, originOffset.x + indexOffset, originOffset.y, player.shieldValue, player.hullValue, player.structureValue, player.heatValue)
+        existingPlates.push(plate)
+        return plate
+    }
+
+    private createMap(mapName: string)
+    {
+        var map = this.make.tilemap({ key: mapName })
+        return map
+    }
+
+    protected createEntities(layers: Phaser.Tilemaps.ObjectLayer[])
+    {
+        const playerSpawn = "spawn_player"
+        const enemySpawn = "spawn_enemy"
+        const layer = layers.find(x => x.name === "entities")
+        layer?.objects.forEach(x => { 
+            if(x.type === playerSpawn) { 
+                if(this.players.length < this.numberOfPlayers)
+                    this.players.push(this.createPlayer(x.x, x.y, x.properties?.find(p => p.name === "angle").value ?? 0, undefined));
+            }
+            else if(x.type === enemySpawn) {
+                this.createEnemy(x.x, x.y, x.properties?.find(p => p.name === "angle").value ?? 0, LightFighter)
+            }
+        })
+    }
+
+    private createPlayer(x, y, angle, template)
+    {
+        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
+        const weapon = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
+        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
+        player.primaryEquipmentGroup.push(weapon)
+        player.secondaryEquipmentGroup.push(fusionGun)
+        this.createInterface(player, this.playerInterfaces)
+        return player
+    }
+
+    private createEnemy(x, y, angle, template: EnemyTemplate)
+    {
+        const enemy = template.instatiate(this, x, y, angle, this.colliders.addEntityFunc, this.colliders.addProjectileFunc)
+        enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
+        this.enemies.push(enemy)
+    }
+
+    private removeEnemy(e: Enemy)
+    {
+        if(e === undefined) return
+        this.enemies.forEach( (item, index) => {
+            if(item === e) this.enemies.splice(index,1);
+        }); 
+    }
+
+    private playerBulletHitsPlayer(bullet, target)
+    {
+        const p = bullet as Projectile
+        p.scaleDamage(0.33)
+        p?.hit(target)
+    }
+
+    private playerBulletHitsEnemy(bullet, target)
+    {
+        const p = bullet as Projectile
+        p?.hit(target)
+    }
+
+    private enemyBulletHitsPlayer(bullet, target)
+    {
+        const p = bullet as Projectile
+        p?.hit(target)
+    }
+
+    private enemyBulletHitsEnemy(bullet, target)
+    {
+        const p = bullet as Projectile
+        p?.hit(target)
     }
 }

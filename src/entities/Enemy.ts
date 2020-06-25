@@ -104,7 +104,7 @@ export class Enemy extends PhysicalEntity
     }
 }
 
-class EnemyTemplate
+export class EnemyTemplate
 {
     public name = ""
     public spriteKey = ""

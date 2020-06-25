@@ -14,12 +14,25 @@ import StatusBar from './StatusBar';
 
 export default class PlayerPlate
 {
+    public static readonly HorizontalMargin = 2
+    public static readonly VerticalMargin = 2
+
     private shieldBar: HorizontalStatusBar
     private hullBar: HorizontalStatusBar
     private structureBar: HorizontalStatusBar
     private heatBar: VerticalStatusBar
 
     private readonly bars: StatusBar[]
+
+    public get width()
+    {
+        return this.shieldBar.width + PlayerPlate.HorizontalMargin + this.heatBar.width
+    }
+
+    public get end()
+    {
+        return this.shieldBar.x + this.width
+    }
 
     constructor(scene: Phaser.Scene, x: number, y: number, shield: ClampedNumber, hull: ClampedNumber, structure: ClampedNumber, heat: ClampedNumber)
     {
@@ -28,9 +41,9 @@ export default class PlayerPlate
         structure.addChangeListener(this.updateStructure.bind(this))
         heat.addChangeListener(this.updateHeat.bind(this))
         this.shieldBar      = new ShieldBar     (scene, x, y, 300, shield.min, shield.max, shield.current)
-        this.hullBar        = new HullBar       (scene, x, this.shieldBar.y + 2 + this.shieldBar.height / 1, this.shieldBar.width, hull.min, hull.max, hull.current)
-        this.structureBar   = new StructureBar  (scene, x, this.hullBar.y + 2 + this.hullBar.height / 1, this.shieldBar.width, structure.min, structure.max, structure.current)
-        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + 2 + this.shieldBar.width / 1, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 4, heat.min, heat.max, heat.current)
+        this.hullBar        = new HullBar       (scene, x, this.shieldBar.y + PlayerPlate.VerticalMargin + this.shieldBar.height, this.shieldBar.width, hull.min, hull.max, hull.current)
+        this.structureBar   = new StructureBar  (scene, x, this.hullBar.y + PlayerPlate.VerticalMargin + this.hullBar.height, this.shieldBar.width, structure.min, structure.max, structure.current)
+        this.heatBar        = new HeatBar       (scene, this.shieldBar.x + PlayerPlate.HorizontalMargin + this.shieldBar.width, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 4, heat.min, heat.max, heat.current)
         this.bars = [ this.shieldBar, this.hullBar, this.structureBar, this.heatBar ]
         this.bars.forEach(x => scene.add.existing(x))
     }
