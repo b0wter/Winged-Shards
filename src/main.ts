@@ -5,7 +5,7 @@ import Campaign_01_Room_001 from './scenes/Campaing_01_Room_001'
 import Campaign_01_Room_002 from './scenes/Campaign_01_Room_002'
 
 const config: Phaser.Types.Core.GameConfig = {
-	type: Phaser.AUTO,
+	type: Phaser.CANVAS, //Phaser.AUTO,
 	width: 800,
 	height: 600,
 	physics: {
