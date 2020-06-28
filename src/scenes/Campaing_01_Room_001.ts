@@ -3,22 +3,22 @@ import GameplayScene from './GameplayScene'
 import { PreloadRessourceList } from './PreloadRessourcePair'
 import TilemapDefinition from './TilemapDefinition'
 
-export default class HelloWorldScene extends GameplayScene
+export default class Campaign_01_Room_001 extends GameplayScene
 {
-    protected get mapName() { return "map" }
+    protected get mapName() { return "campaign_01_room_001_map" }
 
-    protected get tilemapDefinitions() { return [ new TilemapDefinition("base_layer", "dungeon", "tiles") ]}
+    protected get tilemapDefinitions() { return [ new TilemapDefinition("terrain", "floor", "tiles") ]}
     protected get collisionTilemapDefinition() { return new TilemapDefinition("collision", "collision", "collision_tiles")}
 
 	constructor()
 	{
-        super('hello-world')
+        super('campaign_01_room_001')
     }
     
     protected createPreloadRessourcePairs()
     {
         const pairs = new PreloadRessourceList
-        pairs.addImage('tiles', 'images/tilesets/dungeon.png')
+        pairs.addImage('tiles', 'images/tilesets/scifi_floor.png')
         pairs.addImage('collision_tiles', 'images/tilesets/collision.png')
         pairs.addImage('spaceship_01', 'images/ships/orange_01.png')
         pairs.addImage('spaceship_02', 'images/ships/red_01.png')
@@ -30,7 +30,7 @@ export default class HelloWorldScene extends GameplayScene
         pairs.addImage('particle_red', 'images/effects/particle-red.png')
         pairs.addImage('fusion_01', 'images/projectiles/fusion-01.png')
         pairs.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
-        pairs.addTilemap('map', 'maps/test.json')
+        pairs.addTilemap('campaign_01_room_001_map', 'maps/campaign_01_room_001.json')
         return pairs
     }
 
@@ -39,3 +39,4 @@ export default class HelloWorldScene extends GameplayScene
         //
     }
 }
+

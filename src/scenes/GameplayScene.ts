@@ -19,6 +19,8 @@ export default abstract class GameplayScene extends BaseScene
     private static readonly EnemyShipTypeTag = "ship_type"
     private static readonly EntitiesTag = "entities"
     private static readonly PathTag = "path"
+    private static readonly ObjectivesTag = "objectives"
+    private static readonly ObjectivesTargetTag = "target"
 
     /**
      * Contains all active PlayerEntity instances.
@@ -73,6 +75,10 @@ export default abstract class GameplayScene extends BaseScene
      */
     protected abstract get collisionTilemapDefinition()
 
+    protected objectivesLayer?: Phaser.Tilemaps.ObjectLayer
+
+    private leftEntranceObjective = false
+
     constructor(name: string)
     {
         super(name)
@@ -89,6 +95,7 @@ export default abstract class GameplayScene extends BaseScene
                                                 this.enemyBulletHitsEnemy.bind(this),
                                                 this.enemyBulletHitsPlayer.bind(this)
                                                 )
+        this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
         this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
         this.createEntities(this.map.objects)
         //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
@@ -113,7 +120,7 @@ export default abstract class GameplayScene extends BaseScene
      */
     protected createInterface(player: PlayerEntity, existingPlates: PlayerPlate[])
     {
-        const originOffset = new Phaser.Math.Vector2(5, 5)
+        const originOffset = new Phaser.Math.Vector2(32, 998)
         const marginBetweenPlates = 50
         const indexOffset = existingPlates.length > 0 ? existingPlates[existingPlates.length - 1].end + marginBetweenPlates : 0 
         const plate = new PlayerPlate(this, originOffset.x + indexOffset, originOffset.y, player.shieldValue, player.hullValue, player.structureValue, player.heatValue, player.indexedEquipment)
@@ -190,7 +197,54 @@ export default abstract class GameplayScene extends BaseScene
         this.enemies.forEach(x => x.update(t, dt, [ player ]))
         // overlap - physics!
 
+        this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
+
         this.sceneSpecificUpdate(t, dt)
+    }
+
+    private switchSceneIfOnObjective(players: PlayerEntity[], objectives: Phaser.Tilemaps.ObjectLayer | undefined)
+    {
+        const objective = this.arePlayersOnObjective(this.players, this.objectivesLayer)
+        if(objective === undefined)
+            this.leftEntranceObjective = true
+
+        if(this.leftEntranceObjective)
+        {
+            if(objective !== undefined)
+                this.switchScene(this.getTargetRoomFromObjective(objective))
+        }
+    }
+
+    private arePlayersOnObjective(players: PlayerEntity[], objectives: Phaser.Tilemaps.ObjectLayer | undefined) : Phaser.Types.Tilemaps.TiledObject | undefined
+    {
+        if(objectives === undefined)
+            return undefined
+        const exits = this.objectivesLayer?.objects.filter(o => o.type === "objectives_change_room") ?? []
+        const exitWithPlayers = exits.find(e => {
+            const rectangle = new Phaser.Geom.Rectangle(e.x, e.y, e.width, e.height)
+            return this.players.every(p => rectangle.contains(p.x, p.y))
+        })
+        return exitWithPlayers
+    }
+
+    private getTargetRoomFromObjective(object: Phaser.Types.Tilemaps.TiledObject)
+    {
+        if(object.properties === undefined || object.properties!.length === 0)
+            return
+        
+        return object.properties.find(p => p.name === GameplayScene.ObjectivesTargetTag).value as string
+    }
+
+    protected switchScene(sceneName)
+    {
+        console.log(`Changing room to '${sceneName}'.`)
+        this.scene.start(sceneName, this.players)
+    }
+
+    public computeWallIntersection(ray: Phaser.Geom.Line)
+    {
+        const tiles = this.collisionLayer.getTilesWithinShape(ray)
+        return tiles.every(t => t.index === -1)
     }
 
     protected abstract sceneSpecificUpdate(t: number, dt: number)

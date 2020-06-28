@@ -56,9 +56,14 @@ export default class DefaultEnemyAi extends EnemyAi
         const nearestPlayer = playersInRange[0]//[0]
         const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer[0])
         const desiredVelocity = nearestPlayer[1] <= this.maximalDistance ? Phaser.Math.Vector2.ZERO : new Phaser.Math.Vector2(nearestPlayer[0].x - enemy.x, nearestPlayer[0].y - enemy.y).normalize().scale(enemy.maxVelocity)
-        console.log(nearestPlayer[1], this.maximalDistance, nearestPlayer[1] <= this.maximalDistance, desiredVelocity)
+        //console.log(nearestPlayer[1], this.maximalDistance, nearestPlayer[1] <= this.maximalDistance, desiredVelocity)
         const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
         return new AiResult(desiredAngle, desiredVelocity, triggers)
+    }
+
+    private findPriorityTarget(enemy: Enemy, players: PlayerEntity[])
+    {
+
     }
 
     /**
