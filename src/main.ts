@@ -1,13 +1,15 @@
 import Phaser from 'phaser'
 
-import HelloWorldScene from './scenes/HelloWorldScene'
 import Campaign_01_Room_001 from './scenes/Campaing_01_Room_001'
 import Campaign_01_Room_002 from './scenes/Campaign_01_Room_002'
 
+const isLinux = window.navigator.platform.indexOf("Linux") >= 0
+const renderer = isLinux ? Phaser.CANVAS : Phaser.WEBGL
+
 const config: Phaser.Types.Core.GameConfig = {
-	type: Phaser.CANVAS, //Phaser.AUTO,
-	width: 800,
-	height: 600,
+	type: renderer,
+	width: 1920,
+	height: 1080,
 	physics: {
 		default: 'arcade',
 		arcade: {

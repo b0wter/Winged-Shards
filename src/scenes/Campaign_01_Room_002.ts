@@ -11,7 +11,7 @@ export default class Campaign_01_Room_002 extends GameplayScene
     protected get tilemapDefinitions() { return [ new TilemapDefinition("terrain", "floor", "tiles") ]}
     protected get collisionTilemapDefinition() { return new TilemapDefinition("collision", "collision", "collision_tiles")}
 
-	constructor(players: PlayerEntity[])
+	constructor()
 	{
         super('campaign_01_room_002')
     }
