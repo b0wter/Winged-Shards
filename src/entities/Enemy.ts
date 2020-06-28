@@ -17,7 +17,9 @@ export class Enemy extends PhysicalEntity
 
     public get velocity() { const b = this.body as Phaser.Physics.Arcade.Body; return b.velocity ?? new Phaser.Math.Vector2(0,0)}
 
-    private _ai = new DefaultEnemyAi(300, 800, 1000, true)
+    public get maxVelocity() { return this._maxVelocity }
+
+    private _ai = new DefaultEnemyAi(300, ((this.equipment.map(e => e.range)).sort()[0] ?? 500) - 100 , 1000, true)
 
     public get equipment() { return this._equipment }
 
@@ -29,6 +31,7 @@ export class Enemy extends PhysicalEntity
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
+                private _maxVelocity: number,
                 private _equipment: Equipment[]
                )
     {
@@ -72,7 +75,7 @@ export class Enemy extends PhysicalEntity
             return
 
 
-        const seesPlayer = this.seesPlayer(players[0])
+        //const seesPlayer = this.seesPlayer(players[0])
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
         const difference = Phaser.Math.Angle.ShortestBetween(this.angle, ai.desiredAngle)
@@ -83,6 +86,7 @@ export class Enemy extends PhysicalEntity
         turning = sign === 1 ? Math.min(turning, difference) : Math.max(turning, difference)
 
         this.angle += turning
+        this.setVelocity(ai.desiredVelocity.x, ai.desiredVelocity.y)
 
         ai.equipmentTriggers.forEach(x => { if(x[1]) { this.fireWeapon(t, x[0]) }} )
     }
@@ -112,12 +116,13 @@ export class EnemyTemplate
     public shield = 0
     public hull = 0
     public structure = 0
+    public maxVelocity = 0
     public equipment : EquipmentTemplate[] = [ DummyWeapon ]
 
     public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
         const equipment = this.equipment.map(x => x.instantiate(scene, bulletsColliderFunc, Teams.Enemies, 0, 0))
-        return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), equipment)
+        return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment)
     }
 }
 
@@ -128,6 +133,7 @@ export const LightFighter : EnemyTemplate =
         shield: 40,
         hull: 20,
         structure: 10,
+        maxVelocity: 150,
         equipment: [ LightLaser ]
     })
 

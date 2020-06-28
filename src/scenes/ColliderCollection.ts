@@ -18,7 +18,8 @@ export class ColliderCollection
     protected playerProjectiles!: Phaser.Physics.Arcade.Group
     protected enemies!: Phaser.Physics.Arcade.Group
     protected enemyProjectiles!: Phaser.Physics.Arcade.Group
-    protected environment : Phaser.Tilemaps.StaticTilemapLayer
+    protected readonly environment : Phaser.Tilemaps.StaticTilemapLayer
+    protected readonly environmentColliders: Phaser.Physics.Arcade.Collider[] = []
 
     private _scene: Phaser.Scene
 
@@ -53,7 +54,7 @@ export class ColliderCollection
 
     public addPlayer(player: PlayerEntity)
     {
-        this._scene.physics.add.collider(player, this.environment)
+        this.environmentColliders.push(this._scene.physics.add.collider(player, this.environment))
         this.players.add(player)
         player.addKilledCallback(this.removePlayer.bind(this))
     }

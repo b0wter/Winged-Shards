@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="60" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="33">
+<map version="1.2" tiledversion="1.3.5" orientation="orthogonal" renderorder="right-down" compressionlevel="0" width="60" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="49">
  <editorsettings>
   <export target="test.json" format="json"/>
  </editorsettings>
@@ -227,67 +227,14 @@
  <tileset firstgid="67" name="editor-elements" tilewidth="32" tileheight="32" tilecount="400" columns="20">
   <image source="../images/others/editor-elements.png" width="640" height="640"/>
  </tileset>
- <objectgroup id="3" name="paths">
-  <object id="8" name="path" type="path_node" x="832" y="416">
-   <point/>
-  </object>
-  <object id="9" name="path" type="path_node" x="1024" y="416">
-   <point/>
-  </object>
-  <object id="10" name="path" type="path_node" x="1024" y="608">
-   <point/>
-  </object>
-  <object id="11" name="path" type="path_node" x="832" y="608">
-   <point/>
-  </object>
-  <object id="12" name="path" type="path_node" x="832" y="800">
-   <point/>
-  </object>
-  <object id="13" name="path" type="path_node" x="1056" y="800">
-   <point/>
-  </object>
-  <object id="14" name="path" type="path_node" x="832" y="960">
-   <point/>
-  </object>
-  <object id="15" name="path" type="path_node" x="1056" y="960">
-   <point/>
-  </object>
-  <object id="16" name="path" type="path_node" x="1312" y="960">
-   <point/>
-  </object>
-  <object id="17" name="path" type="path_node" x="1536" y="960">
-   <point/>
-  </object>
-  <object id="18" name="path" type="path_node" x="1760" y="960">
-   <point/>
-  </object>
-  <object id="19" name="path" type="path_node" x="1760" y="544">
-   <point/>
-  </object>
-  <object id="21" name="path" type="path_node" x="576" y="800">
-   <point/>
-  </object>
-  <object id="22" name="path" type="path_node" x="576" y="960">
-   <point/>
-  </object>
-  <object id="23" name="path" type="path_node" x="320" y="960">
-   <point/>
-  </object>
-  <object id="24" name="path" type="path_node" x="320" y="800">
-   <point/>
-  </object>
-  <object id="25" name="path" type="path_node" x="512" y="640">
-   <point/>
-  </object>
-  <object id="26" name="path" type="path_node" x="320" y="640">
-   <point/>
-  </object>
-  <object id="27" name="path" type="path_node" x="512" y="480">
-   <point/>
-  </object>
-  <object id="28" name="path" type="path_node" x="320" y="480">
-   <point/>
-  </object>
+ <objectgroup id="7" name="navmesh">
+  <object id="37" x="256" y="224" width="352" height="736"/>
+  <object id="38" x="608" y="768" width="480" height="192"/>
+  <object id="39" x="768" y="224" width="320" height="544"/>
+  <object id="42" x="1312" y="160" width="512" height="416"/>
+  <object id="45" x="1184" y="352"/>
+  <object id="47" x="1088" y="896" width="736" height="64"/>
+  <object id="48" x="1728" y="576" width="96" height="320"/>
  </objectgroup>
  <objectgroup id="5" name="entities">
   <object id="29" name="player" type="spawn_player" x="288" y="288">

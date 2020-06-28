@@ -337,6 +337,11 @@
                          "value":90
                         }, 
                         {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
                          "name":"heat_percentage",
                          "type":"float",
                          "value":0
@@ -383,6 +388,11 @@
                          "name":"angle",
                          "type":"float",
                          "value":90
+                        }, 
+                        {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
                         }, 
                         {
                          "name":"heat_percentage",
@@ -433,6 +443,11 @@
                          "value":0
                         }, 
                         {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
                          "name":"heat_percentage",
                          "type":"float",
                          "value":0
@@ -479,6 +494,11 @@
                          "name":"angle",
                          "type":"float",
                          "value":0
+                        }, 
+                        {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
                         }, 
                         {
                          "name":"heat_percentage",
@@ -529,6 +549,11 @@
                          "value":45
                         }, 
                         {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
                          "name":"heat_percentage",
                          "type":"float",
                          "value":0
@@ -575,6 +600,11 @@
                          "name":"angle",
                          "type":"float",
                          "value":90
+                        }, 
+                        {
+                         "name":"group",
+                         "type":"string",
+                         "value":""
                         }, 
                         {
                          "name":"heat_percentage",

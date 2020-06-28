@@ -38,17 +38,25 @@ export default class DefaultEnemyAi extends EnemyAi
 
         if(enemy === undefined) return this.inactivityAiResult(enemy)
         if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
+
+        const visiblePlayers = players.filter(p => seesPlayer(p))
+        if(visiblePlayers.length === 0) return this.inactivityAiResult(enemy)
         /*
         const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
                                      .filter(x => x[1] <= (this.active ? Number.MAX_SAFE_INTEGER : this._activityDistance)).sort(x => x[1])
                                      */
-        const playersInRange = players.filter(p => seesPlayer(p)).sort(p => Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y))
+        //const distances = players.map(p => Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y))
+        //console.log(players[0].x, players[0].y, enemy.x, enemy.y, Phaser.Math.Distance.Between(players[0].x, players[0].y, enemy.x, enemy.y))
+
+        let mapDistance = function(p: PlayerEntity) : [PlayerEntity, number] { return [p, Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y)] }
+        const playersInRange = players.filter(p => seesPlayer(p)).map(mapDistance).sort(([_, distance]) => distance)
 
         if(playersInRange.length === 0) return this.inactivityAiResult(enemy)
         this.active = true
         const nearestPlayer = playersInRange[0]//[0]
-        const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer)
-        const desiredVelocity = this.move()
+        const desiredAngle = this.turnToPlayer(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nearestPlayer[0])
+        const desiredVelocity = nearestPlayer[1] <= this.maximalDistance ? Phaser.Math.Vector2.ZERO : new Phaser.Math.Vector2(nearestPlayer[0].x - enemy.x, nearestPlayer[0].y - enemy.y).normalize().scale(enemy.maxVelocity)
+        console.log(nearestPlayer[1], this.maximalDistance, nearestPlayer[1] <= this.maximalDistance, desiredVelocity)
         const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
         return new AiResult(desiredAngle, desiredVelocity, triggers)
     }
@@ -64,11 +72,6 @@ export default class DefaultEnemyAi extends EnemyAi
     {
         const targetLookAt = Phaser.Math.Angle.Between(x, y, player.x, player.y) * Phaser.Math.RAD_TO_DEG
         return targetLookAt
-    }
-
-    private move()
-    {
-        return new Phaser.Math.Vector2(0, 0)
     }
 
     private shouldTrigger(e: Equipment) : [Equipment, boolean]

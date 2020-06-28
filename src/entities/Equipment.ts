@@ -27,6 +27,8 @@ export abstract class Equipment
      */
     get mountPointOffsetY() { return this._mountPointOffsetY }
 
+    abstract get range() : number
+
     private lastUsedAt = 0
 
     protected cooldownModifier = 1

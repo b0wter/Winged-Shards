@@ -7,9 +7,10 @@ export default class EnemyTiledObject
     private static readonly HullPercentageTag = "hull_percentage"
     private static readonly StructurePercentageTag = "structure_percentage"
     private static readonly ShipTypeTag = "ship_type"
+    private static readonly Group = "group"
     private static readonly AllEnemyPropertyTags = [ 
         EnemyTiledObject.AiTag, EnemyTiledObject.AngleTag, EnemyTiledObject.HeatPercentageTag, EnemyTiledObject.ShieldPercentageTag,
-        EnemyTiledObject.HullPercentageTag, EnemyTiledObject.StructurePercentageTag, EnemyTiledObject.ShipTypeTag
+        EnemyTiledObject.HullPercentageTag, EnemyTiledObject.StructurePercentageTag, EnemyTiledObject.ShipTypeTag, EnemyTiledObject.Group
     ]
 
     constructor(
@@ -19,7 +20,8 @@ export default class EnemyTiledObject
         public shield: number,
         public hull: number,
         public structure: number,
-        public shipType: string
+        public shipType: string,
+        public group: string
     )
     { 
         //
@@ -39,7 +41,7 @@ export default class EnemyTiledObject
                 console.error("Could not read one or more properties from a tile object.")
                 return undefined
             } else {
-                return new EnemyTiledObject(mappedProperties[0], mappedProperties[1], mappedProperties[2], mappedProperties[3], mappedProperties[4], mappedProperties[5], mappedProperties[6])
+                return new EnemyTiledObject(mappedProperties[0], mappedProperties[1], mappedProperties[2], mappedProperties[3], mappedProperties[4], mappedProperties[5], mappedProperties[6], mappedProperties[7])
             }
         }
 

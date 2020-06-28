@@ -14,6 +14,7 @@ export type WeaponSpread = None | Angular | Parallel
 
 export class Weapon extends Equipment
 {
+    public get range() { return this.projectile.range }
 
     constructor(private scene: Phaser.Scene,
                 private colliderFunc: AddProjectileFunc,
