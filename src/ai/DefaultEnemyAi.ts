@@ -2,7 +2,7 @@ import EnemyAi from './EnemyAi';
 import PlayerEntity from '~/entities/Player';
 import AiResult from './AiResult';
 import { Enemy } from '~/entities/Enemy';
-import { Equipment } from '~/entities/Equipment';
+import { TriggeredEquipment } from '~/entities/TriggeredEquipment';
 
 export default class DefaultEnemyAi extends EnemyAi
 {
@@ -79,7 +79,7 @@ export default class DefaultEnemyAi extends EnemyAi
         return targetLookAt
     }
 
-    private shouldTrigger(e: Equipment) : [Equipment, boolean]
+    private shouldTrigger(e: TriggeredEquipment) : [TriggeredEquipment, boolean]
     {
         return [e, this.active && this.shootAlways];
     }

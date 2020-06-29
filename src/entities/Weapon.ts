@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import * as Damage from './DamageType'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
-import { Equipment, EquipmentTemplate } from './Equipment'
+import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 
@@ -12,7 +12,7 @@ export interface Angular { degreesDistance: number }
 export interface Parallel { distanceToNext: number }
 export type WeaponSpread = None | Angular | Parallel
 
-export class Weapon extends Equipment
+export class Weapon extends TriggeredEquipment
 {
     public get range() { return this.projectile.range }
 
@@ -51,7 +51,7 @@ export class Weapon extends Equipment
     }
 }
 
-export class WeaponTemplate extends EquipmentTemplate
+export class WeaponTemplate extends ActiveEquipmentTemplate
 {
 
     public readonly name = "<WeaponTemplate>"

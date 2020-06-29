@@ -1,4 +1,4 @@
-import { Equipment } from './../entities/Equipment'
+import { TriggeredEquipment } from '../entities/TriggeredEquipment'
 
 export default class AiResult
 {
@@ -10,7 +10,7 @@ export default class AiResult
 
     constructor(private _desiredAngle,
                 private _desiredVelocity,
-                private _equipmentTriggers : [Equipment, boolean][]
+                private _equipmentTriggers : [TriggeredEquipment, boolean][]
                )
     {
         //

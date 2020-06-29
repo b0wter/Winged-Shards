@@ -7,7 +7,7 @@ import ClampedNumber from './../utilities/ClampedNumber'
 import { Weapon, WeaponTemplate, DummyWeapon, LightLaser } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 import HelloWorldScene from '~/scenes/HelloWorldScene'
-import { Equipment, EquipmentTemplate } from './Equipment'
+import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export class Enemy extends PhysicalEntity
@@ -32,7 +32,7 @@ export class Enemy extends PhysicalEntity
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
                 private _maxVelocity: number,
-                private _equipment: Equipment[]
+                private _equipment: TriggeredEquipment[]
                )
     {
         super(scene, 
@@ -98,7 +98,7 @@ export class Enemy extends PhysicalEntity
         return intersects
     }
 
-    private fireWeapon(t: number, e: Equipment)
+    private fireWeapon(t: number, e: TriggeredEquipment)
     {
         const body = (this.body as Phaser.Physics.Arcade.Body)
         const offset = 0 //(body.width / 2) ?? 0
@@ -117,7 +117,7 @@ export class EnemyTemplate
     public hull = 0
     public structure = 0
     public maxVelocity = 0
-    public equipment : EquipmentTemplate[] = [ DummyWeapon ]
+    public equipment : ActiveEquipmentTemplate[] = [ DummyWeapon ]
 
     public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {

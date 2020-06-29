@@ -11,7 +11,7 @@ import StructureBar from './StructureBar';
 import HullBar from './HullBar';
 import HeatBar from './HeatBar';
 import StatusBar from './StatusBar';
-import { Equipment, EquipmentCooldownChangedCallback } from '~/entities/Equipment';
+import { TriggeredEquipment, EquipmentCooldownChangedCallback } from '~/entities/TriggeredEquipment';
 import CooldownBar from './CooldownBar';
 
 export default class PlayerPlate
@@ -42,7 +42,7 @@ export default class PlayerPlate
         return this.shieldBar.x + this.width
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, shield: ClampedNumber, hull: ClampedNumber, structure: ClampedNumber, heat: ClampedNumber, equipment: [number, Equipment][])
+    constructor(scene: Phaser.Scene, x: number, y: number, shield: ClampedNumber, hull: ClampedNumber, structure: ClampedNumber, heat: ClampedNumber, equipment: [number, TriggeredEquipment][])
     {
         shield.addChangeListener(this.updateShields.bind(this))
         hull.addChangeListener(this.updateHull.bind(this))
@@ -60,7 +60,7 @@ export default class PlayerPlate
         this.bars.forEach(x => scene.add.existing(x))
     }
 
-    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, Equipment][], xOffset: number, yOffset: number, rowHeight: number) 
+    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment][], xOffset: number, yOffset: number, rowHeight: number) 
     {
         // There are six equipment groups, thus the bars are displayed in two columns and three rows:
         //   0   1
@@ -84,7 +84,7 @@ export default class PlayerPlate
         return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e, computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
     }
 
-    private addEquipmentStatusBar(scene: Phaser.Scene, e: Equipment, x: number, y: number, width: number, height: number, index: number)
+    private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)
     {
         const bar = new CooldownBar(scene, x, y, height, 0, e.cooldown, index, 0, width)
         e.addCooldownChangedCallback((e, remaining) => bar.current = remaining)
