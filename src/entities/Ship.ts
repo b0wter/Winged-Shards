@@ -59,7 +59,8 @@ export class Ship
      * The maximum amount of heat the ship can take. Includes all equipment bonusses.
      */
     public get heatDissipation() { 
-        return this.allEquipment.map(e => e.statusChangePerSecond.heat).reduce((a, b) => a + b, this._heatDissipation)
+        console.log("heat")
+        return this.allEquipment.map(e => e.statusChangePerSecond.heat).reduce((a, b) => a + b, -this._heatDissipation)
     }
 
     /**
@@ -119,8 +120,9 @@ export class Ship
 
     public update(t: number, dt: number, triggeredEquipmentGroups: number[], isMoving: boolean) : CurrentStatusChange
     {
-        const equipment = this.allEquipment
-        const updates = equipment.map(e => e.update(t, dt, isMoving))
+        const fromShip = CurrentStatusChange.forHeat(dt, -this._heatDissipation)
+        const updates = this.allEquipment.map(e => e.update(t, dt, isMoving))
+        updates.push(fromShip)
         return CurrentStatusChange.combineAll(updates)
     }
 
@@ -159,31 +161,9 @@ export class DefaultFighterTemplate extends ShipTemplate
     public spriteKey = "spaceship_01"
     public hull = 100
     public structure = 50
-    public heatDissipation = 0
+    public heatDissipation = 5
     public maxHeat = 100
     public maxSpeed = 200
     public hardpoints = [
-        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
-        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
-        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger())
     ]
 }
-/*
-export const DefaultFighter : ShipTemplate =
-    Object.assign(new ShipTemplate(),
-    {
-        manufacturer: "Roscosmos",
-        modelName: "Rapier V-37",
-        spriteKey: "spaceship_01",
-        hull: 100,
-        structure: 50,
-        heatDissipation: 0,
-        maxHeat: 100,
-        maxSpeed: 200,
-        hardpoints: [
-            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
-            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
-            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger())
-        ]
-    })
-    */
