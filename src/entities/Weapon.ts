@@ -5,6 +5,7 @@ import { Teams } from './Teams'
 import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
+import { CombinedStatusChange, MaxStatusChange } from './StatusChanges'
 
 export interface None { }
 export const NoSpread : None = { }
@@ -15,6 +16,8 @@ export type WeaponSpread = None | Angular | Parallel
 export class Weapon extends TriggeredEquipment
 {
     public get range() { return this.projectile.range }
+
+    public readonly maxStatusChange = MaxStatusChange.zero
 
     constructor(private scene: Phaser.Scene,
                 private colliderFunc: AddProjectileFunc,

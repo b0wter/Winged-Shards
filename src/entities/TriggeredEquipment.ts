@@ -1,7 +1,8 @@
 import { Teams } from './Teams'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
-import Equipment from './Equipment'
+import { Equipment } from './Equipment'
+import { CurrentStatusChange } from './StatusChanges'
 
 export type EquipmentCooldownChangedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
 export type EquipmentCooldownFinishedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
@@ -37,6 +38,8 @@ export abstract class TriggeredEquipment extends Equipment
     private readonly cooldownChangedCallbacks : EquipmentCooldownChangedCallback[] = []
     //private readonly cooldownFinishedCallbacks: EquipmentCooldownFinishedCallback[] = []
 
+    public readonly statusChangePerSecond = CurrentStatusChange.zero
+
     constructor(protected _cooldown: number,
                 protected _heatPerTrigger: number,
                 protected _team : Teams,
@@ -44,7 +47,7 @@ export abstract class TriggeredEquipment extends Equipment
                 protected _mountPointOffsetY: number
                 )
     {
-        super()
+        super(0)
     }
 
     /**
@@ -66,10 +69,11 @@ export abstract class TriggeredEquipment extends Equipment
         return 0
     }
 
-    public update(t: number, dt: number)
+    public update(t: number, dt: number, _)
     {
         this.internalUpdate(t, dt)
         this.cooldownChangedCallbacks.forEach(x => x(this, Math.max(0, t - this.lastUsedAt)))
+        return CurrentStatusChange.zero
     }
 
     protected abstract internalUpdate(t, dt)

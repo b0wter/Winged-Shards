@@ -8,6 +8,9 @@ import { TriggeredEquipment } from './TriggeredEquipment'
 import { Damage } from './DamageType'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { AddEntityFunc } from '~/scenes/ColliderCollection'
+import StatusBar from '~/interface/StatusBar'
+import { CurrentStatusChange } from './StatusChanges'
+import { Ship } from './Ship'
 
 export default class PlayerEntity extends PhysicalEntity
 {
@@ -28,9 +31,9 @@ export default class PlayerEntity extends PhysicalEntity
 
     private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
 
-    constructor(scene: Phaser.Scene, x: number, y: number, angle: number, spriteKey: string, colliderGroupFunc: AddEntityFunc)
+    constructor(scene: Phaser.Scene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
     {
-        super(scene, x, y, spriteKey, Teams.Players, new ClampedNumber(200), new ClampedNumber(100), new ClampedNumber(50), new ClampedNumber(100, 0, 0), 2, 5, colliderGroupFunc, angle, undefined)
+        super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 2, 5, colliderGroupFunc, angle, undefined)
     }
 
     private triggerEquipmentGroup(group: TriggeredEquipment[], t: number)
@@ -52,9 +55,10 @@ export default class PlayerEntity extends PhysicalEntity
         this.handleInput(input, t)
     }
 
-    private updateEquipment(t, dt, x, y, angle)
+    private updateEquipment(t, dt, x, y, angle) : CurrentStatusChange
     {
-        this.allEquipmentGroups.forEach(x => x.forEach(y => y.update(t, dt)))
+        const changes = this.allEquipmentGroups.flatMap(x => x.map(y => y.update(t, dt, false)))
+        return CurrentStatusChange.combineAll(changes)
     }
 
     private handleInput(input: PlayerInput, t)

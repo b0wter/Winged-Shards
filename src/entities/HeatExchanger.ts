@@ -1,17 +1,33 @@
 import PassiveEquipment from './PassiveEquipment';
-import StatusChange from './StatusChange';
+import { CombinedStatusChange, CurrentStatusChange, MaxStatusChange } from './StatusChanges';
+import { HardPointSize, HardPointType, HardPoint } from './Hardpoint';
+import { Manufacturers } from '~/utilities/Manufacturers';
+import { EquipmentTypes } from './Equipment';
 
-export default class HeatExchanger extends PassiveEquipment
+export abstract class HeatExchanger extends PassiveEquipment
 {
-    public get dissipationPerSecond() { return this._dissipationPerSecond }
+    public readonly maxStatusChange = MaxStatusChange.forHeat(this.maxHeatBonus)
+    public readonly statusChangePerSecond = CurrentStatusChange.forHeat(1000, this._heatPerSecond)
+    public readonly type = EquipmentTypes.HeatExchanger
 
-    constructor(private _dissipationPerSecond: number)
+    public get maxHeatBonus() { return this._maxHeatBonus }
+
+    constructor(heatPerSecond: number,
+                private _maxHeatBonus: number = 0)
     {
-        super()
+        super(heatPerSecond)
     }
+}
 
-    public update(t: number, dt: number) : StatusChange
+export class SmallHeatExchanger extends HeatExchanger
+{
+    public readonly manufacturer = Manufacturers.BattlePrep
+    public readonly modelName = "HEx-001s"
+    public readonly hardPointSize = HardPointSize.Small
+    public readonly hardPointType = HardPointType.WithoutExtras
+
+    constructor()
     {
-        return StatusChange.computeForHeat(dt, this.dissipationPerSecond)
+        super(5, 0)
     }
 }

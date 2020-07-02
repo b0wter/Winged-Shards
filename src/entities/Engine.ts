@@ -1,22 +1,36 @@
 import ActiveEquipment from './ActiveEquipment';
-import StatusChange from './StatusChange';
+import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges';
+import { Manufacturers } from '~/utilities/Manufacturers';
+import { HardPointSize, HardPointType } from './Hardpoint';
+import { EquipmentTypes } from './Equipment';
 
-export default class Engine extends ActiveEquipment
+export abstract class Engine extends ActiveEquipment
 {
     public get maxVelocity() { return this._maxVelocity }
     public get heatPerSecond() { return this._heatPerSecond }
 
-    constructor(private _maxVelocity: number,
-                private _heatPerSecond: number)
+    public readonly maxStatusChange = MaxStatusChange.zero
+    public readonly type = EquipmentTypes.Engine
+
+    constructor(heatPerSecond: number,
+                private _maxVelocity: number)
     {
-        super()
+        super(heatPerSecond)
     }
 
-    public update(t: number, dt: number, active: boolean)
+    public update(t: number, dt: number, isMoving: boolean)
     {
-        if(active)
-            return StatusChange.computeForHeat(dt, this.heatPerSecond)
+        if(isMoving)
+            return CurrentStatusChange.forHeat(dt, this.heatPerSecond)
         else
-            return StatusChange.Zero
+            return CurrentStatusChange.zero
     }
+}
+
+export class SmallEngine extends Engine
+{
+    public readonly manufacturer = Manufacturers.BattlePrep
+    public readonly modelName = "Satithrust-031"
+    public readonly hardPointSize = HardPointSize.Small
+    public readonly hardPointType = HardPointType.WithoutExtras
 }

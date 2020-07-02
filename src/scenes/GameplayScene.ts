@@ -11,6 +11,7 @@ import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import TilemapDefinition from './TilemapDefinition';
 import { Game } from 'phaser';
 import EnemyTiledObject from '~/utilities/EnemyTiledObject';
+import { DefaultFighter } from '~/entities/Ship';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -100,6 +101,8 @@ export default abstract class GameplayScene extends BaseScene
         this.createEntities(this.map.objects)
         //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
         this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
+
+        const xyz = DefaultFighter.instantiate()
     }
 
     protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
@@ -153,7 +156,8 @@ export default abstract class GameplayScene extends BaseScene
 
     private createPlayer(x, y, angle, template)
     {
-        const player = new PlayerEntity(this, x, y, angle, 'spaceship_01', this.colliders.addEntityFunc)
+        const ship = DefaultFighter.instantiate()
+        const player = new PlayerEntity(this, x, y, angle, ship, this.colliders.addEntityFunc)
         const laser1 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20)
         const laser2 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20)
         const laser3 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0)

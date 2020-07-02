@@ -1,5 +1,5 @@
-import Equipment from './Equipment';
-import StatusChange from './StatusChange';
+import { Equipment } from './Equipment';
+import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
 
 /**
  * Equipment that is not running all the time but also not actively triggerd:
@@ -7,5 +7,6 @@ import StatusChange from './StatusChange';
  */
 export default abstract class ActiveEquipment extends Equipment
 {
-    public abstract update(t: number, dt: number, active: boolean) : StatusChange
+    public abstract update(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
+    public readonly statusChangePerSecond = CurrentStatusChange.zero
 }
