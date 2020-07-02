@@ -59,12 +59,15 @@ export type HardPointEquipmentChangeListener = (_: HardPoint, previousEquipment:
 
 export class HardPoint
 {
+    private static readonly UnsetEquipmentGroup = -1
+
     public get equipment() { return this._equipment }
     public set equipment(e) {
         const previous = this._equipment
         this._equipment = e 
         this._changeListeners.forEach(l => l(this, previous, this.equipment))
     }
+    private _equipment : HardPointEquipment = EmptyHardPoint
 
     private _changeListeners: HardPointEquipmentChangeListener[] = []
 
@@ -72,11 +75,12 @@ export class HardPoint
                 public readonly type: HardPointType,
                 public readonly offsetX: number,
                 public readonly offsetY: number,
-                public equipmentGroup: number,
-                private _equipment : HardPointEquipment = EmptyHardPoint
+                equipment?: Equipment,
+                public equipmentGroup: number = HardPoint.UnsetEquipmentGroup
                 )
     {
-        //
+        if(equipment !== undefined)
+            this._equipment = { kind: "equipment", equipment: equipment }
     }
 
     public addChangeListener(c: HardPointEquipmentChangeListener)

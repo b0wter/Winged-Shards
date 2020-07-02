@@ -23,9 +23,9 @@ abstract class StatusChange
         return constructor(a.shield + b.shield, a.hull + b.hull, a.structure + b.structure, a.heat + b.heat, a.speed + b.speed)
     }
 
-    protected static combineAllGeneric<T extends StatusChange>(changes: T[], combinator: (_: T, __: T) => T)
+    protected static combineAllGeneric<T extends StatusChange>(changes: T[], combinator: (_: T, __: T) => T, zero: T)
     {
-        return changes.reduce(combinator)
+        return changes.reduce(combinator, zero)
     }
 
     protected static computeFraction(dt: number, valuePerSecond: number)
@@ -60,7 +60,7 @@ export class CurrentStatusChange extends StatusChange
 
     public static combineAll(changes: CurrentStatusChange[])
     {
-        return StatusChange.combineAllGeneric(changes, CurrentStatusChange.combine)
+        return StatusChange.combineAllGeneric(changes, CurrentStatusChange.combine, CurrentStatusChange.zero)
     }
 
     private static create(shield, hull, structure, heat, speed) : CurrentStatusChange
@@ -95,7 +95,7 @@ export class MaxStatusChange extends StatusChange
 
     public static combineAll(changes: MaxStatusChange[])
     {
-        return StatusChange.combineAllGeneric(changes, MaxStatusChange.combine)
+        return StatusChange.combineAllGeneric(changes, MaxStatusChange.combine, MaxStatusChange.zero)
     }
 
     private static create(shield, hull, structure, heat, speed) : MaxStatusChange

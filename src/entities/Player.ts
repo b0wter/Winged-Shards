@@ -33,7 +33,7 @@ export default class PlayerEntity extends PhysicalEntity
 
     constructor(scene: Phaser.Scene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
     {
-        super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 2, 5, colliderGroupFunc, angle, undefined)
+        super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
     }
 
     private triggerEquipmentGroup(group: TriggeredEquipment[], t: number)
@@ -55,10 +55,18 @@ export default class PlayerEntity extends PhysicalEntity
         this.handleInput(input, t)
     }
 
-    private updateEquipment(t, dt, x, y, angle) : CurrentStatusChange
+    private updateEquipment(t, dt, x, y, angle)
     {
-        const changes = this.allEquipmentGroups.flatMap(x => x.map(y => y.update(t, dt, false)))
-        return CurrentStatusChange.combineAll(changes)
+        const update = this._ship.update(t, dt, [], false)
+        this.shields += update.shield
+        this.hull += update.hull
+        this.structure += update.structure
+        this.heat += update.heat
+
+        //TODO: speed bonus is not included!
+
+        //const changes = this.allEquipmentGroups.flatMap(x => x.map(y => y.update(t, dt, false)))
+        //return CurrentStatusChange.combineAll(changes)
     }
 
     private handleInput(input: PlayerInput, t)

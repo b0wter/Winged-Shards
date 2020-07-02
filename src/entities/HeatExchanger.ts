@@ -28,6 +28,6 @@ export class SmallHeatExchanger extends HeatExchanger
 
     constructor()
     {
-        super(5, 0)
+        super(-5, 0)
     }
 }

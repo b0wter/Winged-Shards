@@ -1,10 +1,10 @@
 import ActiveEquipment from './ActiveEquipment';
 import PassiveEquipment from './PassiveEquipment';
-import { HardPoint, HardPointEquipment } from './Hardpoint';
+import { HardPoint, HardPointEquipment, HardPointType, HardPointSize } from './Hardpoint';
 import { Equipment, EquipmentTypes } from './Equipment';
 import { EquipmentCooldownChangedCallback, TriggeredEquipment } from './TriggeredEquipment';
-import { MaxStatusChange } from './StatusChanges';
-import { HeatExchanger } from './HeatExchanger';
+import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
+import { HeatExchanger, SmallHeatExchanger } from './HeatExchanger';
 import { Manufacturers } from '~/utilities/Manufacturers';
 
 export class HardpointEquipmentQuery {
@@ -117,9 +117,11 @@ export class Ship
         return equipment
     }
 
-    public update(t: number, dt: number, triggeredEquipmentGroups: number[], isMoving: boolean)
+    public update(t: number, dt: number, triggeredEquipmentGroups: number[], isMoving: boolean) : CurrentStatusChange
     {
-        this.allEquipment.map(e => e.update(t, dt, isMoving))
+        const equipment = this.allEquipment
+        const updates = equipment.map(e => e.update(t, dt, isMoving))
+        return CurrentStatusChange.combineAll(updates)
     }
 
     public trigger(index: number, x, y, angle, t, ownerId)
@@ -132,24 +134,41 @@ export class Ship
     }
 }
 
-export class ShipTemplate
+export abstract class ShipTemplate
 {
-    public modelName = "<Model Name>"
-    public manufacturer = Manufacturers.Dummy
-    public spriteKey = ""
-    public hull = 1
-    public structure = 1
-    public maxHeat = 1
-    public heatDissipation = 0
-    public maxSpeed = 0
-    public hardPoints: HardPoint[] = []
+    public abstract modelName: string
+    public abstract manufacturer: Manufacturers
+    public abstract spriteKey: string
+    public abstract hull: number
+    public abstract structure: number
+    public abstract maxHeat: number
+    public abstract heatDissipation: number
+    public abstract maxSpeed: number
+    public abstract hardpoints: HardPoint[] 
 
     public instantiate()
     {
-        return new Ship(this.hull, this.structure, this.maxSpeed, this.maxHeat, this.heatDissipation, this.hardPoints, this.spriteKey, this.manufacturer, this.modelName)
+        return new Ship(this.hull, this.structure, this.maxSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.manufacturer, this.modelName)
     }
 }
 
+export class DefaultFighterTemplate extends ShipTemplate
+{
+    public modelName = "Rapier V-37"
+    public manufacturer = Manufacturers.Roskosmos
+    public spriteKey = "spaceship_01"
+    public hull = 100
+    public structure = 50
+    public heatDissipation = 0
+    public maxHeat = 100
+    public maxSpeed = 200
+    public hardpoints = [
+        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
+        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
+        new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger())
+    ]
+}
+/*
 export const DefaultFighter : ShipTemplate =
     Object.assign(new ShipTemplate(),
     {
@@ -158,8 +177,13 @@ export const DefaultFighter : ShipTemplate =
         spriteKey: "spaceship_01",
         hull: 100,
         structure: 50,
-        heatDissipation: 5,
+        heatDissipation: 0,
         maxHeat: 100,
         maxSpeed: 200,
-        hardpoints: []
+        hardpoints: [
+            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
+            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger()),
+            new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, 0, 0, new SmallHeatExchanger())
+        ]
     })
+    */
