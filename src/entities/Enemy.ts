@@ -6,9 +6,9 @@ import PlayerEntity from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
 import { Weapon, WeaponTemplate, DummyWeapon, LightLaser } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
-import HelloWorldScene from '~/scenes/HelloWorldScene'
 import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
+import GameplayScene from '~/scenes/GameplayScene'
 
 export class Enemy extends PhysicalEntity
 {
@@ -94,7 +94,7 @@ export class Enemy extends PhysicalEntity
     private seesPlayer(player: PlayerEntity) : boolean
     {
         const ray = new Phaser.Geom.Line(this.x, this.y, player.x, player.y)
-        var intersects = (this.scene as HelloWorldScene).computeWallIntersection(ray)
+        var intersects = (this.scene as GameplayScene).computeWallIntersection(ray)
         return intersects
     }
 

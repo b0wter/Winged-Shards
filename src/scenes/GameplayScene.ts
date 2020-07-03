@@ -80,6 +80,8 @@ export default abstract class GameplayScene extends BaseScene
 
     private leftEntranceObjective = false
 
+    private finishedInitialization = false
+
     constructor(name: string)
     {
         super(name)
@@ -87,20 +89,26 @@ export default abstract class GameplayScene extends BaseScene
     
     create()
     {
-        this.map = this.createMap(this.mapName)
-        this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
-        this.colliders = new ColliderCollection(this, 
-                                                this.collisionLayer, 
-                                                this.playerBulletHitsPlayer.bind(this),
-                                                this.playerBulletHitsEnemy.bind(this),
-                                                this.enemyBulletHitsEnemy.bind(this),
-                                                this.enemyBulletHitsPlayer.bind(this)
-                                                )
-        this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
-        this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
-        this.createEntities(this.map.objects)
-        //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
-        this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
+        this.leftEntranceObjective = false
+        if(this.finishedInitialization === false)
+        {
+            console.log("Initializing a scene.")
+            this.map = this.createMap(this.mapName)
+            this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
+            this.colliders = new ColliderCollection(this, 
+                                                    this.collisionLayer, 
+                                                    this.playerBulletHitsPlayer.bind(this),
+                                                    this.playerBulletHitsEnemy.bind(this),
+                                                    this.enemyBulletHitsEnemy.bind(this),
+                                                    this.enemyBulletHitsPlayer.bind(this)
+                                                    )
+            this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
+            this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
+            this.createEntities(this.map.objects)
+            //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
+            this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
+        }
+        this.finishedInitialization = true
     }
 
     protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
@@ -181,6 +189,7 @@ export default abstract class GameplayScene extends BaseScene
         this.enemies.forEach( (item, index) => {
             if(item === e) this.enemies.splice(index,1);
         }); 
+        e.destroy()
     }
 
     update(t: number, dt: number)
@@ -195,6 +204,16 @@ export default abstract class GameplayScene extends BaseScene
         player.setAngle(rightAxis.direction) 
 
         player.update(t, dt, this.userInputs[0])
+
+        if(this.mapName === "campaign_01_room_001_map")
+        {
+            console.log("update Room 1")
+        }
+
+        if(this.mapName === "campaign_01_room_002_map")
+        {
+            console.log("update Room 2")
+        }
 
         this.enemies.forEach(x => x.update(t, dt, [ player ]))
         // overlap - physics!
