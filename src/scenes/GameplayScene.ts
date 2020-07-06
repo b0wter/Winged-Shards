@@ -1,5 +1,5 @@
 import BaseScene from './BaseScene';
-import PlayerEntity from '~/entities/Player';
+import { PlayerEntity, PlayerState } from '~/entities/Player';
 import { Enemy, EnemyTemplate, LightFighter, EnemyTemplates } from '~/entities/Enemy';
 import PlayerInput from '~/input/PlayerInput';
 import { ColliderCollection } from './ColliderCollection';
@@ -82,6 +82,8 @@ export default abstract class GameplayScene extends BaseScene
 
     private finishedInitialization = false
 
+    private previousPlayerState: PlayerState[] = []
+
     constructor(name: string)
     {
         super(name)
@@ -93,6 +95,8 @@ export default abstract class GameplayScene extends BaseScene
         if(this.finishedInitialization === false)
         {
             console.log("Initializing a scene.")
+            this.events.on("resume", this.resume)
+            this.events.on("pause", () => console.log("paused"))
             this.map = this.createMap(this.mapName)
             this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
             this.colliders = new ColliderCollection(this, 
@@ -109,6 +113,26 @@ export default abstract class GameplayScene extends BaseScene
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
         }
         this.finishedInitialization = true
+    }
+
+    resume(playerStates? : PlayerState[])
+    {
+        console.log("Resuming a previous scene.")
+        this.userInputs.forEach(i => i.activate())
+
+        if(this.players.length === 0) {
+            this.previousPlayerState = playerStates ?? []
+            return
+        } else {
+            this.previousPlayerState = []
+        }
+        if(playerStates === undefined) {
+            return
+        }
+        console.log(playerStates, this.players)
+        for (let index = 0; index < playerStates.length; index++) {
+            this.players[index].importState(playerStates[index])
+        }
     }
 
     protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
@@ -205,16 +229,6 @@ export default abstract class GameplayScene extends BaseScene
 
         player.update(t, dt, this.userInputs[0])
 
-        if(this.mapName === "campaign_01_room_001_map")
-        {
-            console.log("update Room 1")
-        }
-
-        if(this.mapName === "campaign_01_room_002_map")
-        {
-            console.log("update Room 2")
-        }
-
         this.enemies.forEach(x => x.update(t, dt, [ player ]))
         // overlap - physics!
 
@@ -259,7 +273,13 @@ export default abstract class GameplayScene extends BaseScene
     protected switchScene(sceneName)
     {
         console.log(`Changing room to '${sceneName}'.`)
-        this.scene.start(sceneName, this.players)
+        //this.scene.pause()
+        //this.scene.launch(sceneName)
+        //this.scene.start(sceneName, this.players)
+        this.leftEntranceObjective = false
+        this.userInputs.forEach(i => i.deactivate());
+        (this.scene.get(sceneName) as GameplayScene).resume(this.players.map(p => p.exportState()))
+        this.scene.switch(sceneName)
     }
 
     public computeWallIntersection(ray: Phaser.Geom.Line)

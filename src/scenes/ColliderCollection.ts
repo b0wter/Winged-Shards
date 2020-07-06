@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import PlayerEntity from '~/entities/Player'
+import { PlayerEntity } from '~/entities/Player'
 import { Enemy } from '~/entities/Enemy'
 import { Projectile } from '~/entities/Projectile'
 import PhysicalEntity from '~/entities/PhysicalEntity'

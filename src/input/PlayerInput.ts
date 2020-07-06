@@ -27,5 +27,9 @@ export default abstract class PlayerInput {
 	}
 
 	abstract update()
+
+	abstract activate()
+
+	abstract deactivate()
 }
 

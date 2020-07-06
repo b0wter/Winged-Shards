@@ -12,7 +12,7 @@ import StatusBar from '~/interface/StatusBar'
 import { CurrentStatusChange } from './StatusChanges'
 import { Ship } from './Ship'
 
-export default class PlayerEntity extends PhysicalEntity
+export class PlayerEntity extends PhysicalEntity
 {
     public readonly primaryEquipmentGroup: TriggeredEquipment[] = []
     public get primaryEquipment() { return this.primaryEquipmentGroup[0] } 
@@ -105,5 +105,36 @@ export default class PlayerEntity extends PhysicalEntity
         emitter.stop()
         emitter.explode(20, this.x, this.y)
         setTimeout(() => emitter.remove(), 750)
+    }
+
+    public exportState()
+    {
+        return new PlayerState(this.shieldValue, this.hullValue, this.structureValue, this.heatValue)
+    }
+
+    public importState(state: PlayerState)
+    {
+        // Don't replace the clamped numbers because it destoys the callbacks!
+        this.shieldValue.current = state.shield.current
+        this.hullValue.current = state.hull.current
+        this.structureValue.current = state.structure.current
+        this.heatValue.current = state.heat.current
+
+        // TODO: Equipment status and cooldowns need to be set as well!
+    }
+}
+
+export class PlayerState
+{
+    // TODO: add a player id? What happens if a player was killed?
+    
+    constructor(
+        public shield: ClampedNumber,
+        public hull: ClampedNumber,
+        public structure: ClampedNumber,
+        public heat: ClampedNumber
+    )
+    {
+        //  
     }
 }

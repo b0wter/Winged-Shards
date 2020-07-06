@@ -7,15 +7,15 @@ import ButtonInput from './ButtonInput'
 
 export default class KeyboardMouseInput extends PlayerInput
 {
-	private readonly cursor: Phaser.Types.Input.Keyboard.CursorKeys
+	private cursor!: Phaser.Types.Input.Keyboard.CursorKeys
 	private readonly pointer: Phaser.Input. Pointer
 	private pointerLeftDown = false
 	private pointerRightDown = false
 
-	private readonly action1Key: Phaser.Input.Keyboard.Key
-	private readonly action2Key: Phaser.Input.Keyboard.Key
-	private readonly action3Key: Phaser.Input.Keyboard.Key
-	private readonly action4Key: Phaser.Input.Keyboard.Key
+	private action1Key!: Phaser.Input.Keyboard.Key
+	private action2Key!: Phaser.Input.Keyboard.Key
+	private action3Key!: Phaser.Input.Keyboard.Key
+	private action4Key!: Phaser.Input.Keyboard.Key
 	private action1IsDown = false
 	private action2IsDown = false
 	private action3IsDown = false
@@ -25,10 +25,10 @@ export default class KeyboardMouseInput extends PlayerInput
 	private action3Input = ButtonInput.Empty()
 	private action4Input = ButtonInput.Empty()
 
-	private readonly digital1Key: Phaser.Input.Keyboard.Key
-	private readonly digital2Key: Phaser.Input.Keyboard.Key
-	private readonly digital3Key: Phaser.Input.Keyboard.Key
-	private readonly digital4Key: Phaser.Input.Keyboard.Key
+	private digital1Key!: Phaser.Input.Keyboard.Key
+	private digital2Key!: Phaser.Input.Keyboard.Key
+	private digital3Key!: Phaser.Input.Keyboard.Key
+	private digital4Key!: Phaser.Input.Keyboard.Key
 	private digital1IsDown = false
 	private digital2IsDown = false
 	private digital3IsDown = false
@@ -41,22 +41,54 @@ export default class KeyboardMouseInput extends PlayerInput
 	private bumperLeftInput = ButtonInput.Empty()
 	private bumperRightInput = ButtonInput.Empty()
 
-	constructor(scene: Phaser.Scene, 
+	constructor(private scene: Phaser.Scene, 
 				private player: Phaser.GameObjects.Container)
 	{
 		super()
-		this.cursor = scene.input.keyboard.addKeys({up: KeyCodes.W, down: KeyCodes.S, left: KeyCodes.A, right: KeyCodes.D}) //scene.input.keyboard.createCursorKeys()
-		this.action1Key = scene.input.keyboard.addKey(KeyCodes.Q, true, false)
-		this.action2Key = scene.input.keyboard.addKey(KeyCodes.E, true, false)
-		this.action3Key = scene.input.keyboard.addKey(KeyCodes.F, true, false)
-		this.action4Key = scene.input.keyboard.addKey(KeyCodes.G, true, false)
-		this.digital1Key = scene.input.keyboard.addKey(KeyCodes.ONE, true, false)
-		this.digital2Key = scene.input.keyboard.addKey(KeyCodes.TWO, true, false)
-		this.digital3Key = scene.input.keyboard.addKey(KeyCodes.THREE, true, false)
-		this.digital4Key = scene.input.keyboard.addKey(KeyCodes.FOUR, true, false)
+
+		this.activate()
 
 		this.pointer = scene.input.activePointer
 		scene.input.mouse.disableContextMenu()
+	}
+
+	activate()
+	{
+		this.cursor 	= this.scene.input.keyboard.addKeys({up: KeyCodes.W, down: KeyCodes.S, left: KeyCodes.A, right: KeyCodes.D}) //scene.input.keyboard.createCursorKeys()
+		this.action1Key = this.scene.input.keyboard.addKey(KeyCodes.Q, true, false)
+		this.action2Key = this.scene.input.keyboard.addKey(KeyCodes.E, true, false)
+		this.action3Key = this.scene.input.keyboard.addKey(KeyCodes.F, true, false)
+		this.action4Key = this.scene.input.keyboard.addKey(KeyCodes.G, true, false)
+		this.digital1Key = this.scene.input.keyboard.addKey(KeyCodes.ONE, true, false)
+		this.digital2Key = this.scene.input.keyboard.addKey(KeyCodes.TWO, true, false)
+		this.digital3Key = this.scene.input.keyboard.addKey(KeyCodes.THREE, true, false)
+		this.digital4Key = this.scene.input.keyboard.addKey(KeyCodes.FOUR, true, false)
+	}
+
+	deactivate()
+	{
+		this.scene.input.keyboard.removeCapture(KeyCodes.W)
+		this.scene.input.keyboard.removeCapture(KeyCodes.A)
+		this.scene.input.keyboard.removeCapture(KeyCodes.S)
+		this.scene.input.keyboard.removeCapture(KeyCodes.D)
+		this.scene.input.keyboard.removeCapture(KeyCodes.E)
+		this.scene.input.keyboard.removeCapture(KeyCodes.F)
+		this.scene.input.keyboard.removeCapture(KeyCodes.G)
+		this.scene.input.keyboard.removeCapture(KeyCodes.ONE)
+		this.scene.input.keyboard.removeCapture(KeyCodes.TWO)
+		this.scene.input.keyboard.removeCapture(KeyCodes.THREE)
+		this.scene.input.keyboard.removeCapture(KeyCodes.FOUR)
+		this.scene.input.keyboard.removeKey(KeyCodes.W)
+		this.scene.input.keyboard.removeKey(KeyCodes.A)
+		this.scene.input.keyboard.removeKey(KeyCodes.S)
+		this.scene.input.keyboard.removeKey(KeyCodes.D)
+		this.scene.input.keyboard.removeKey(KeyCodes.E)
+		this.scene.input.keyboard.removeKey(KeyCodes.F)
+		this.scene.input.keyboard.removeKey(KeyCodes.G)
+		this.scene.input.keyboard.removeKey(KeyCodes.ONE)
+		this.scene.input.keyboard.removeKey(KeyCodes.TWO)
+		this.scene.input.keyboard.removeKey(KeyCodes.THREE)
+		this.scene.input.keyboard.removeKey(KeyCodes.FOUR)
 	}
 
 	leftAxis()
