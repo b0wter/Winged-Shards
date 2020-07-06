@@ -1,19 +1,19 @@
 import ClampedNumber from '~/utilities/ClampedNumber';
 import PassiveEquipment from './PassiveEquipment';
 import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges';
+import { EquipmentTypes } from './Equipment';
 
-export default class ShieldGenerator extends PassiveEquipment
+export default abstract class ShieldGenerator extends PassiveEquipment
 {
-    public get maxShields() { return this._maxShields }
-    public get rechargeRate() { return this._rechargeRate }
+    public readonly abstract maxShields
+    public readonly abstract rechargeRate
+    public readonly type = EquipmentTypes.Shield
 
-    public readonly maxStatusChange = MaxStatusChange.forShield(this.maxShields)
-    public readonly statusChangePerSecond = CurrentStatusChange.forShield(1000, this.rechargeRate)
+    public get maxStatusChange() { return MaxStatusChange.forShield(this.maxShields) }
+    public get statusChangePerSecond() { return CurrentStatusChange.forShield(1000, this.rechargeRate) }
 
-    constructor(heatPerSecond: number,
-                private _maxShields: number,
-                private _rechargeRate: number)
+    constructor()
     {
-        super(heatPerSecond)
+        super()
     }
 }

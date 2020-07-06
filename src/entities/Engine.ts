@@ -6,16 +6,15 @@ import { EquipmentTypes } from './Equipment';
 
 export abstract class Engine extends ActiveEquipment
 {
-    public get maxVelocity() { return this._maxVelocity }
-    public get heatPerSecond() { return this._heatPerSecond }
-
     public readonly maxStatusChange = MaxStatusChange.zero
     public readonly type = EquipmentTypes.Engine
 
-    constructor(heatPerSecond: number,
-                private _maxVelocity: number)
+    public abstract readonly maxVelocity
+    public abstract readonly heatPerSecond
+
+    constructor()
     {
-        super(heatPerSecond)
+        super()
     }
 
     public update(t: number, dt: number, isMoving: boolean)
@@ -25,12 +24,4 @@ export abstract class Engine extends ActiveEquipment
         else
             return CurrentStatusChange.zero
     }
-}
-
-export class SmallEngine extends Engine
-{
-    public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "Satithrust-031"
-    public readonly hardPointSize = HardPointSize.Small
-    public readonly hardPointType = HardPointType.WithoutExtras
 }

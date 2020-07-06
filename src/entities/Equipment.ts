@@ -19,8 +19,8 @@ export abstract class Equipment
 
     public get isDestroyed() { return this._isDestroyed }
 
-    public abstract readonly maxStatusChange : MaxStatusChange
-    public abstract readonly statusChangePerSecond: CurrentStatusChange
+    public abstract get maxStatusChange() : MaxStatusChange
+    public abstract get statusChangePerSecond(): CurrentStatusChange
 
     public abstract readonly manufacturer: Manufacturers
     public abstract readonly modelName: string
@@ -29,7 +29,7 @@ export abstract class Equipment
     public abstract readonly type: EquipmentTypes
     public abstract readonly class: string
 
-    constructor(protected _heatPerSecond: number)
+    constructor()
     {
         //
     }
