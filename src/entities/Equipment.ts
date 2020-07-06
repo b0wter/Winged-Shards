@@ -27,6 +27,7 @@ export abstract class Equipment
     public abstract readonly hardPointSize : HardPointSize
     public abstract readonly hardPointType : HardPointType
     public abstract readonly type: EquipmentTypes
+    public abstract readonly class: string
 
     constructor(protected _heatPerSecond: number)
     {

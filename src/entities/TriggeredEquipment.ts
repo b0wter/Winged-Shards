@@ -40,6 +40,9 @@ export abstract class TriggeredEquipment extends Equipment
 
     public readonly statusChangePerSecond = CurrentStatusChange.zero
 
+    public static readonly class = "triggered"
+    public readonly class = TriggeredEquipment.class
+
     constructor(protected _cooldown: number,
                 protected _heatPerTrigger: number,
                 protected _team : Teams,

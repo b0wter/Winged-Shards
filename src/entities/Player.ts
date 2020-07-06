@@ -14,6 +14,7 @@ import { Ship } from './Ship'
 
 export class PlayerEntity extends PhysicalEntity
 {
+    /*
     public readonly primaryEquipmentGroup: TriggeredEquipment[] = []
     public get primaryEquipment() { return this.primaryEquipmentGroup[0] } 
     public readonly secondaryEquipmentGroup: TriggeredEquipment[] = []
@@ -26,10 +27,15 @@ export class PlayerEntity extends PhysicalEntity
     public get quinaryEquipment() { return this.quinaryEquipmentGroup[0] } 
     public readonly senaryEquipmentGroup: TriggeredEquipment[] = []
     public get senaryEquipment() { return this.senaryEquipmentGroup[0] } 
+    */
     
-    public get indexedEquipment() : [number, TriggeredEquipment][] { return [[0, this.primaryEquipment], [1, this.secondaryEquipment], [2, this.tertiaryEquipment], [3, this.quaternaryEquipment], [4, this.quinaryEquipment], [5. ,this.senaryEquipment]] }
+    //public get indexedEquipment() : [number, TriggeredEquipment][] { return [[0, this.primaryEquipment], [1, this.secondaryEquipment], [2, this.tertiaryEquipment], [3, this.quaternaryEquipment], [4, this.quinaryEquipment], [5. ,this.senaryEquipment]] }
 
-    private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
+    //private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
+
+    public get indexedEquipment() : [number, TriggeredEquipment[]][] { return [0, 1, 2, 3, 4, 5].map(i => [i, this.ship.triggeredEquipmentGroup(i)]) }
+
+    public get ship() { return this._ship }
 
     constructor(scene: Phaser.Scene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
     {
@@ -75,17 +81,17 @@ export class PlayerEntity extends PhysicalEntity
             return;
         let group: TriggeredEquipment[] = []
         if(input.bumperLeft.isDown)
-            group = this.primaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(0) //this.primaryEquipmentGroup
         else if(input.bumperRight.isDown)
-            group = this.secondaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(1) //this.secondaryEquipmentGroup
         else if(input.action1.isDown)
-            group = this.tertiaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(2) //this.tertiaryEquipmentGroup
         else if(input.action2.isDown)
-            group = this.quaternaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(3) //this.quaternaryEquipmentGroup
         else if(input.action3.isDown)
-            group = this.quinaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(4) //this.quinaryEquipmentGroup
         else if(input.action4.isDown)
-            group = this.senaryEquipmentGroup
+            group = this.ship.triggeredEquipmentGroup(5) //this.senaryEquipmentGroup
 
         this.triggerEquipmentGroup(group, t)
     }
@@ -127,7 +133,7 @@ export class PlayerEntity extends PhysicalEntity
 export class PlayerState
 {
     // TODO: add a player id? What happens if a player was killed?
-    
+
     constructor(
         public shield: ClampedNumber,
         public hull: ClampedNumber,

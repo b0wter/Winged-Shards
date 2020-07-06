@@ -42,7 +42,7 @@ export default class PlayerPlate
         return this.shieldBar.x + this.width
     }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, shield: ClampedNumber, hull: ClampedNumber, structure: ClampedNumber, heat: ClampedNumber, equipment: [number, TriggeredEquipment][])
+    constructor(scene: Phaser.Scene, x: number, y: number, shield: ClampedNumber, hull: ClampedNumber, structure: ClampedNumber, heat: ClampedNumber, equipment: [number, TriggeredEquipment[]][])
     {
         shield.addChangeListener(this.updateShields.bind(this))
         hull.addChangeListener(this.updateHull.bind(this))
@@ -60,8 +60,9 @@ export default class PlayerPlate
         this.bars.forEach(x => scene.add.existing(x))
     }
 
-    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment][], xOffset: number, yOffset: number, rowHeight: number) 
+    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, rowHeight: number) 
     {
+        equipment = equipment.filter(([_, e]) => e !== undefined && e.length !== 0)
         // There are six equipment groups, thus the bars are displayed in two columns and three rows:
         //   0   1
         //   2   3
@@ -81,7 +82,7 @@ export default class PlayerPlate
 
         const existingEquipment = equipment.filter(([_, e]) => e !== undefined)
 
-        return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e, computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
+        return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e[0], computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
     }
 
     private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)

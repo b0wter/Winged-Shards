@@ -102,6 +102,11 @@ export class Ship
         return this.equipmentBy(HardpointEquipmentQuery.forHardpoint(h => h.equipmentGroup === index))
     }
 
+    public triggeredEquipmentGroup(index: integer)
+    {
+        return this.equipmentBy(new HardpointEquipmentQuery(e => e.class === TriggeredEquipment.class, h => h.equipmentGroup === index)).map(e => e as TriggeredEquipment)
+    }
+
     public equipmentBy(q: HardpointEquipmentQuery = HardpointEquipmentQuery.always) : Equipment[]
     {
         const equipment : Equipment[] = []
@@ -165,5 +170,9 @@ export class DefaultFighterTemplate extends ShipTemplate
     public maxHeat = 100
     public maxSpeed = 200
     public hardpoints = [
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -20),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  20),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, 20,   0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0)
     ]
 }

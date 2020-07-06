@@ -3,6 +3,9 @@ import { CombinedStatusChange, CurrentStatusChange } from './StatusChanges';
 
 export default abstract class PassiveEquipment extends Equipment
 {
+    public static readonly class = "passive"
+    public readonly class = PassiveEquipment.class
+
     constructor(heatPerSecond: number)
     {
         super(heatPerSecond)

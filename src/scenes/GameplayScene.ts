@@ -12,6 +12,7 @@ import TilemapDefinition from './TilemapDefinition';
 import { Game } from 'phaser';
 import EnemyTiledObject from '~/utilities/EnemyTiledObject';
 import { DefaultFighterTemplate } from '~/entities/Ship';
+import { asHardPointEquipment } from '~/entities/Hardpoint';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -188,14 +189,19 @@ export default abstract class GameplayScene extends BaseScene
     {
         const ship = new DefaultFighterTemplate().instantiate()
         const player = new PlayerEntity(this, x, y, angle, ship, this.colliders.addEntityFunc)
-        const laser1 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20)
-        const laser2 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20)
-        const laser3 = Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0)
+        player.ship.hardpoints[0].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20))
+        player.ship.hardpoints[0].equipmentGroup = 0
+        player.ship.hardpoints[1].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20))
+        player.ship.hardpoints[1].equipmentGroup = 0
+        player.ship.hardpoints[2].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0))
+        player.ship.hardpoints[2].equipmentGroup = 0
         const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
-        player.primaryEquipmentGroup.push(laser1)
-        player.primaryEquipmentGroup.push(laser2)
-        player.primaryEquipmentGroup.push(laser3)
-        player.tertiaryEquipmentGroup.push(fusionGun)
+        player.ship.hardpoints[3].equipment = asHardPointEquipment(fusionGun)
+        player.ship.hardpoints[3].equipmentGroup = 1
+        //player.primaryEquipmentGroup.push(laser1)
+        //player.primaryEquipmentGroup.push(laser2)
+        //player.primaryEquipmentGroup.push(laser3)
+        //player.tertiaryEquipmentGroup.push(fusionGun)
         this.createInterface(player, this.playerInterfaces)
         return player
     }

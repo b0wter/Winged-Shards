@@ -57,6 +57,14 @@ export type HardPointEquipment = NoEquipment | WithEquipment
 
 export type HardPointEquipmentChangeListener = (_: HardPoint, previousEquipment: HardPointEquipment, newEquipment: HardPointEquipment) => void
 
+export function asHardPointEquipment(e: Equipment) : HardPointEquipment
+{
+    if(e === undefined)
+        return EmptyHardPoint
+    else
+        return {kind: "equipment", equipment: e}
+}
+
 export class HardPoint
 {
     private static readonly UnsetEquipmentGroup = -1
@@ -93,5 +101,15 @@ export class HardPoint
         this._changeListeners.forEach( (item, index) => {
             if(item === c) this._changeListeners.splice(index,1);
           })        
+    }
+
+    public static empty(size: HardPointSize, type: HardPointType, xOffset: number, yOffset: number)
+    {
+        return new HardPoint(size, type, xOffset, yOffset, undefined, undefined)
+    }
+
+    public static withEquipment(e: Equipment, size: HardPointSize, type: HardPointType, xOffset: number, yOffset: number, equipmentGroup?: number)
+    {
+        return new HardPoint(size, type, xOffset, yOffset, e, equipmentGroup)
     }
 }

@@ -9,4 +9,6 @@ export default abstract class ActiveEquipment extends Equipment
 {
     public abstract update(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
     public readonly statusChangePerSecond = CurrentStatusChange.zero
+    public static readonly class = "active"
+    public readonly class = ActiveEquipment.class
 }
