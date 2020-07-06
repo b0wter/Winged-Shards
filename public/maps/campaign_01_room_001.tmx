@@ -81,11 +81,11 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="5" name="navmesh" visible="0">
-  <object id="5" x="64" y="64" width="352" height="896"/>
+ <objectgroup id="5" name="navmesh">
+  <object id="5" x="64" y="64" width="352" height="832"/>
   <object id="6" x="416" y="64" width="96" height="448"/>
-  <object id="7" x="512" y="64" width="1056" height="896"/>
-  <object id="8" x="1568" y="800" width="64" height="160"/>
+  <object id="7" x="512" y="64" width="1056" height="832"/>
+  <object id="8" x="1568" y="800" width="64" height="96"/>
   <object id="9" x="1568" y="320" width="96" height="192"/>
   <object id="11" x="1664" y="64" width="192" height="640"/>
  </objectgroup>
