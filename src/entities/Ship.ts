@@ -5,6 +5,7 @@ import { Equipment, EquipmentTypes } from './Equipment';
 import { EquipmentCooldownChangedCallback, TriggeredEquipment } from './TriggeredEquipment';
 import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
 import { Manufacturers } from '~/utilities/Manufacturers';
+import { SmallShieldGenerator } from './templates/ShieldGenerators';
 
 export class HardpointEquipmentQuery {
     private static alwaysEquipmentPredicate: (Equipment) => boolean = (_) => true
@@ -28,6 +29,8 @@ export class HardpointEquipmentQuery {
 
     public static readonly always = new HardpointEquipmentQuery(HardpointEquipmentQuery.alwaysEquipmentPredicate, HardpointEquipmentQuery.alwaysHardpointPredicate)
 }
+
+export type ShipEquipmentChangedListener = (s: Ship, hardpoint: HardPoint, previous: HardPointEquipment, next: HardPointEquipment) => void
 
 export class Ship
 {
@@ -77,6 +80,8 @@ export class Ship
         return this.equipmentBy().map(([e, _]) => e)
     }
 
+    private equipmentChangedListeners: ShipEquipmentChangedListener[] = []
+
     constructor(private readonly _hull: number,
                 private readonly _structure: number,
                 private readonly _maxSpeed: number,
@@ -93,7 +98,8 @@ export class Ship
 
     private equipmentChanged(hardpoint: HardPoint, previousEquipment: HardPointEquipment, newEquipment: HardPointEquipment)
     {
-        console.log("NOT IMPLEMENTED --- equipment changed: ", hardpoint, previousEquipment, newEquipment)
+        console.log("NOT FULLY IMPLEMENTED --- equipment changed: ", hardpoint, previousEquipment, newEquipment)
+        this.equipmentChangedListeners.forEach(l => l(this, hardpoint, previousEquipment, newEquipment))
     }
 
     public equipmentGroup(index: integer)
@@ -139,6 +145,18 @@ export class Ship
                 t.trigger(x, y, angle, t, ownerId, h.offsetX, h.offsetY)
         })
     }
+
+    public addEquipmentChangedListener(l: ShipEquipmentChangedListener)
+    {
+        this.equipmentChangedListeners.push(l)
+    }
+
+    public removeEquipmentChangedListener(l: ShipEquipmentChangedListener)
+    {
+        this.equipmentChangedListeners.forEach( (item, index) => {
+            if(item === l) this.equipmentChangedListeners.splice(index,1);
+        });
+    }
 }
 
 export abstract class ShipTemplate
@@ -173,6 +191,7 @@ export class DefaultFighterTemplate extends ShipTemplate
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -20),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  20),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, 20,   0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0)
     ]
 }

@@ -29,6 +29,12 @@ export default class ClampedValue<T>
     }
 
     get max() { return this._max }
+    set max(value: T) {
+        if(this._greaterOrEqual(value, this.min))
+            this._max = value
+        else
+            console.warn("The 'max' of a ClampedValue has not been set because it is less than the 'min'.")
+    }
 
     get min() { return this._min }
 

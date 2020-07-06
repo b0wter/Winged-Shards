@@ -13,6 +13,7 @@ import { Game } from 'phaser';
 import EnemyTiledObject from '~/utilities/EnemyTiledObject';
 import { DefaultFighterTemplate } from '~/entities/Ship';
 import { asHardPointEquipment } from '~/entities/Hardpoint';
+import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -198,10 +199,7 @@ export default abstract class GameplayScene extends BaseScene
         const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
         player.ship.hardpoints[3].equipment = asHardPointEquipment(fusionGun)
         player.ship.hardpoints[3].equipmentGroup = 1
-        //player.primaryEquipmentGroup.push(laser1)
-        //player.primaryEquipmentGroup.push(laser2)
-        //player.primaryEquipmentGroup.push(laser3)
-        //player.tertiaryEquipmentGroup.push(fusionGun)
+        player.ship.hardpoints[4].equipment = asHardPointEquipment(new SmallShieldGenerator())
         this.createInterface(player, this.playerInterfaces)
         return player
     }

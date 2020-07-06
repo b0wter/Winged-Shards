@@ -131,11 +131,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
 
     protected internalUpdate(d: number, dt: number)
     {
-        const heatReduction = dt * this._heatDissipationPerSecond / 1000
-        this.heatValue.substract(heatReduction)
-
-        const shieldRecharge = dt * this._shieldRegenerationPerSecond / 1000
-        this.shieldValue.add(shieldRecharge)
+        // Previously heat and shield have been handled here but
+        // since the player is now a much more complex object
+        // there is no common code between enemies and players.
     }
 
     public takeDamage(damage: Damage.Damage)
