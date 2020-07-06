@@ -16,6 +16,6 @@ export default abstract class PassiveEquipment extends Equipment
         if(this.isDestroyed)
             return CurrentStatusChange.zero
         else
-            return this.statusChangePerSecond.scaled(dt/1000)
+            return this.statusChangePerDeltaTime(dt)
     }
 }

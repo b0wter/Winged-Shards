@@ -5,7 +5,10 @@ import { Teams } from './Teams'
 import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
-import { CombinedStatusChange, MaxStatusChange } from './StatusChanges'
+import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges'
+import { HardPointType, HardPointSize } from './Hardpoint'
+import { Manufacturers } from '~/utilities/Manufacturers'
+import { EquipmentTypes } from './Equipment'
 
 export interface None { }
 export const NoSpread : None = { }
@@ -15,6 +18,14 @@ export type WeaponSpread = None | Angular | Parallel
 
 export class Weapon extends TriggeredEquipment
 {
+
+    public hardPointType = HardPointType.WithoutExtras
+    public hardPointSize = HardPointSize.Small
+    public manufacturer = Manufacturers.BattlePrep
+    public modelName = "DUMMY MODEL"
+    public statusChangePerDeltaTime(dt: number) { return CurrentStatusChange.zero }
+    public type = EquipmentTypes.Weapon
+
     public get range() { return this.projectile.range }
 
     public readonly maxStatusChange = MaxStatusChange.zero
@@ -27,17 +38,15 @@ export class Weapon extends TriggeredEquipment
                 private spread: WeaponSpread,
                 private initialDelay: number,
                 private delayBetweenShots: number,
-                team: Teams,
-                mountPointOffsetX: number,
-                mountPointOffsetY: number
+                team: Teams
                )
     {
-        super(_cooldown, heatPerShot, team, mountPointOffsetX, mountPointOffsetY)
+        super(_cooldown, heatPerShot, team)
         if(this._team !== Teams.Players) this.cooldownModifier = 2
     }
 
     /**
-     * Tries to shoot this weapon. Does not run a cooldown check!
+     * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
     protected internalTrigger(x, y, angle, time, owner) {
         Projectile.fromTemplate(this.scene, x, y, this._team, angle, this.projectile, this.colliderFunc, owner)
@@ -46,11 +55,6 @@ export class Weapon extends TriggeredEquipment
     protected internalUpdate(t: number, dt: number)
     {
         //
-    }
-
-    protected mountOffset()
-    {
-        return new Phaser.Math.Vector2(this.mountPointOffsetX, this.mountPointOffsetY)
     }
 }
 
@@ -68,7 +72,7 @@ export class WeaponTemplate extends ActiveEquipmentTemplate
 
     public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
     {
-        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team, mountPointOffsetX, mountPointOffsetY)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team)
     }
 }
 

@@ -10,10 +10,11 @@ export default abstract class ShieldGenerator extends PassiveEquipment
     public readonly type = EquipmentTypes.Shield
 
     public get maxStatusChange() { return MaxStatusChange.forShield(this.maxShields) }
-    public get statusChangePerSecond() { return CurrentStatusChange.forShield(1000, this.rechargeRate) }
 
     constructor()
     {
         super()
     }
+
+    public statusChangePerDeltaTime(dt: number) { return CurrentStatusChange.forShield(dt, this.rechargeRate) }
 }

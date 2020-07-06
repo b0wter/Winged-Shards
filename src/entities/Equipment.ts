@@ -20,7 +20,7 @@ export abstract class Equipment
     public get isDestroyed() { return this._isDestroyed }
 
     public abstract get maxStatusChange() : MaxStatusChange
-    public abstract get statusChangePerSecond(): CurrentStatusChange
+    public abstract statusChangePerDeltaTime(dt: number): CurrentStatusChange
 
     public abstract readonly manufacturer: Manufacturers
     public abstract readonly modelName: string

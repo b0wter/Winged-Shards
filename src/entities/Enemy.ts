@@ -105,7 +105,7 @@ export class Enemy extends PhysicalEntity
         const offsetX = offset * Math.cos(this.rotation)
         const offsetY = offset * Math.sin(this.rotation)
 
-        e.trigger(this.x + offsetX, this.y + offsetY, this.angle, t, this.name)
+        e.trigger(this.x + offsetX, this.y + offsetY, this.angle, t, this.name, 0, 0)
     }
 }
 

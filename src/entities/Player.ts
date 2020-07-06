@@ -11,6 +11,7 @@ import { AddEntityFunc } from '~/scenes/ColliderCollection'
 import StatusBar from '~/interface/StatusBar'
 import { CurrentStatusChange } from './StatusChanges'
 import { Ship } from './Ship'
+import { HardPoint } from './Hardpoint'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -33,7 +34,7 @@ export class PlayerEntity extends PhysicalEntity
 
     //private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
 
-    public get indexedEquipment() : [number, TriggeredEquipment[]][] { return [0, 1, 2, 3, 4, 5].map(i => [i, this.ship.triggeredEquipmentGroup(i)]) }
+    public get indexedEquipment() : [number, TriggeredEquipment[]][] { return [0, 1, 2, 3, 4, 5].map(i => [i, this.ship.triggeredEquipmentGroup(i).map(([e, _]) => e)]) }
 
     public get ship() { return this._ship }
 
@@ -42,12 +43,12 @@ export class PlayerEntity extends PhysicalEntity
         super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
     }
 
-    private triggerEquipmentGroup(group: TriggeredEquipment[], t: number)
+    private triggerEquipmentGroup(group: [TriggeredEquipment, HardPoint][], t: number)
     {
-        group.forEach(x => { 
-            if(x.heatPerTrigger <= this.remainingHeatBudget)
+        group.forEach(([e, h]) => { 
+            if(e.heatPerTrigger <= this.remainingHeatBudget)
             {
-                const heatGenerated = x.trigger(this.x, this.y, this.angle, t, this.name)
+                const heatGenerated = e.trigger(this.x, this.y, this.angle, t, this.name, h.offsetX, h.offsetY)
                 this.heatValue.add(heatGenerated)
             }
         })
@@ -79,7 +80,7 @@ export class PlayerEntity extends PhysicalEntity
     {
         if(input === undefined)
             return;
-        let group: TriggeredEquipment[] = []
+        let group: [TriggeredEquipment, HardPoint][] = []
         if(input.bumperLeft.isDown)
             group = this.ship.triggeredEquipmentGroup(0) //this.primaryEquipmentGroup
         else if(input.bumperRight.isDown)

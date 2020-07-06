@@ -7,8 +7,7 @@ import { EquipmentTypes } from './Equipment';
 export abstract class HeatExchanger extends PassiveEquipment
 {
     public get maxStatusChange() {return MaxStatusChange.forHeat(this.maxHeatBonus) }
-    public get statusChangePerSecond() { return CurrentStatusChange.forHeat(1000, this.heatPerSecond) }
-    
+
     public readonly type = EquipmentTypes.HeatExchanger
     public abstract readonly heatPerSecond: number
     public abstract readonly maxHeatBonus: number
@@ -16,6 +15,11 @@ export abstract class HeatExchanger extends PassiveEquipment
     constructor()
     {
         super()
+    }
+
+    public statusChangePerDeltaTime(dt: number) 
+    { 
+        return CurrentStatusChange.forHeat(dt, this.heatPerSecond) 
     }
 }
 

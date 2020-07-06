@@ -4,7 +4,6 @@ import { HardPoint, HardPointEquipment, HardPointType, HardPointSize } from './H
 import { Equipment, EquipmentTypes } from './Equipment';
 import { EquipmentCooldownChangedCallback, TriggeredEquipment } from './TriggeredEquipment';
 import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
-import { HeatExchanger, SmallHeatExchanger } from './HeatExchanger';
 import { Manufacturers } from '~/utilities/Manufacturers';
 
 export class HardpointEquipmentQuery {
@@ -60,7 +59,7 @@ export class Ship
      */
     public get heatDissipation() { 
         console.log("heat")
-        return this.allEquipment.map(e => e.statusChangePerSecond.heat).reduce((a, b) => a + b, -this._heatDissipation)
+        return this.allEquipment.map(e => e.statusChangePerDeltaTime(1000).heat).reduce((a, b) => a + b, -this._heatDissipation)
     }
 
     /**
@@ -75,7 +74,7 @@ export class Ship
     }
 
     protected get allEquipment() {
-        return this.equipmentBy()
+        return this.equipmentBy().map(([e, _]) => e)
     }
 
     constructor(private readonly _hull: number,
@@ -102,21 +101,22 @@ export class Ship
         return this.equipmentBy(HardpointEquipmentQuery.forHardpoint(h => h.equipmentGroup === index))
     }
 
-    public triggeredEquipmentGroup(index: integer)
+    public triggeredEquipmentGroup(index: integer) : [TriggeredEquipment, HardPoint][]
     {
-        return this.equipmentBy(new HardpointEquipmentQuery(e => e.class === TriggeredEquipment.class, h => h.equipmentGroup === index)).map(e => e as TriggeredEquipment)
+        const equipment = this.equipmentBy(new HardpointEquipmentQuery(e => e.class === TriggeredEquipment.class, h => h.equipmentGroup === index))
+        return equipment.map(([e, h]) : [TriggeredEquipment, HardPoint] => [e as TriggeredEquipment, h])
     }
 
-    public equipmentBy(q: HardpointEquipmentQuery = HardpointEquipmentQuery.always) : Equipment[]
+    public equipmentBy(q: HardpointEquipmentQuery = HardpointEquipmentQuery.always) : [Equipment, HardPoint][]
     {
-        const equipment : Equipment[] = []
+        const equipment : [Equipment, HardPoint][] = []
         this.hardpoints.forEach(h => {
             switch(h.equipment.kind)
             {
                 case "none": break;
                 case "equipment": 
                     if(q.hardPointPredicate(h) && q.equipmentPredicate(h.equipment.equipment))
-                        equipment.push(h.equipment.equipment)
+                        equipment.push([h.equipment.equipment, h])
                     break;
             }
         })
@@ -133,10 +133,10 @@ export class Ship
 
     public trigger(index: number, x, y, angle, t, ownerId)
     {
-        this.equipmentGroup(index).forEach(e => {
+        this.equipmentGroup(index).forEach(([e, h]) => {
             const t = e as TriggeredEquipment
             if(t.trigger !== undefined)
-                t.trigger(x, y, angle, t, ownerId)
+                t.trigger(x, y, angle, t, ownerId, h.offsetX, h.offsetY)
         })
     }
 }
