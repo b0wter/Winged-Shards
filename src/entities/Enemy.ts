@@ -87,7 +87,7 @@ export class Enemy extends PhysicalEntity
 
         const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
 
-        this.debugRouteElements(this.point,  ai.route)
+        //this.debugRouteElements(this.point,  ai.route)
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
