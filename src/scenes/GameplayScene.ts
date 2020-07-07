@@ -90,7 +90,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private previousPlayerState: PlayerState[] = []
     
-    protected navigation!: Navigation
+    public navigation!: Navigation
 
     constructor(name: string)
     {

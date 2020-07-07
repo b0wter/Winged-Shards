@@ -5,6 +5,7 @@ import ClampedValue from '~/utilities/ClampedValue'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Guid } from "guid-typescript";
 import { AddEntityFunc } from '~/scenes/ColliderCollection'
+import GameplayScene from '~/scenes/GameplayScene'
 
 type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
 
@@ -68,6 +69,8 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     public get remainingHeatBudget() { return this.heatValue.remaining }
     private _heat: ClampedNumber
 
+    public get point() { return new Phaser.Geom.Point(this.x, this.y) }
+
     public readonly mainSprite: Phaser.Physics.Arcade.Sprite
     public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
 
@@ -78,7 +81,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
      */
     protected inactive = false
 
-    constructor(scene: Phaser.Scene, 
+    protected gameplayScene = this.scene as GameplayScene
+
+    constructor(scene: GameplayScene, 
                 x: number, y: number, 
                 spriteKey, 
                 team, 

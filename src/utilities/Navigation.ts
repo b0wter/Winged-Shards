@@ -14,4 +14,9 @@ export class Navigation
         });
         return path
     }
+
+    public betweenFunc()
+    {
+        return this.between.bind(this)
+    }
 }

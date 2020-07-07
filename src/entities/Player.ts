@@ -12,6 +12,7 @@ import StatusBar from '~/interface/StatusBar'
 import { CurrentStatusChange } from './StatusChanges'
 import { Ship } from './Ship'
 import { HardPoint } from './Hardpoint'
+import GameplayScene from '~/scenes/GameplayScene'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -38,7 +39,7 @@ export class PlayerEntity extends PhysicalEntity
 
     public get ship() { return this._ship }
 
-    constructor(scene: Phaser.Scene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
+    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
     {
         super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
         _ship.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })

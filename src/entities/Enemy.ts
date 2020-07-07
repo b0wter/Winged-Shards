@@ -70,10 +70,9 @@ export class Enemy extends PhysicalEntity
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
-        const ai = this._ai.compute(t, dt, this, players, this.seesPlayer.bind(this))
+        const ai = this._ai.compute(t, dt, this, players, this.seesPlayer.bind(this), false, this.gameplayScene.navigation.betweenFunc())
         if(players === undefined || players === null || players.length === 0) 
             return
-
 
         //const seesPlayer = this.seesPlayer(players[0])
         // Difference in degrees of the actual direction the enemy is facing and the target.
@@ -94,7 +93,7 @@ export class Enemy extends PhysicalEntity
     private seesPlayer(player: PlayerEntity) : boolean
     {
         const ray = new Phaser.Geom.Line(this.x, this.y, player.x, player.y)
-        var intersects = (this.scene as GameplayScene).computeWallIntersection(ray)
+        var intersects = this.gameplayScene.computeWallIntersection(ray)
         return intersects
     }
 
