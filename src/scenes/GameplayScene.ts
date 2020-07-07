@@ -263,7 +263,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private arePlayersOnObjective(players: PlayerEntity[], objectives: Phaser.Tilemaps.ObjectLayer | undefined) : Phaser.Types.Tilemaps.TiledObject | undefined
     {
-        if(objectives === undefined)
+        if(objectives === undefined || players.length === 0)
             return undefined
         const exits = this.objectivesLayer?.objects.filter(o => o.type === "objectives_change_room") ?? []
         const exitWithPlayers = exits.find(e => {
@@ -304,8 +304,10 @@ export default abstract class GameplayScene extends BaseScene
         });
         if(this.players.length === 0)
         {
-            this.scene.stop()
-            this.scene.start("defeat")
+            this.cameras.main.fadeOut(2500, 0, 0, 0, (_, progress) => { if(progress >= 0.9999) { 
+                this.scene.stop()
+                this.scene.start("defeat")
+            }})
         }
     }
 

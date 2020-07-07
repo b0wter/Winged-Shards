@@ -16,7 +16,10 @@ export class DefeatScene extends BaseScene
     {
         this.map = this.createMap(this.mapName)
         this.createTilemapLayer(this.map, new TilemapDefinition("terrain", "floor", "tiles"))
-        setTimeout(() => window.location.reload(), 5000)
+        this.cameras.main.fadeIn(2500, 0, 0, 0, (_, progress) => {
+            if(progress >= 0.9999)
+                setTimeout(() => window.location.reload(), 5000)
+        })
     }
 
     protected createPreloadRessourcePairs()
