@@ -47,5 +47,11 @@ export default abstract class BaseScene extends Scene
         return layer
     }
 
+    protected createMap(mapName: string)
+    {
+        var map = this.make.tilemap({ key: mapName })
+        return map
+    }
+
     protected abstract createPreloadRessourcePairs() : PreloadRessourceList
 }

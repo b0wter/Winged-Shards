@@ -80,13 +80,15 @@ export class Enemy extends PhysicalEntity
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
-        const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
         if(players === undefined || players === null || players.length === 0) 
             return
 
+        players = players.filter(p => p !== undefined && p.body !== undefined)
+
+        const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
+
         this.debugRouteElements(this.point,  ai.route)
 
-        //const seesPlayer = this.seesPlayer(players[0])
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
         const difference = Phaser.Math.Angle.ShortestBetween(this.angle, ai.desiredAngle)

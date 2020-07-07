@@ -16,25 +16,6 @@ import GameplayScene from '~/scenes/GameplayScene'
 
 export class PlayerEntity extends PhysicalEntity
 {
-    /*
-    public readonly primaryEquipmentGroup: TriggeredEquipment[] = []
-    public get primaryEquipment() { return this.primaryEquipmentGroup[0] } 
-    public readonly secondaryEquipmentGroup: TriggeredEquipment[] = []
-    public get secondaryEquipment() { return this.secondaryEquipmentGroup[0] } 
-    public readonly tertiaryEquipmentGroup: TriggeredEquipment[] = []
-    public get tertiaryEquipment() { return this.tertiaryEquipmentGroup[0] } 
-    public readonly quaternaryEquipmentGroup: TriggeredEquipment[] = []
-    public get quaternaryEquipment() { return this.quaternaryEquipmentGroup[0] } 
-    public readonly quinaryEquipmentGroup: TriggeredEquipment[] = []
-    public get quinaryEquipment() { return this.quinaryEquipmentGroup[0] } 
-    public readonly senaryEquipmentGroup: TriggeredEquipment[] = []
-    public get senaryEquipment() { return this.senaryEquipmentGroup[0] } 
-    */
-    
-    //public get indexedEquipment() : [number, TriggeredEquipment][] { return [[0, this.primaryEquipment], [1, this.secondaryEquipment], [2, this.tertiaryEquipment], [3, this.quaternaryEquipment], [4, this.quinaryEquipment], [5. ,this.senaryEquipment]] }
-
-    //private readonly allEquipmentGroups = [ this.primaryEquipmentGroup, this.secondaryEquipmentGroup, this.tertiaryEquipmentGroup, this.quaternaryEquipmentGroup, this.quinaryEquipmentGroup, this.senaryEquipmentGroup ]
-
     public get indexedEquipment() : [number, TriggeredEquipment[]][] { return [0, 1, 2, 3, 4, 5].map(i => [i, this.ship.triggeredEquipmentGroup(i).map(([e, _]) => e)]) }
 
     public get ship() { return this._ship }
@@ -71,17 +52,19 @@ export class PlayerEntity extends PhysicalEntity
         this.hull += update.hull
         this.structure += update.structure
         this.heat += update.heat
-
         //TODO: speed bonus is not included!
-
-        //const changes = this.allEquipmentGroups.flatMap(x => x.map(y => y.update(t, dt, false)))
-        //return CurrentStatusChange.combineAll(changes)
     }
 
     private handleInput(input: PlayerInput, t)
     {
         if(input === undefined)
             return;
+        this.handleTriggers(input, t)
+        this.handleControls(input, t)
+    }
+
+    private handleTriggers(input: PlayerInput, t)
+    {
         let group: [TriggeredEquipment, HardPoint][] = []
         if(input.bumperLeft.isDown)
             group = this.ship.triggeredEquipmentGroup(0) //this.primaryEquipmentGroup
@@ -97,6 +80,14 @@ export class PlayerEntity extends PhysicalEntity
             group = this.ship.triggeredEquipmentGroup(5) //this.senaryEquipmentGroup
 
         this.triggerEquipmentGroup(group, t)
+    }
+
+    private handleControls(input: PlayerInput, t)
+    {
+        const leftAxis = input.leftAxis()
+        this.setVelocity(leftAxis.horizontal * this.ship.maxSpeed, leftAxis.vertical * this.ship.maxSpeed)
+        const rightAxis = input.rightAxis()
+        this.setAngle(rightAxis.direction)
     }
 
     public takeDamage(damage: Damage)

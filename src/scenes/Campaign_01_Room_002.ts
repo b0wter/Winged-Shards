@@ -2,7 +2,6 @@ import Phaser from 'phaser'
 import GameplayScene from './GameplayScene'
 import { PreloadRessourceList } from './PreloadRessourcePair'
 import TilemapDefinition from './TilemapDefinition'
-import PlayerEntity from '~/entities/Player'
 
 export default class Campaign_01_Room_002 extends GameplayScene
 {
@@ -18,7 +17,7 @@ export default class Campaign_01_Room_002 extends GameplayScene
     
     protected createPreloadRessourcePairs()
     {
-        const pairs = new PreloadRessourceList
+        const pairs = new PreloadRessourceList()
         pairs.addImage('tiles', 'images/tilesets/scifi_floor.png')
         pairs.addImage('collision_tiles', 'images/tilesets/collision.png')
         pairs.addImage('spaceship_01', 'images/ships/orange_01.png')
