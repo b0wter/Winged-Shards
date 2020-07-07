@@ -5,7 +5,7 @@ import { Enemy } from '~/entities/Enemy';
 import Phaser from 'phaser'
 import Point = Phaser.Geom.Point
 
-export type SeesPoint = (_: Phaser.Geom.Point) => boolean
+export type SeesPoint = (origin: Phaser.Geom.Point, target: Phaser.Geom.Point) => boolean
 export type NavigateBetween = (a: Point, b: Point) => Point[]
 
 export abstract class EnemyAi extends Ai

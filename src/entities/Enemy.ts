@@ -9,6 +9,7 @@ import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
+import Point = Phaser.Geom.Point
 
 export class Enemy extends PhysicalEntity
 {
@@ -106,6 +107,16 @@ export class Enemy extends PhysicalEntity
         const ray = new Phaser.Geom.Line(this.x, this.y, point.x, point.y)
         var intersects = this.gameplayScene.computeWallIntersection(ray)
         return intersects
+    }
+
+    public seesPointFromAllEdges(point: Phaser.Geom.Point) : boolean
+    {
+        const w = this.width / 2
+        const h = this.height / 2
+        const points = [ new Point(this.x + w, this.y), new Point(this.x - w, this.y), new Point(this.x, this.y + h), new Point(this.x, this.y - h) ]
+        const visible = points.map(p => { const ray = new Phaser.Geom.Line(p.x, p.y, point.x, point.y); return this.gameplayScene.computeWallIntersection(ray) })
+        const reduced = visible.reduce((a, b) => a && b)
+        return reduced
     }
 
     private fireWeapon(t: number, e: TriggeredEquipment)

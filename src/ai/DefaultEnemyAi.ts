@@ -44,7 +44,7 @@ export default class DefaultEnemyAi extends EnemyAi
         if(enemy === undefined) return this.inactivityAiResult(enemy)
         if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
 
-        const visiblePlayers = players.filter(p => seesPoint(p.point))
+        const visiblePlayers = players.filter(p => enemy.seesPoint(p.point))
         if(visiblePlayers.length === 0 && this.lastPlayerSeenAt === undefined) return this.inactivityAiResult(enemy)
         /*
         const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
@@ -87,17 +87,19 @@ export default class DefaultEnemyAi extends EnemyAi
 
     private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
     {
+        /*
         function fourPointSeesPlayer(p: PlayerEntity) {
-            const w = p.width / 2
-            const h = p.height / 2
-            const points = [ new Point(p.x + w, p.y), new Point(p.x - w, p.y), new Point(p.x, p.y + h), new Point(p.x, p.y - h) ]
+            const w = enemy.width / 2
+            const h = enemy.height / 2
+            const points = [ new Point(enemy.x + w, enemy.y), new Point(enemy.x - w, enemy.y), new Point(enemy.x, enemy.y + h), new Point(enemy.x, enemy.y - h) ]
             const visible = points.map(p => enemy.seesPoint(p))
             const reduced = visible.reduce((a, b) => a && b)
             return reduced
         }
+        */
 
         let mapDistance = function(p: PlayerEntity) : [PlayerEntity, number] { return [p, Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y)] }
-        const playersInRange = players.filter(p => fourPointSeesPlayer(p)).map(mapDistance).sort(([_, distance]) => distance)
+        const playersInRange = players.filter(p => enemy.seesPointFromAllEdges(p.point)).map(mapDistance).sort(([_, distance]) => distance)
         if(playersInRange.length !== 0)
             return { target: playersInRange[0][0], hasLineOfSight: true }
         else
