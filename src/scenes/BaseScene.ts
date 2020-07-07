@@ -4,6 +4,12 @@ import TilemapDefinition from './TilemapDefinition'
 
 export default abstract class BaseScene extends Scene
 {
+    navMeshPlugin: any
+    protected get navMesh() 
+    {
+        return this.navMeshPlugin 
+    }
+
     constructor(name: string)
     {
         super(name)

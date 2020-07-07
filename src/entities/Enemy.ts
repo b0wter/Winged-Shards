@@ -23,7 +23,7 @@ export class Enemy extends PhysicalEntity
 
     public get equipment() { return this._equipment }
 
-    constructor(scene: Phaser.Scene, 
+    constructor(scene: GameplayScene, 
                 x: number, y: number, 
                 spriteKey: string, 
                 angle: number, 
@@ -119,7 +119,7 @@ export class EnemyTemplate
     public maxVelocity = 0
     public equipment : ActiveEquipmentTemplate[] = [ DummyWeapon ]
 
-    public instatiate(scene: Phaser.Scene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
+    public instatiate(scene: GameplayScene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
         const equipment = this.equipment.map(x => x.instantiate(scene, bulletsColliderFunc, Teams.Enemies, 0, 0))
         return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment)

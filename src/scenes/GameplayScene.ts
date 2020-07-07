@@ -14,6 +14,8 @@ import EnemyTiledObject from '~/utilities/EnemyTiledObject';
 import { DefaultFighterTemplate } from '~/entities/Ship';
 import { asHardPointEquipment } from '~/entities/Hardpoint';
 import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
+import PhaserNavMeshPlugin from "phaser-navmesh";
+import { Navigation } from '~/utilities/Navigation';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -78,6 +80,8 @@ export default abstract class GameplayScene extends BaseScene
      */
     protected abstract get collisionTilemapDefinition()
 
+    protected navmeshLayer!: Phaser.Tilemaps.ObjectLayer
+
     protected objectivesLayer?: Phaser.Tilemaps.ObjectLayer
 
     private leftEntranceObjective = false
@@ -85,6 +89,8 @@ export default abstract class GameplayScene extends BaseScene
     private finishedInitialization = false
 
     private previousPlayerState: PlayerState[] = []
+    
+    protected navigation!: Navigation
 
     constructor(name: string)
     {
@@ -109,9 +115,11 @@ export default abstract class GameplayScene extends BaseScene
                                                     this.enemyBulletHitsPlayer.bind(this)
                                                     )
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
+            this.navmeshLayer = this.map.getObjectLayer("navmesh")
+            this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 32))
+            console.log(this.navigation.between(new Phaser.Geom.Point(300, 700), new Phaser.Geom.Point(1000, 300)))
             this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
             this.createEntities(this.map.objects)
-            //this.players.forEach(p => this.physics.add.collider(p, environmentCollisions))
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
         }
         this.finishedInitialization = true
@@ -277,9 +285,6 @@ export default abstract class GameplayScene extends BaseScene
     protected switchScene(sceneName)
     {
         console.log(`Changing room to '${sceneName}'.`)
-        //this.scene.pause()
-        //this.scene.launch(sceneName)
-        //this.scene.start(sceneName, this.players)
         this.leftEntranceObjective = false
         this.userInputs.forEach(i => i.deactivate());
         (this.scene.get(sceneName) as GameplayScene).resume(this.players.map(p => p.exportState()))
