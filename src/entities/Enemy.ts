@@ -23,6 +23,9 @@ export class Enemy extends PhysicalEntity
 
     public get equipment() { return this._equipment }
 
+    private _debugRouteElements : Phaser.GameObjects.Line[] = []
+    private _debugColor = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+
     constructor(scene: GameplayScene, 
                 x: number, y: number, 
                 spriteKey: string, 
@@ -48,6 +51,12 @@ export class Enemy extends PhysicalEntity
               collider,
               angle,
               0)
+        console.log(this._debugColor)
+    }
+
+    protected killInternal()
+    {
+        this._debugRouteElements.forEach(x => x.destroy())
     }
 
     protected killEffect()
@@ -70,9 +79,11 @@ export class Enemy extends PhysicalEntity
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
-        const ai = this._ai.compute(t, dt, this, players, this.seesPlayer.bind(this), false, this.gameplayScene.navigation.betweenFunc())
+        const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
         if(players === undefined || players === null || players.length === 0) 
             return
+
+        this.debugRouteElements(this.point,  ai.route)
 
         //const seesPlayer = this.seesPlayer(players[0])
         // Difference in degrees of the actual direction the enemy is facing and the target.
@@ -90,9 +101,9 @@ export class Enemy extends PhysicalEntity
         ai.equipmentTriggers.forEach(x => { if(x[1]) { this.fireWeapon(t, x[0]) }} )
     }
 
-    private seesPlayer(player: PlayerEntity) : boolean
+    public seesPoint(point: Phaser.Geom.Point) : boolean
     {
-        const ray = new Phaser.Geom.Line(this.x, this.y, player.x, player.y)
+        const ray = new Phaser.Geom.Line(this.x, this.y, point.x, point.y)
         var intersects = this.gameplayScene.computeWallIntersection(ray)
         return intersects
     }
@@ -105,6 +116,24 @@ export class Enemy extends PhysicalEntity
         const offsetY = offset * Math.sin(this.rotation)
 
         e.trigger(this.x + offsetX, this.y + offsetY, this.angle, t, this.name, 0, 0)
+    }
+
+    private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])
+    {
+        this._debugRouteElements.forEach(x => x.destroy())
+        if(route.length <= 1) {
+            return
+        }
+        else {
+            if(start.x !== route[0].x || start.y !== route[0].y)
+                route.unshift(start)
+            for(let i = 1; i < route.length; i++) {
+                const line = this.scene.add.line(0, 0, route[i-1].x, route[i-1].y, route[i].x, route[i].y, this._debugColor)
+                line.setOrigin(0,0)
+                line.setLineWidth(2)
+                this._debugRouteElements.push(line)
+            }
+        }
     }
 }
 

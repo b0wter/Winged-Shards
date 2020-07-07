@@ -71,6 +71,8 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
 
     public get point() { return new Phaser.Geom.Point(this.x, this.y) }
 
+    public get vector() { return new Phaser.Math.Vector2(this.x, this.y) }
+
     public readonly mainSprite: Phaser.Physics.Arcade.Sprite
     public readonly shieldSprite: Phaser.Physics.Arcade.Sprite
 
@@ -199,12 +201,15 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     public kill()
     {
         console.log('An entity has been destroyed.', this)
+        this.killInternal()
         if(this.killEffect)
             this.killEffect()
         this.destroy()
         this.inactive = true
         this.killedCallbacks.forEach(x => x(this))
     }
+
+    protected abstract killInternal()
 
     protected killEffect() { }
 

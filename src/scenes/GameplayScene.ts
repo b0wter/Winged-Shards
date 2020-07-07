@@ -117,7 +117,6 @@ export default abstract class GameplayScene extends BaseScene
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
             this.navmeshLayer = this.map.getObjectLayer("navmesh")
             this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 32))
-            console.log(this.navigation.between(new Phaser.Geom.Point(300, 700), new Phaser.Geom.Point(1000, 300)))
             this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
             this.createEntities(this.map.objects)
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))

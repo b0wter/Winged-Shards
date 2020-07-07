@@ -1,4 +1,4 @@
-import { EnemyAi, NavigateBetween, SeesPlayer } from './EnemyAi';
+import { EnemyAi, NavigateBetween, SeesPoint } from './EnemyAi';
 import { PlayerEntity } from '~/entities/Player';
 import AiResult from './AiResult';
 import { Enemy } from '~/entities/Enemy';
@@ -37,14 +37,14 @@ export default class DefaultEnemyAi extends EnemyAi
         super()
     }
             
-    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[], seesPlayer: SeesPlayer, groupActive: boolean, navigateBetween: NavigateBetween) : AiResult
+    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, groupActive: boolean, navigateBetween: NavigateBetween) : AiResult
     {
         // Make some basic checks to see if we can compute anything useful.
         //
         if(enemy === undefined) return this.inactivityAiResult(enemy)
         if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
 
-        const visiblePlayers = players.filter(p => seesPlayer(p))
+        const visiblePlayers = players.filter(p => seesPoint(p.point))
         if(visiblePlayers.length === 0 && this.lastPlayerSeenAt === undefined) return this.inactivityAiResult(enemy)
         /*
         const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
@@ -56,18 +56,19 @@ export default class DefaultEnemyAi extends EnemyAi
 
         //if(playersInRange.length === 0) return this.inactivityAiResult(enemy)
 
-        const target = this.findPriorityTarget(enemy, players, seesPlayer, this.lastPlayerSeenAt)
-        if(target === undefined) {
+        const target = this.findPriorityTarget(enemy, players, seesPoint, this.lastPlayerSeenAt)
+        if(target.target === undefined) {
             this.active = false
             return this.inactivityAiResult(enemy)
         }
         else
         {
+            console.log(target)
             const targetPoint = (target.target as PlayerEntity).point ?? (target.target as Point)
             const hasLineOfSight = target.hasLineOfSight
             const distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, targetPoint.x, targetPoint.y)
-            const wantsToBackOff = distance < this.minimalDistance
-            const wantsToClose = distance > this.maximalDistance
+            const wantsToBackOff = hasLineOfSight ? distance < this.minimalDistance : false
+            const wantsToClose = hasLineOfSight ? distance > this.maximalDistance : true
             const route = navigateBetween(enemy.point, targetPoint); if(route === undefined) { return this.inactivityAiResult(enemy) };
             const nextRoutePoint = route[1]
             const angleToLook = this.turnTo(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, targetPoint)
@@ -81,14 +82,25 @@ export default class DefaultEnemyAi extends EnemyAi
 
             const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
 
-            return new AiResult(angleToLook, desiredVelocity, triggers)
+            return new AiResult(angleToLook, desiredVelocity, triggers, route)
         }
     }
 
-    private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], seesPlayer: SeesPlayer, lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
+    private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
     {
+        /*
+        function fourPointSeesPlayer(p: PlayerEntity) {
+            const w = p.width / 2
+            const h = p.height / 2
+            const points = [ new Point(p.x + w, p.y), new Point(p.x - w, p.y), new Point(p.x, p.y + h), new Point(p.x, p.y - h) ]
+            const visible = points.map(p => enemy.seesPoint(p))
+            const reduced = visible.reduce((a, b) => a && b)
+            return reduced
+        }
+        */
+
         let mapDistance = function(p: PlayerEntity) : [PlayerEntity, number] { return [p, Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y)] }
-        const playersInRange = players.filter(p => seesPlayer(p)).map(mapDistance).sort(([_, distance]) => distance)
+        const playersInRange = players.filter(p => seesPoint(p.point)).map(mapDistance).sort(([_, distance]) => distance)
         if(playersInRange.length !== 0)
             return { target: playersInRange[0][0], hasLineOfSight: true }
         else

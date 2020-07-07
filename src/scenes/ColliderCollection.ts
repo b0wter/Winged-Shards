@@ -72,7 +72,7 @@ export class ColliderCollection
 
     public addEnemy(enemy: Enemy)
     {
-        this._scene.physics.add.collider(enemy, this.environment)
+        //this._scene.physics.add.collider(enemy, this.environment)
         this.enemies.add(enemy)
         enemy.addKilledCallback(this.removeEnemy.bind(this))
     }

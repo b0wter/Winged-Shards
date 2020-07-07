@@ -104,6 +104,8 @@ export class PlayerEntity extends PhysicalEntity
         super.takeDamage(damage)
     }
 
+    protected killInternal() { }
+
     protected killEffect()
     {
         const particles = this.scene.add.particles('particle_blue')
