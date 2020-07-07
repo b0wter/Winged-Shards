@@ -63,7 +63,6 @@ export default class DefaultEnemyAi extends EnemyAi
         }
         else
         {
-            console.log(target)
             const targetPoint = (target.target as PlayerEntity).point ?? (target.target as Point)
             const hasLineOfSight = target.hasLineOfSight
             const distance = Phaser.Math.Distance.Between(enemy.x, enemy.y, targetPoint.x, targetPoint.y)
@@ -88,7 +87,6 @@ export default class DefaultEnemyAi extends EnemyAi
 
     private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
     {
-        /*
         function fourPointSeesPlayer(p: PlayerEntity) {
             const w = p.width / 2
             const h = p.height / 2
@@ -97,10 +95,9 @@ export default class DefaultEnemyAi extends EnemyAi
             const reduced = visible.reduce((a, b) => a && b)
             return reduced
         }
-        */
 
         let mapDistance = function(p: PlayerEntity) : [PlayerEntity, number] { return [p, Phaser.Math.Distance.Between(p.x, p.x, enemy.x, enemy.y)] }
-        const playersInRange = players.filter(p => seesPoint(p.point)).map(mapDistance).sort(([_, distance]) => distance)
+        const playersInRange = players.filter(p => fourPointSeesPlayer(p)).map(mapDistance).sort(([_, distance]) => distance)
         if(playersInRange.length !== 0)
             return { target: playersInRange[0][0], hasLineOfSight: true }
         else
