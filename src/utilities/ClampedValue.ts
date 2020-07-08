@@ -29,6 +29,10 @@ export default class ClampedValue<T>
     }
 
     get max() { return this._max }
+    /**
+     * Gets or sets the maximum value. Does not change the current value.
+     * If you want to increase the current value as well use `setMax(..., true)`.
+     */
     set max(value: T) {
         if(this._greaterOrEqual(value, this.min))
             this._max = value
@@ -51,6 +55,7 @@ export default class ClampedValue<T>
                 private _current: T, 
                 private _add: (a: T, b: T) => T, 
                 private _subtract: (a: T, b: T) => T,
+                private _multiply: (a: T, b: T) => T,
                 private _divide: (a: T, b: T) => T,
                 private _lessOrEqual: (a: T, b: T) => boolean,
                 private _greaterOrEqual: (a: T, b: T) => boolean
@@ -87,6 +92,16 @@ export default class ClampedValue<T>
     public isNotMaximum()
     {
         return !this._greaterOrEqual(this.current, this._max)
+    }
+
+    public setMax(max: T, increaseCurrent: boolean)
+    {
+        const oldPercentage = this.percentage
+        this.max = max
+        if(this.max === max && increaseCurrent)
+        {
+            this.current = this._multiply(this.max, oldPercentage)
+        }
     }
 
     public addChangeListener(l: ClampedValueCallback<T>)

@@ -11,6 +11,7 @@ export default class ClampedNumber extends ClampedValue<number>
             current ?? max,
             function(a: number, b: number) { return a + b},
             function(a: number, b: number) { return a - b},
+            function(a: number, b: number) { return a * b},
             function(a: number, b: number) { return a / b },
             function(a: number, b: number) { return a <= b},
             function(a: number, b: number) { return a >= b }
