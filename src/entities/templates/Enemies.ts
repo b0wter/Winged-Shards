@@ -29,8 +29,8 @@ export class LightFighter extends EnemyTemplate {
     public readonly shield = 40
     public readonly hull = 20
     public readonly structure = 10
-    public readonly maxVelocity = 150
-    public readonly equipment = [ LightLaser ]
+    public readonly maxVelocity = 175
+    public readonly equipment = [ new LightLaser() ]
 }
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 

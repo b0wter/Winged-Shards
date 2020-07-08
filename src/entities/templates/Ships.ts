@@ -29,7 +29,7 @@ export class DefaultFighterTemplate extends ShipTemplate
     public structure = 50
     public heatDissipation = 5
     public maxHeat = 100
-    public maxSpeed = 200
+    public maxSpeed = 125
     public hardpoints = [
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -20),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  20),
