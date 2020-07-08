@@ -238,7 +238,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private switchSceneIfOnObjective(players: PlayerEntity[], objectives: Phaser.Tilemaps.ObjectLayer | undefined)
     {
-        const objective = this.arePlayersOnObjective(this.players, this.objectivesLayer)
+        const objective = this.arePlayersOnObjective(players, objectives)
         if(objective === undefined)
             this.leftEntranceObjective = true
 

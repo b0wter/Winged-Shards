@@ -6,15 +6,15 @@ import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
 import { LightLaser } from './Weapons'
 
-export class EnemyTemplate
+export abstract class EnemyTemplate
 {
-    public name = ""
-    public spriteKey = ""
-    public shield = 0
-    public hull = 0
-    public structure = 0
-    public maxVelocity = 0
-    public equipment : ActiveEquipmentTemplate[] = [ ]
+    public readonly abstract name: string
+    public readonly abstract spriteKey 
+    public readonly abstract shield
+    public readonly abstract hull
+    public readonly abstract structure
+    public readonly abstract maxVelocity
+    public readonly abstract equipment : ActiveEquipmentTemplate[]
 
     public instatiate(scene: GameplayScene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
@@ -23,17 +23,16 @@ export class EnemyTemplate
     }
 }
 
-export const LightFighter : EnemyTemplate =
-    Object.assign(new EnemyTemplate(), {
-        name: "light_fighter",
-        spriteKey : "spaceship_02",
-        shield: 40,
-        hull: 20,
-        structure: 10,
-        maxVelocity: 150,
-        equipment: [ LightLaser ]
-    })
+export class LightFighter extends EnemyTemplate {
+    public readonly name = "light_fighter"
+    public readonly spriteKey = "spaceship_02"
+    public readonly shield = 40
+    public readonly hull = 20
+    public readonly structure = 10
+    public readonly maxVelocity = 150
+    public readonly equipment = [ LightLaser ]
+}
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 
-    "light_fighter": LightFighter 
+    "light_fighter": new LightFighter ()
 }
