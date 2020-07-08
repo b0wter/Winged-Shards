@@ -1,22 +1,23 @@
 import BaseScene from './BaseScene';
 import { PlayerEntity, PlayerState } from '~/entities/Player';
-import { Enemy, EnemyTemplate, LightFighter, EnemyTemplates } from '~/entities/Enemy';
+import { Enemy } from '~/entities/Enemy';
 import PlayerInput from '~/input/PlayerInput';
 import { ColliderCollection } from './ColliderCollection';
 import PlayerPlate from '~/interface/PlayerPlate';
-import * as Weapon from '~/entities/Weapon';
+import * as Weapons from '~/entities/templates/Weapons';
 import { Teams } from '~/entities/Teams';
 import { Projectile } from '~/entities/Projectile';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import TilemapDefinition from './TilemapDefinition';
 import { Game } from 'phaser';
 import EnemyTiledObject from '~/utilities/EnemyTiledObject';
-import { DefaultFighterTemplate } from '~/entities/Ship';
+import { DefaultFighterTemplate } from '~/entities/templates/Ships';
 import { asHardPointEquipment } from '~/entities/Hardpoint';
 import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
 import PhaserNavMeshPlugin from "phaser-navmesh";
 import { Navigation } from '~/utilities/Navigation';
 import PhysicalEntity from '~/entities/PhysicalEntity';
+import { EnemyTemplates, EnemyTemplate } from '~/entities/templates/Enemies';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -192,13 +193,13 @@ export default abstract class GameplayScene extends BaseScene
     {
         const ship = new DefaultFighterTemplate().instantiate()
         const player = new PlayerEntity(this, x, y, angle, ship, this.colliders.addEntityFunc)
-        player.ship.hardpoints[0].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20))
+        player.ship.hardpoints[0].equipment = asHardPointEquipment(Weapons.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20))
         player.ship.hardpoints[0].equipmentGroup = 0
-        player.ship.hardpoints[1].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20))
+        player.ship.hardpoints[1].equipment = asHardPointEquipment(Weapons.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20))
         player.ship.hardpoints[1].equipmentGroup = 0
-        player.ship.hardpoints[2].equipment = asHardPointEquipment(Weapon.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0))
+        player.ship.hardpoints[2].equipment = asHardPointEquipment(Weapons.LightLaser.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0))
         player.ship.hardpoints[2].equipmentGroup = 0
-        const fusionGun = Weapon.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
+        const fusionGun = Weapons.FusionGun.instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
         player.ship.hardpoints[3].equipment = asHardPointEquipment(fusionGun)
         player.ship.hardpoints[3].equipmentGroup = 1
         player.ship.hardpoints[4].equipment = asHardPointEquipment(new SmallShieldGenerator())

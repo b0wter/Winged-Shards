@@ -4,7 +4,6 @@ import { Damage } from './DamageType'
 import PhysicalEntity from './PhysicalEntity'
 import { PlayerEntity } from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
-import { Weapon, WeaponTemplate, DummyWeapon, LightLaser } from './Weapon'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
 import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
@@ -143,36 +142,4 @@ export class Enemy extends PhysicalEntity
             }
         }
     }
-}
-
-export class EnemyTemplate
-{
-    public name = ""
-    public spriteKey = ""
-    public shield = 0
-    public hull = 0
-    public structure = 0
-    public maxVelocity = 0
-    public equipment : ActiveEquipmentTemplate[] = [ DummyWeapon ]
-
-    public instatiate(scene: GameplayScene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
-    {
-        const equipment = this.equipment.map(x => x.instantiate(scene, bulletsColliderFunc, Teams.Enemies, 0, 0))
-        return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment)
-    }
-}
-
-export const LightFighter : EnemyTemplate =
-    Object.assign(new EnemyTemplate(), {
-        name: "light_fighter",
-        spriteKey : "spaceship_02",
-        shield: 40,
-        hull: 20,
-        structure: 10,
-        maxVelocity: 150,
-        equipment: [ LightLaser ]
-    })
-
-export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 
-    "light_fighter": LightFighter 
 }
