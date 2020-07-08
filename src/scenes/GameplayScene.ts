@@ -225,26 +225,13 @@ export default abstract class GameplayScene extends BaseScene
 
     update(t: number, dt: number)
     {
-        const player = this.players[0]
         this.userInputs.forEach(x => x.update())
-
-        /*
-        const leftAxis = this.userInputs[0].leftAxis()
-        player.setVelocity(leftAxis.horizontal * 200, leftAxis.vertical * 200)
-
-        const rightAxis = this.userInputs[0].rightAxis()
-        player.setAngle(rightAxis.direction) 
-        */
-
         for(let i = 0; i < this.players.length; i++)
             this.players[i].update(t, dt, this.userInputs[i])
-        //player.update(t, dt, this.userInputs[0])
 
-        this.enemies.forEach(x => x.update(t, dt, [ player ]))
-        // overlap - physics!
+        this.enemies.forEach(x => x.update(t, dt, this.players))
 
         this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
-
         this.sceneSpecificUpdate(t, dt)
     }
 
