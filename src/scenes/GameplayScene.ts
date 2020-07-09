@@ -187,6 +187,7 @@ export default abstract class GameplayScene extends BaseScene
                 this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.shipType])
             }
         })
+        this.previousPlayerState = []
     }
 
     private createPlayer(x, y, angle, template)
@@ -205,6 +206,8 @@ export default abstract class GameplayScene extends BaseScene
         player.ship.hardpoints[4].equipment = asHardPointEquipment(new SmallShieldGenerator())
         this.createInterface(player, this.playerInterfaces)
         player.addKilledCallback(this.onPlayerKilled.bind(this))
+        if(this.previousPlayerState.length !== 0)
+            player.importState(this.previousPlayerState[this.players.length])
         return player
     }
 

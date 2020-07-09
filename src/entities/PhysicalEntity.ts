@@ -122,7 +122,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         scene.add.existing(this)
 
         this.setAngleAndVelocity(angle, velocity)
-
     }
 
     private setAngleAndVelocity(angle, velocity)
