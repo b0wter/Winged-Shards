@@ -44,6 +44,7 @@ export class PreloadScene extends Phaser.Scene
         this.load.image('debris', 'images/effects/debris.png')
         this.load.image('particle_blue', 'images/effects/particle-blue.png')
         this.load.image('particle_red', 'images/effects/particle-red.png')
+        this.load.image('tank_01', 'images/tanks/tank_01.png')
         this.load.image('fusion_01', 'images/projectiles/fusion-01.png')
         this.load.spritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
         this.load.tilemapTiledJSON('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')

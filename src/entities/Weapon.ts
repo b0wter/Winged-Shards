@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 import * as Damage from './DamageType'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
-import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
+import { TriggeredEquipment, TriggeredEquipmentTemplate } from './TriggeredEquipment'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges'
@@ -18,11 +18,6 @@ export type WeaponSpread = None | Angular | Parallel
 
 export class Weapon extends TriggeredEquipment
 {
-
-    public hardPointType = HardPointType.WithoutExtras
-    public hardPointSize = HardPointSize.Small
-    public manufacturer = Manufacturers.BattlePrep
-    public modelName = "DUMMY MODEL"
     public statusChangePerDeltaTime(dt: number) { return CurrentStatusChange.zero }
     public type = EquipmentTypes.Weapon
 
@@ -38,6 +33,10 @@ export class Weapon extends TriggeredEquipment
                 private spread: WeaponSpread,
                 private initialDelay: number,
                 private delayBetweenShots: number,
+                public readonly hardPointSize: HardPointSize,
+                public readonly hardPointType: HardPointType,
+                public readonly manufacturer: Manufacturers,
+                public readonly modelName: string,
                 team: Teams
                )
     {

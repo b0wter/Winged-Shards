@@ -1,10 +1,10 @@
-import { ActiveEquipmentTemplate } from '../TriggeredEquipment'
+import { TriggeredEquipmentTemplate } from '../TriggeredEquipment'
 import GameplayScene from '~/scenes/GameplayScene'
 import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Enemy } from '../Enemy'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
-import { LightLaser } from './Weapons'
+import { LightLaserTemplate, LightLaser } from './Weapons'
 
 export abstract class EnemyTemplate
 {
@@ -14,7 +14,7 @@ export abstract class EnemyTemplate
     public readonly abstract hull
     public readonly abstract structure
     public readonly abstract maxVelocity
-    public readonly abstract equipment : ActiveEquipmentTemplate[]
+    public readonly abstract equipment : TriggeredEquipmentTemplate[]
 
     public instatiate(scene: GameplayScene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
@@ -30,7 +30,7 @@ export class LightFighter extends EnemyTemplate {
     public readonly hull = 20
     public readonly structure = 10
     public readonly maxVelocity = 175
-    public readonly equipment = [ new LightLaser() ]
+    public readonly equipment = [ LightLaser ]
 }
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 

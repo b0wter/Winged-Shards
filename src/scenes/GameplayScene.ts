@@ -193,11 +193,11 @@ export default abstract class GameplayScene extends BaseScene
     {
         const ship = new DefaultFighterTemplate().instantiate()
         const player = new PlayerEntity(this, x, y, angle, ship, this.colliders.addEntityFunc)
-        player.ship.hardpoints[0].equipment = asHardPointEquipment(new Weapons.LightLaser().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20))
+        player.ship.hardpoints[0].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 20))
         player.ship.hardpoints[0].equipmentGroup = 0
-        player.ship.hardpoints[1].equipment = asHardPointEquipment(new Weapons.LightLaser().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20))
+        player.ship.hardpoints[1].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, -20))
         player.ship.hardpoints[1].equipmentGroup = 0
-        player.ship.hardpoints[2].equipment = asHardPointEquipment(new Weapons.LightLaser().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0))
+        player.ship.hardpoints[2].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 20, 0))
         player.ship.hardpoints[2].equipmentGroup = 0
         const fusionGun = new Weapons.FusionGun().instantiate(this, this.colliders.addProjectileFunc, Teams.Players, 0, 0)
         player.ship.hardpoints[3].equipment = asHardPointEquipment(fusionGun)

@@ -24,16 +24,16 @@ export class DefaultFighterTemplate extends ShipTemplate
 {
     public modelName = "Rapier V-37"
     public manufacturer = Manufacturers.Roskosmos
-    public spriteKey = "spaceship_01"
+    public spriteKey = "tank_01"
     public hull = 100
     public structure = 50
     public heatDissipation = 5
     public maxHeat = 100
     public maxSpeed = 125
     public hardpoints = [
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -20),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  20),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, 20,   0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -10),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  10),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, 10,   0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0)
     ]

@@ -105,7 +105,7 @@ export abstract class TriggeredEquipment extends Equipment
     */
 }
 
-export abstract class ActiveEquipmentTemplate
+export abstract class TriggeredEquipmentTemplate
 {
     public abstract instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number)
 } 

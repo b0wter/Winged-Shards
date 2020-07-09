@@ -5,7 +5,7 @@ import PhysicalEntity from './PhysicalEntity'
 import { PlayerEntity } from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
-import { TriggeredEquipment, ActiveEquipmentTemplate } from './TriggeredEquipment'
+import { TriggeredEquipment, TriggeredEquipmentTemplate } from './TriggeredEquipment'
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point

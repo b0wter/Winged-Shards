@@ -1,12 +1,13 @@
-import { ActiveEquipmentTemplate } from '../TriggeredEquipment'
+import { TriggeredEquipmentTemplate } from '../TriggeredEquipment'
 import * as Projectile from './../Projectile'
 import { WeaponSpread, NoSpread, Weapon } from '../Weapon'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Teams } from '../Teams'
+import { HardPointSize, HardPointType } from '../Hardpoint'
+import { Manufacturers } from '~/utilities/Manufacturers'
 
-export abstract class WeaponTemplate extends ActiveEquipmentTemplate
+export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
 {
-
     public abstract readonly name: string
     public abstract readonly cooldown: number 
     public abstract readonly projectile: Projectile.ProjectileTemplate
@@ -15,14 +16,18 @@ export abstract class WeaponTemplate extends ActiveEquipmentTemplate
     public abstract readonly spread: WeaponSpread
     public abstract readonly initialDelay: number
     public abstract readonly delayBetweenShots: number
+    public abstract readonly hardPointSize: HardPointSize
+    public abstract readonly hardPointType: HardPointType
+    public abstract readonly manufacturer: Manufacturers
+    public abstract readonly modelName: string
 
     public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
     {
-        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, team)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
     }
 }
 
-export class LightLaser extends WeaponTemplate {
+export class LightLaserTemplate extends WeaponTemplate {
     public readonly name = "Light Laser"
     public readonly cooldown = 333
     public readonly projectile = Projectile.LightLaserTemplate
@@ -31,7 +36,12 @@ export class LightLaser extends WeaponTemplate {
     public readonly spread = NoSpread
     public readonly initialDelay = 0
     public readonly delayBetweenShots = 0
+    public readonly hardPointSize = HardPointSize.Small
+    public readonly hardPointType = HardPointType.WithoutExtras
+    public readonly manufacturer = Manufacturers.BattlePrep
+    public readonly modelName = "Light Laser A"
 }
+export const LightLaser = new LightLaserTemplate()
 
 export class FusionGun extends WeaponTemplate {
     public readonly name = "Fusion Gun"
@@ -42,4 +52,8 @@ export class FusionGun extends WeaponTemplate {
     public readonly spread = NoSpread
     public readonly initialDelay = 0
     public readonly delayBetweenShots = 0
+    public readonly hardPointSize = HardPointSize.Small
+    public readonly hardPointType = HardPointType.WithoutExtras
+    public readonly manufacturer = Manufacturers.BattlePrep
+    public readonly modelName = "Fusion Master 2000"
 }
