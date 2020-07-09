@@ -6,7 +6,7 @@ import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite
 {
-    get damage() { return this._damage }
+    get damage() { return this._damage.scale(this._scale) }
     get friendlyFire() { return this._friendlyFire }
     get ignoresShields() { return this._ignoresShields }
     get ignoresHull() { return this._ignoresHull }
@@ -31,7 +31,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _pierceHitsContinuously: boolean,
                 protected _ownerId: string,
                 protected _angularSpeed: number,
-                protected _size: Phaser.Math.Vector2
+                protected _size: Phaser.Math.Vector2,
+                private _scale = 1
                 )
     {
         // the super call needs to be the first thing that is done, thus we cannot compute v_x and v_y beforehand.
@@ -107,7 +108,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
      */
     public scaleDamage(x: number)
     {
-        this.damage.scale(x)
+        this._scale = x
     }
 
     public takeDamage(_)

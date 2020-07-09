@@ -35,6 +35,7 @@ export default class Campaign_01_Room_001 extends GameplayScene
         pairs.addImage('particle_blue', 'images/effects/particle-blue.png')
         pairs.addImage('particle_red', 'images/effects/particle-red.png')
         pairs.addImage('fusion_01', 'images/projectiles/fusion-01.png')
+        pairs.addImage('tank_01', 'images/tanks/tank_01.png')
         pairs.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
         pairs.addTilemap('campaign_01_room_001_map', 'maps/campaign_01_room_001.json')
         return pairs

@@ -72,6 +72,10 @@ export class Ship
         return this.allEquipment.map(e => e.maxStatusChange.speed).reduce((a, b) => a + b, this._maxSpeed)
     }
 
+    public get angularSpeed() {
+        return this._angularSpeed
+    }
+
     public get maxHeat() {
         return this.allEquipment.map(e => e.maxStatusChange.heat).reduce((a, b) => a + b, this._maxHeat)
     }
@@ -85,6 +89,8 @@ export class Ship
     constructor(private readonly _hull: number,
                 private readonly _structure: number,
                 private readonly _maxSpeed: number,
+                private readonly _angularSpeed: number,
+                private readonly _turrentAngularSpeed: number,
                 private readonly _maxHeat: number,
                 private readonly _heatDissipation: number,
                 private readonly _hardpoints: HardPoint[],

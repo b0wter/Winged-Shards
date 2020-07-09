@@ -113,7 +113,9 @@ export default class KeyboardMouseInput extends PlayerInput
         }
         const direction = Phaser.Math.Angle.Between(0, 0, horizontal, vertical)
 
-        return new AxisInput(horizontal, vertical, direction)
+		const displacement = horizontal + vertical === 0 ? 0 : 1
+
+        return new AxisInput(horizontal, vertical, direction, displacement)
 	}
 
 	rightAxis()
@@ -125,7 +127,9 @@ export default class KeyboardMouseInput extends PlayerInput
 		if(this.pointer.worldX !== 0 || this.pointer.worldY !== 0)
 			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.pointer.worldX, this.pointer.worldY) * Phaser.Math.RAD_TO_DEG
 
-        return new AxisInput(deltaX, deltaY, direction)
+		const displacement = deltaX + deltaY === 0 ? 0 : 1
+
+        return new AxisInput(deltaX, deltaY, direction, displacement)
 	}
 
 	triggerAxis()

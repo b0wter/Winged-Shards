@@ -21,17 +21,12 @@ export const ExplosionToStructure   = 1.25
 
 export class Damage
 {
-    get physical() { return this._physical }
-    get energy() { return this._energy }
-    get explosion() { return this._explosion}
-    get heat() { return this._heat }
-
     get isNonZero() { return (this.physical + this.energy + this.explosion + this.heat) > 0 }
 
-    constructor(protected _physical: Physical,
-                protected _energy: Energy,
-                protected _explosion: Explosion,
-                protected _heat: Heat)
+    constructor(public readonly physical: Physical,
+                public readonly energy: Energy,
+                public readonly explosion: Explosion,
+                public readonly heat: Heat)
     { }
 
     /**
@@ -40,10 +35,14 @@ export class Damage
      */
     public scale(x: number)
     {
-        this._energy *= x
-        this._physical *= x
-        this._explosion *= x
-        this._heat *= x
+        // Alternative: add properties for the damage and make the scale a property
+        // on this object. The getter will then multiply the scale.
+        return new Damage(
+            this.energy * x,
+            this.physical * x,
+            this.explosion * x,
+            this.heat * x
+        )
     }
 }
 

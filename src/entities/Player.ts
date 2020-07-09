@@ -42,7 +42,7 @@ export class PlayerEntity extends PhysicalEntity
         if(this.inactive) return
         super.internalUpdate(t, dt)
         this.updateEquipment(t, dt, this.x, this.y, this.angle)
-        this.handleInput(input, t)
+        this.handleInput(input, t, dt)
     }
 
     private updateEquipment(t, dt, x, y, angle)
@@ -55,12 +55,12 @@ export class PlayerEntity extends PhysicalEntity
         //TODO: speed bonus is not included!
     }
 
-    private handleInput(input: PlayerInput, t)
+    private handleInput(input: PlayerInput, t: number, dt: number)
     {
         if(input === undefined)
             return;
         this.handleTriggers(input, t)
-        this.handleControls(input, t)
+        this.handleControls(input, dt)
     }
 
     private handleTriggers(input: PlayerInput, t)
@@ -82,12 +82,26 @@ export class PlayerEntity extends PhysicalEntity
         this.triggerEquipmentGroup(group, t)
     }
 
-    private handleControls(input: PlayerInput, t)
+    private handleControls(input: PlayerInput, dt: number)
     {
         const leftAxis = input.leftAxis()
-        this.setVelocity(leftAxis.horizontal * this.ship.maxSpeed, leftAxis.vertical * this.ship.maxSpeed)
-        const rightAxis = input.rightAxis()
-        this.setAngle(rightAxis.direction)
+        
+        // moving forward/backwars
+        const linearMotion = -leftAxis.vertical * this.ship.maxSpeed
+        const linearMotionX = Math.cos(this.rotation) * linearMotion
+        const linearMotionY = Math.sin(this.rotation) * linearMotion
+        this.setVelocity(linearMotionX, linearMotionY)
+
+        // rotation
+        const rotation = this.ship.angularSpeed * leftAxis.horizontal
+        console.log("rotation", rotation)
+        const rotationDt = dt / 1000 * rotation
+        console.log("dt", rotationDt)
+        this.setAngle(this.angle + rotationDt)
+        console.log(this.angle)
+        //this.setVelocity(leftAxis.horizontal * this.ship.maxSpeed, leftAxis.vertical * this.ship.maxSpeed)
+        //const rightAxis = input.rightAxis()
+        //this.setAngle(rightAxis.direction)
     }
 
     public takeDamage(damage: Damage)
