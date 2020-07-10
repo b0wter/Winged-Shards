@@ -7,6 +7,12 @@ export enum HardPointSize
     Large,
 }
 
+export enum HardPointPosition
+{
+    Hull,
+    Turret
+}
+
 export enum HardPointType
 {
     /**
@@ -81,6 +87,7 @@ export class HardPoint
 
     constructor(public readonly size: HardPointSize, 
                 public readonly type: HardPointType,
+                public readonly position: HardPointPosition,
                 public readonly offsetX: number,
                 public readonly offsetY: number,
                 equipment?: Equipment,
@@ -103,13 +110,13 @@ export class HardPoint
           })        
     }
 
-    public static empty(size: HardPointSize, type: HardPointType, xOffset: number, yOffset: number)
+    public static empty(size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number)
     {
-        return new HardPoint(size, type, xOffset, yOffset, undefined, undefined)
+        return new HardPoint(size, type, position, xOffset, yOffset, undefined, undefined)
     }
 
-    public static withEquipment(e: Equipment, size: HardPointSize, type: HardPointType, xOffset: number, yOffset: number, equipmentGroup?: number)
+    public static withEquipment(e: Equipment, size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number, equipmentGroup?: number)
     {
-        return new HardPoint(size, type, xOffset, yOffset, e, equipmentGroup)
+        return new HardPoint(size, type, position, xOffset, yOffset, e, equipmentGroup)
     }
 }

@@ -95,6 +95,7 @@ export class Ship
                 private readonly _heatDissipation: number,
                 private readonly _hardpoints: HardPoint[],
                 public readonly spriteKey: string,
+                public readonly turretSpriteKey: string,
                 public readonly manufacturer: Manufacturers,
                 public readonly modelName: string
                )

@@ -3,10 +3,10 @@ import HorizontalStatusBar from '~/interface/HorizontalStatusBar'
 import FullscreenStatusBar from '~/interface/FullscreenProgressBar'
 import Color = Phaser.Display.Color
 import ShieldBar from '~/interface/ShieldBar'
+import { FullRessourceList } from './PreloadRessourcePair'
 
 export class PreloadScene extends Phaser.Scene
 {
-    private graphics!: Phaser.GameObjects.Graphics
     private progressBar!: HorizontalStatusBar
     private width!: number
     private height!: number
@@ -34,6 +34,8 @@ export class PreloadScene extends Phaser.Scene
     preloadRessources()
     {
         console.log("Starting preloading of ressources.")
+        new FullRessourceList().load(this)
+        /*
         this.load.image('tiles', 'images/tilesets/scifi_floor.png')
         this.load.image('collision_tiles', 'images/tilesets/collision.png')
         this.load.image('spaceship_01', 'images/ships/orange_01.png')
@@ -50,6 +52,7 @@ export class PreloadScene extends Phaser.Scene
         this.load.tilemapTiledJSON('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')
         this.load.image('tiles', 'images/tilesets/scifi_floor.png')
         this.load.tilemapTiledJSON('defeat', 'maps/defeat.json')
+        */
     }
 
     initProgressBar()
@@ -57,12 +60,10 @@ export class PreloadScene extends Phaser.Scene
         console.log("Initializing progress bar.")
         this.progressBar = new FullscreenStatusBar(this, this.cameras.main.centerX, this.cameras.main.centerY, 1920 * 0.8, 200, 4, new Color(200, 200, 200), new Color(150, 150, 150), new Color(50, 50, 50))
         this.progressBar.draw()
-        console.log(this.progressBar)
     }
 
     progress(percentage: number)
     {
-        console.log("Updating progress.", this.progressBar)
         this.progressBar.current = percentage
         this.progressBar.draw()
     }

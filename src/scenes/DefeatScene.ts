@@ -1,5 +1,5 @@
 import BaseScene from './BaseScene';
-import { PreloadRessourceList } from './PreloadRessourcePair';
+import { PreloadRessourceList, FullRessourceList } from './PreloadRessourcePair';
 import TilemapDefinition from './TilemapDefinition';
 
 export class DefeatScene extends BaseScene
@@ -24,9 +24,6 @@ export class DefeatScene extends BaseScene
 
     protected createPreloadRessourcePairs()
     {
-        const pairs = new PreloadRessourceList()
-        pairs.addImage('tiles', 'images/tilesets/scifi_floor.png')
-        pairs.addTilemap('defeat', 'maps/defeat.json')
-        return pairs        
+        return new FullRessourceList()
     }
 }

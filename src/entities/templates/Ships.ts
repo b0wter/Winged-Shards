@@ -1,5 +1,5 @@
 import { Manufacturers } from '~/utilities/Manufacturers'
-import { HardPoint, HardPointSize, HardPointType } from '../Hardpoint'
+import { HardPoint, HardPointSize, HardPointType, HardPointPosition } from '../Hardpoint'
 import { Ship } from '../Ship'
 
 export abstract class ShipTemplate
@@ -7,6 +7,7 @@ export abstract class ShipTemplate
     public abstract modelName: string
     public abstract manufacturer: Manufacturers
     public abstract spriteKey: string
+    public abstract turretSpriteKey: string
     public abstract hull: number
     public abstract structure: number
     public abstract maxHeat: number
@@ -18,7 +19,7 @@ export abstract class ShipTemplate
 
     public instantiate()
     {
-        return new Ship(this.hull, this.structure, this.maxSpeed, this.angularSpeed, this.turretAngularSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.manufacturer, this.modelName)
+        return new Ship(this.hull, this.structure, this.maxSpeed, this.angularSpeed, this.turretAngularSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.turretSpriteKey, this.manufacturer, this.modelName)
     }
 }
 
@@ -26,7 +27,8 @@ export class DefaultFighterTemplate extends ShipTemplate
 {
     public modelName = "Rapier V-37"
     public manufacturer = Manufacturers.Roskosmos
-    public spriteKey = "tank_01"
+    public spriteKey = "red_tank"
+    public turretSpriteKey = "red_tank_turret"
     public hull = 100
     public structure = 50
     public heatDissipation = 5
@@ -35,10 +37,10 @@ export class DefaultFighterTemplate extends ShipTemplate
     public angularSpeed = 90
     public turretAngularSpeed = 180
     public hardpoints = [
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0, -10),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,  10),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, 10,   0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras,  0,   0)
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Turret,  0, -10),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Turret,  0,  10),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Turret, 10,   0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0,   0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0,   0)
     ]
 }

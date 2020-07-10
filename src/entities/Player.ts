@@ -11,7 +11,7 @@ import { AddEntityFunc } from '~/scenes/ColliderCollection'
 import StatusBar from '~/interface/StatusBar'
 import { CurrentStatusChange } from './StatusChanges'
 import { Ship } from './Ship'
-import { HardPoint } from './Hardpoint'
+import { HardPoint, HardPointPosition } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
 
 export class PlayerEntity extends PhysicalEntity
@@ -20,10 +20,14 @@ export class PlayerEntity extends PhysicalEntity
 
     public get ship() { return this._ship }
 
+    private _turretSprite: Phaser.GameObjects.Image
+
     constructor(scene: GameplayScene, x: number, y: number, angle: number, private _ship: Ship, colliderGroupFunc: AddEntityFunc)
     {
         super(scene, x, y, _ship.spriteKey, Teams.Players, new ClampedNumber(_ship.shield), new ClampedNumber(_ship.hull), new ClampedNumber(_ship.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
         _ship.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
+        this._turretSprite = scene.add.image(5, 0, _ship.turretSpriteKey) 
+        this.add(this._turretSprite)
     }
 
     private triggerEquipmentGroup(group: [TriggeredEquipment, HardPoint][], t: number)
@@ -31,7 +35,8 @@ export class PlayerEntity extends PhysicalEntity
         group.forEach(([e, h]) => { 
             if(e.heatPerTrigger <= this.remainingHeatBudget)
             {
-                const heatGenerated = e.trigger(this.x, this.y, this.angle, t, this.name, h.offsetX, h.offsetY)
+                const angle = h.position === HardPointPosition.Hull ? this.angle : this.angle + this._turretSprite.angle
+                const heatGenerated = e.trigger(this.x, this.y, angle, t, this.name, h.offsetX, h.offsetY)
                 this.heatValue.add(heatGenerated)
             }
         })
@@ -94,14 +99,12 @@ export class PlayerEntity extends PhysicalEntity
 
         // rotation
         const rotation = this.ship.angularSpeed * leftAxis.horizontal
-        console.log("rotation", rotation)
         const rotationDt = dt / 1000 * rotation
-        console.log("dt", rotationDt)
         this.setAngle(this.angle + rotationDt)
-        console.log(this.angle)
-        //this.setVelocity(leftAxis.horizontal * this.ship.maxSpeed, leftAxis.vertical * this.ship.maxSpeed)
-        //const rightAxis = input.rightAxis()
-        //this.setAngle(rightAxis.direction)
+
+        const rightAxis = input.rightAxis()
+        const turretDirection = -(this.angle - rightAxis.direction)
+        this._turretSprite.setAngle(turretDirection)
     }
 
     public takeDamage(damage: Damage)

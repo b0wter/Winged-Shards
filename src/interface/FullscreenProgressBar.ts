@@ -18,7 +18,6 @@ export default class FullscreenStatusBar extends HorizontalStatusBar
 
     protected fillBar(x, y, width, height)
     {
-        console.log(x, y, width, height)
         this.fillRect(x, y, width * this.percentage, height)
     }
 }
