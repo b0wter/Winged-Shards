@@ -1,11 +1,10 @@
 import Phaser from 'phaser'
-import * as Damage from './DamageType'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
-import { TriggeredEquipment, TriggeredEquipmentTemplate, EquipmentPositionCallback, EquipmentAngleCallback } from './TriggeredEquipment'
+import { TriggeredEquipment, EquipmentPositionCallback, EquipmentAngleCallback } from './TriggeredEquipment'
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
-import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges'
+import { MaxStatusChange, CurrentStatusChange } from './StatusChanges'
 import { HardPointType, HardPointSize, HardPoint } from './Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
@@ -51,8 +50,11 @@ export class Weapon extends TriggeredEquipment
     /**
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
-    protected internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, owner: PhysicalEntity) {
-        const fire = () => { Projectile.fromTemplate(this.scene, owner.x, owner.y, this._team, angle(), this.projectile, this.colliderFunc, owner.name) }
+    protected internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string) {
+        const fire = () => { 
+            const pos = equipmentPosition(angle)
+            Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle(), this.projectile, this.colliderFunc, ownerId) 
+        }
 
         let configuredFire : () => void
         if(this._projectilesPerShot > 1)

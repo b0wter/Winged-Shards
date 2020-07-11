@@ -43,7 +43,7 @@ export class PlayerEntity extends PhysicalEntity
                     return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
                 }
                 const angle = h.position === HardPointPosition.Hull ? hullAngleCallback : turretAngleCallback
-                const heatGenerated = e.trigger(positionCallback, angle, t, this)
+                const heatGenerated = e.trigger(positionCallback, angle, t, this.name)
                 this.heatValue.add(heatGenerated)
             }
         })

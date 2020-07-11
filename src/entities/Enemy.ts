@@ -125,7 +125,7 @@ export class Enemy extends PhysicalEntity
         const angle = () => this.angle
         const position = (_: any) => new Phaser.Geom.Point(this.x, this.y)
 
-        e.trigger(position, angle, t, this)
+        e.trigger(position, angle, t, this.name)
     }
 
     private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])

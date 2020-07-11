@@ -52,11 +52,11 @@ export abstract class TriggeredEquipment extends Equipment
      * @param angle Angle of the entity
      * @param time current game time, needed to cooldowns
      */
-    public trigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, owner: PhysicalEntity) : number
+    public trigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string) : number
     {
         const passed = time - this.lastUsedAt
         if(passed > this.cooldown * this.cooldownModifier) {
-            this.internalTrigger(equipmentPosition, angle, time, owner)
+            this.internalTrigger(equipmentPosition, angle, time, ownerId)
             this.lastUsedAt = time
             return this.heatPerTrigger
         }
@@ -72,7 +72,7 @@ export abstract class TriggeredEquipment extends Equipment
 
     protected abstract internalUpdate(t, dt)
 
-    protected abstract internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time, owner: PhysicalEntity)
+    protected abstract internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time, ownerId: string)
 
     protected mountOffset()
     {
