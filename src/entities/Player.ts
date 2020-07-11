@@ -4,7 +4,7 @@ import NameOf from 'ts-nameof'
 import { Teams } from  './Teams'
 import * as Weapon from './Weapon'
 import PlayerInput from './../input/PlayerInput'
-import { TriggeredEquipment } from './TriggeredEquipment'
+import { TriggeredEquipment, EquipmentAngleCallback } from './TriggeredEquipment'
 import { Damage } from './DamageType'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { AddEntityFunc } from '~/scenes/ColliderCollection'
@@ -35,14 +35,16 @@ export class PlayerEntity extends PhysicalEntity
         const turretAngleCallback = () => this.angle + this._turretSprite.angle
         const hullAngleCallback = () => this.angle
         group.forEach(([e, h]) => { 
+            console.log(h)
+            const isHullMounted = h.position === HardPointPosition.Hull
             if(e.heatPerTrigger <= this.remainingHeatBudget)
             {
-                const positionCallback = (angleCallback: () => number) => { 
-                    const offsetPoint = new Phaser.Geom.Point(h.offsetX, h.offsetY)
-                    const offset = Phaser.Math.Rotate(offsetPoint, angleCallback())
+                const positionCallback = (angleCallback: EquipmentAngleCallback) => { 
+                    const offsetPoint = isHullMounted ? new Phaser.Geom.Point(h.offsetX, h.offsetY) : new Phaser.Geom.Point(h.offsetX + this._turretSprite.x, h.offsetY + this._turretSprite.y)
+                    const offset = Phaser.Math.Rotate(offsetPoint, angleCallback() * Phaser.Math.DEG_TO_RAD)
                     return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
                 }
-                const angle = h.position === HardPointPosition.Hull ? hullAngleCallback : turretAngleCallback
+                const angle = isHullMounted ? hullAngleCallback : turretAngleCallback
                 const heatGenerated = e.trigger(positionCallback, angle, t, this.name)
                 this.heatValue.add(heatGenerated)
             }
