@@ -3,6 +3,7 @@ import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Equipment } from './Equipment'
 import { CurrentStatusChange } from './StatusChanges'
+import { HardPoint } from './Hardpoint'
 
 export type EquipmentCooldownChangedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
 export type EquipmentCooldownFinishedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
@@ -48,12 +49,11 @@ export abstract class TriggeredEquipment extends Equipment
      * @param angle Angle of the entity
      * @param time current game time, needed to cooldowns
      */
-    public trigger(x, y, angle, time, ownerId, xOffet, yOffset) : number
+    public trigger(angle: () => number, time: number, owner: PhysicalEntity, h: HardPoint) : number
     {
         const passed = time - this.lastUsedAt
         if(passed > this.cooldown * this.cooldownModifier) {
-            const offset = Phaser.Math.Rotate({x: xOffet, y: yOffset}, angle * Phaser.Math.DEG_TO_RAD)
-            this.internalTrigger(x + offset.x, y + offset.y, angle, time, ownerId)
+            this.internalTrigger(angle, time, owner, h)
             this.lastUsedAt = time
             return this.heatPerTrigger
         }
@@ -69,7 +69,7 @@ export abstract class TriggeredEquipment extends Equipment
 
     protected abstract internalUpdate(t, dt)
 
-    protected abstract internalTrigger(x, y, angle, time, ownerId)
+    protected abstract internalTrigger(angle: () => number, time, owner: PhysicalEntity, hardpoint: HardPoint)
 
     protected mountOffset()
     {

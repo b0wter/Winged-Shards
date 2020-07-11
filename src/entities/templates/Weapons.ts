@@ -45,7 +45,7 @@ export const LightLaser = new LightLaserTemplate()
 
 export class TripleLaserTemplate extends WeaponTemplate {
     public readonly name = "Light Laser"
-    public readonly cooldown = 500
+    public readonly cooldown = 666
     public readonly projectile = Projectile.LightLaserTemplate
     public readonly projectilesPerShot = 3
     public readonly heatPerShot = 10

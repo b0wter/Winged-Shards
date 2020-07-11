@@ -32,11 +32,13 @@ export class PlayerEntity extends PhysicalEntity
 
     private triggerEquipmentGroup(group: [TriggeredEquipment, HardPoint][], t: number)
     {
+        const turretAngleCallback = () => this.angle + this._turretSprite.angle
+        const hullAngleCallback = () => this.angle
         group.forEach(([e, h]) => { 
             if(e.heatPerTrigger <= this.remainingHeatBudget)
             {
-                const angle = h.position === HardPointPosition.Hull ? this.angle : this.angle + this._turretSprite.angle
-                const heatGenerated = e.trigger(this.x, this.y, angle, t, this.name, h.offsetX, h.offsetY)
+                const angle = h.position === HardPointPosition.Hull ? hullAngleCallback : turretAngleCallback
+                const heatGenerated = e.trigger(angle, t, this, h)
                 this.heatValue.add(heatGenerated)
             }
         })

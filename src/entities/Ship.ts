@@ -6,6 +6,7 @@ import { EquipmentCooldownChangedCallback, TriggeredEquipment } from './Triggere
 import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
 import { Manufacturers } from '~/utilities/Manufacturers';
 import { SmallShieldGenerator } from './templates/ShieldGenerators';
+import PhysicalEntity from './PhysicalEntity';
 
 export class HardpointEquipmentQuery {
     private static alwaysEquipmentPredicate: (Equipment) => boolean = (_) => true
@@ -144,12 +145,12 @@ export class Ship
         return CurrentStatusChange.combineAll(updates)
     }
 
-    public trigger(index: number, x, y, angle, t, ownerId)
+    public trigger(index: number, angle: () => number, time: number, owner: PhysicalEntity, h: HardPoint)
     {
         this.equipmentGroup(index).forEach(([e, h]) => {
             const t = e as TriggeredEquipment
             if(t.trigger !== undefined)
-                t.trigger(x, y, angle, t, ownerId, h.offsetX, h.offsetY)
+                t.trigger(angle, time, owner, h)
         })
     }
 

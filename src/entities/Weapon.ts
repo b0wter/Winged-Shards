@@ -6,7 +6,7 @@ import { TriggeredEquipment, TriggeredEquipmentTemplate } from './TriggeredEquip
 import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges'
-import { HardPointType, HardPointSize } from './Hardpoint'
+import { HardPointType, HardPointSize, HardPoint } from './Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
 
@@ -15,6 +15,7 @@ export const NoSpread : None = { }
 export interface Angular { degreesDistance: number }
 export interface Parallel { distanceToNext: number }
 export type WeaponSpread = None | Angular | Parallel
+export type RequestPositionCallback = () => Phaser.Geom.Point
 
 export class Weapon extends TriggeredEquipment
 {
@@ -50,8 +51,8 @@ export class Weapon extends TriggeredEquipment
     /**
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
-    protected internalTrigger(x, y, angle, time, owner) {
-        const fire = () => { Projectile.fromTemplate(this.scene, x, y, this._team, angle, this.projectile, this.colliderFunc, owner) }
+    protected internalTrigger(angle: () => number, time: number, owner: PhysicalEntity, hardpoint: HardPoint) {
+        const fire = () => { Projectile.fromTemplate(this.scene, owner.x, owner.y, this._team, angle(), this.projectile, this.colliderFunc, owner.name) }
 
         let configuredFire : () => void
         if(this._projectilesPerShot > 1)

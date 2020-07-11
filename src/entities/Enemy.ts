@@ -9,6 +9,7 @@ import { TriggeredEquipment, TriggeredEquipmentTemplate } from './TriggeredEquip
 import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point
+import { HardPoint, HardPointSize, HardPointType, HardPointPosition } from './Hardpoint'
 
 export class Enemy extends PhysicalEntity
 {
@@ -121,8 +122,9 @@ export class Enemy extends PhysicalEntity
         const offset = 0 //(body.width / 2) ?? 0
         const offsetX = offset * Math.cos(this.rotation)
         const offsetY = offset * Math.sin(this.rotation)
+        const angle = () => this.angle
 
-        e.trigger(this.x + offsetX, this.y + offsetY, this.angle, t, this.name, 0, 0)
+        e.trigger(angle, t, this, new HardPoint(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, e))
     }
 
     private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])
