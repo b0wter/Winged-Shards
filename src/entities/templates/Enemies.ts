@@ -4,7 +4,7 @@ import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Enemy } from '../Enemy'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
-import { LightLaserTemplate, LightLaser } from './Weapons'
+import { TripleLaserTemplate, TripleLaster } from './Weapons'
 
 export abstract class EnemyTemplate
 {
@@ -30,7 +30,7 @@ export class LightFighter extends EnemyTemplate {
     public readonly hull = 20
     public readonly structure = 10
     public readonly maxVelocity = 175
-    public readonly equipment = [ LightLaser ]
+    public readonly equipment = [ TripleLaster ]
 }
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 

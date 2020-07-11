@@ -23,6 +23,8 @@ export class Weapon extends TriggeredEquipment
 
     public get range() { return this.projectile.range }
 
+    get cooldown() { return this._cooldown + this.initialDelay + this._projectilesPerShot * this.delayBetweenShots} 
+
     public readonly maxStatusChange = MaxStatusChange.zero
 
     constructor(private scene: Phaser.Scene,
@@ -30,6 +32,7 @@ export class Weapon extends TriggeredEquipment
                 private projectile: Projectile.ProjectileTemplate, 
                 heatPerShot: number,
                 _cooldown: number,
+                private _projectilesPerShot: number,
                 private spread: WeaponSpread,
                 private initialDelay: number,
                 private delayBetweenShots: number,
@@ -48,7 +51,18 @@ export class Weapon extends TriggeredEquipment
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
     protected internalTrigger(x, y, angle, time, owner) {
-        Projectile.fromTemplate(this.scene, x, y, this._team, angle, this.projectile, this.colliderFunc, owner)
+        const fire = () => { Projectile.fromTemplate(this.scene, x, y, this._team, angle, this.projectile, this.colliderFunc, owner) }
+
+        let configuredFire : () => void
+        if(this._projectilesPerShot > 1)
+            configuredFire = () => { const timer = new Phaser.Time.TimerEvent({ repeat: this._projectilesPerShot - 1, callback: fire, callbackScope: this, delay: this.delayBetweenShots}); this.scene.time.addEvent(timer) }
+        else
+            configuredFire = fire
+
+        if(this.initialDelay === 0)
+            configuredFire()
+        else
+            this.scene.time.addEvent(new Phaser.Time.TimerEvent({delay: this.initialDelay, callback: configuredFire }))
     }
 
     protected internalUpdate(t: number, dt: number)

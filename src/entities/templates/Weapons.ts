@@ -21,9 +21,9 @@ export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
     public abstract readonly manufacturer: Manufacturers
     public abstract readonly modelName: string
 
-    public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number) : Weapon
+    public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams) : Weapon
     {
-        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
     }
 }
 
@@ -43,6 +43,22 @@ export class LightLaserTemplate extends WeaponTemplate {
 }
 export const LightLaser = new LightLaserTemplate()
 
+export class TripleLaserTemplate extends WeaponTemplate {
+    public readonly name = "Light Laser"
+    public readonly cooldown = 500
+    public readonly projectile = Projectile.LightLaserTemplate
+    public readonly projectilesPerShot = 3
+    public readonly heatPerShot = 10
+    public readonly spread = NoSpread
+    public readonly initialDelay = 0
+    public readonly delayBetweenShots = 16*4
+    public readonly hardPointSize = HardPointSize.Small
+    public readonly hardPointType = HardPointType.WithoutExtras
+    public readonly manufacturer = Manufacturers.BattlePrep
+    public readonly modelName = "Light Laser A"
+}
+export const TripleLaster = new TripleLaserTemplate()
+
 export class FusionGun extends WeaponTemplate {
     public readonly name = "Fusion Gun"
     public readonly cooldown = 3000
@@ -50,7 +66,7 @@ export class FusionGun extends WeaponTemplate {
     public readonly projectilesPerShot = 1
     public readonly heatPerShot = 50
     public readonly spread = NoSpread
-    public readonly initialDelay = 0
+    public readonly initialDelay = 1000
     public readonly delayBetweenShots = 0
     public readonly hardPointSize = HardPointSize.Small
     public readonly hardPointType = HardPointType.WithoutExtras
