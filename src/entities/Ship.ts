@@ -145,12 +145,12 @@ export class Ship
         return CurrentStatusChange.combineAll(updates)
     }
 
-    public trigger(index: number, angle: () => number, time: number, owner: PhysicalEntity, h: HardPoint)
+    public trigger(index: number,equipmentPosition: () => Phaser.Geom.Point, angle: () => number, time: number, owner: PhysicalEntity, h: HardPoint)
     {
         this.equipmentGroup(index).forEach(([e, h]) => {
             const t = e as TriggeredEquipment
             if(t.trigger !== undefined)
-                t.trigger(angle, time, owner, h)
+                t.trigger(equipmentPosition, angle, time, owner)
         })
     }
 

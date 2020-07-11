@@ -37,8 +37,13 @@ export class PlayerEntity extends PhysicalEntity
         group.forEach(([e, h]) => { 
             if(e.heatPerTrigger <= this.remainingHeatBudget)
             {
+                const positionCallback = (angleCallback: () => number) => { 
+                    const offsetPoint = new Phaser.Geom.Point(h.offsetX, h.offsetY)
+                    const offset = Phaser.Math.Rotate(offsetPoint, angleCallback())
+                    return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
+                }
                 const angle = h.position === HardPointPosition.Hull ? hullAngleCallback : turretAngleCallback
-                const heatGenerated = e.trigger(angle, t, this, h)
+                const heatGenerated = e.trigger(positionCallback, angle, t, this)
                 this.heatValue.add(heatGenerated)
             }
         })

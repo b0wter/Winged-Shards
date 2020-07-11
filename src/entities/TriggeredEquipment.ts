@@ -8,6 +8,9 @@ import { HardPoint } from './Hardpoint'
 export type EquipmentCooldownChangedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
 export type EquipmentCooldownFinishedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
 
+export type EquipmentAngleCallback = () => number
+export type EquipmentPositionCallback = (angle: EquipmentAngleCallback) => Phaser.Geom.Point
+
 export abstract class TriggeredEquipment extends Equipment
 {
     /**
@@ -49,11 +52,11 @@ export abstract class TriggeredEquipment extends Equipment
      * @param angle Angle of the entity
      * @param time current game time, needed to cooldowns
      */
-    public trigger(angle: () => number, time: number, owner: PhysicalEntity, h: HardPoint) : number
+    public trigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, owner: PhysicalEntity) : number
     {
         const passed = time - this.lastUsedAt
         if(passed > this.cooldown * this.cooldownModifier) {
-            this.internalTrigger(angle, time, owner, h)
+            this.internalTrigger(equipmentPosition, angle, time, owner)
             this.lastUsedAt = time
             return this.heatPerTrigger
         }
@@ -69,7 +72,7 @@ export abstract class TriggeredEquipment extends Equipment
 
     protected abstract internalUpdate(t, dt)
 
-    protected abstract internalTrigger(angle: () => number, time, owner: PhysicalEntity, hardpoint: HardPoint)
+    protected abstract internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time, owner: PhysicalEntity)
 
     protected mountOffset()
     {
@@ -107,5 +110,5 @@ export abstract class TriggeredEquipment extends Equipment
 
 export abstract class TriggeredEquipmentTemplate
 {
-    public abstract instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams, mountPointOffsetX: number, mountPointOffsetY: number)
+    public abstract instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams)
 } 
