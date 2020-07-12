@@ -1,8 +1,8 @@
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { HardPoint, HardPointSize, HardPointType, HardPointPosition } from '../Hardpoint'
-import { Ship } from '../Ship'
+import { Tank } from '../Tank'
 
-export abstract class ShipTemplate
+export abstract class TankTemplate
 {
     public abstract modelName: string
     public abstract manufacturer: Manufacturers
@@ -19,11 +19,11 @@ export abstract class ShipTemplate
 
     public instantiate()
     {
-        return new Ship(this.hull, this.structure, this.maxSpeed, this.angularSpeed, this.turretAngularSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.turretSpriteKey, this.manufacturer, this.modelName)
+        return new Tank(this.hull, this.structure, this.maxSpeed, this.angularSpeed, this.turretAngularSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.turretSpriteKey, this.manufacturer, this.modelName)
     }
 }
 
-export class DefaultFighterTemplate extends ShipTemplate
+export class MediumTankTemplate extends TankTemplate
 {
     public modelName = "Rapier V-37"
     public manufacturer = Manufacturers.Roskosmos

@@ -1,13 +1,8 @@
-import ActiveEquipment from './ActiveEquipment';
-import PassiveEquipment from './PassiveEquipment';
-import { HardPoint, HardPointEquipment, HardPointType, HardPointSize } from './Hardpoint';
+import { HardPoint, HardPointEquipment } from './Hardpoint';
 import { Equipment, EquipmentTypes } from './Equipment';
-import { EquipmentCooldownChangedCallback, TriggeredEquipment } from './TriggeredEquipment';
-import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
+import { TriggeredEquipment } from './TriggeredEquipment';
+import { CurrentStatusChange } from './StatusChanges';
 import { Manufacturers } from '~/utilities/Manufacturers';
-import { SmallShieldGenerator } from './templates/ShieldGenerators';
-import PhysicalEntity from './PhysicalEntity';
-import { Weapon } from './Weapon';
 
 export class HardpointEquipmentQuery {
     private static alwaysEquipmentPredicate: (Equipment) => boolean = (_) => true
@@ -32,35 +27,35 @@ export class HardpointEquipmentQuery {
     public static readonly always = new HardpointEquipmentQuery(HardpointEquipmentQuery.alwaysEquipmentPredicate, HardpointEquipmentQuery.alwaysHardpointPredicate)
 }
 
-export type ShipEquipmentChangedListener = (s: Ship, hardpoint: HardPoint, previous: HardPointEquipment, next: HardPointEquipment) => void
+export type TankEquipmentChangedListener = (s: Tank, hardpoint: HardPoint, previous: HardPointEquipment, next: HardPointEquipment) => void
 
-export class Ship
+export class Tank
 {
     public get hardpoints() { return this._hardpoints }
 
     /**
-     * The maximum shield strength of this ship inclusing all equipment bonusses.
+     * The maximum shield strength of this tank inclusing all equipment bonusses.
      */
     public get shield() { 
         return this.allEquipment.map(e => e.maxStatusChange.shield).reduce((a, b) => a + b, 0)
     }
 
     /**
-     * The maximum hull strength of this ship inclusing all equipment bonusses.
+     * The maximum hull strength of this tank inclusing all equipment bonusses.
      */
     public get hull() { 
         return this.allEquipment.map(e => e.maxStatusChange.hull).reduce((a, b) => a + b, this._hull)
     }
 
     /**
-     * The maximum structure strength of this ship inclusing all equipment bonusses.
+     * The maximum structure strength of this tank inclusing all equipment bonusses.
      */
     public get structure() { 
         return this.allEquipment.map(e => e.maxStatusChange.structure).reduce((a, b) => a + b, this._structure)
     }
 
     /**
-     * The maximum amount of heat the ship can take. Includes all equipment bonusses.
+     * The maximum amount of heat the tank can take. Includes all equipment bonusses.
      */
     public get heatDissipation() { 
         console.log("heat")
@@ -68,7 +63,7 @@ export class Ship
     }
 
     /**
-     * Maximum speed of this ship. Includes all equipment bonusses.
+     * Maximum speed of this tank. Includes all equipment bonusses.
      */
     public get maxSpeed() { 
         return this.allEquipment.map(e => e.maxStatusChange.speed).reduce((a, b) => a + b, this._maxSpeed)
@@ -86,7 +81,7 @@ export class Ship
         return this.equipmentBy().map(([e, _]) => e)
     }
 
-    private equipmentChangedListeners: ShipEquipmentChangedListener[] = []
+    private equipmentChangedListeners: TankEquipmentChangedListener[] = []
 
     constructor(private readonly _hull: number,
                 private readonly _structure: number,
@@ -140,9 +135,9 @@ export class Ship
 
     public update(t: number, dt: number, triggeredEquipmentGroups: number[], isMoving: boolean) : CurrentStatusChange
     {
-        const fromShip = CurrentStatusChange.forHeat(dt, -this._heatDissipation)
+        const fromTank = CurrentStatusChange.forHeat(dt, -this._heatDissipation)
         const updates = this.allEquipment.map(e => e.update(t, dt, isMoving))
-        updates.push(fromShip)
+        updates.push(fromTank)
         return CurrentStatusChange.combineAll(updates)
     }
 
@@ -155,12 +150,12 @@ export class Ship
         })
     }
 
-    public addEquipmentChangedListener(l: ShipEquipmentChangedListener)
+    public addEquipmentChangedListener(l: TankEquipmentChangedListener)
     {
         this.equipmentChangedListeners.push(l)
     }
 
-    public removeEquipmentChangedListener(l: ShipEquipmentChangedListener)
+    public removeEquipmentChangedListener(l: TankEquipmentChangedListener)
     {
         this.equipmentChangedListeners.forEach( (item, index) => {
             if(item === l) this.equipmentChangedListeners.splice(index,1);
