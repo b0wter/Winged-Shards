@@ -62,16 +62,29 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('particle_red', 'images/effects/particle-red.png')
         this.addImage('fusion_01', 'images/projectiles/fusion-01.png')
         this.addImage('tank_01', 'images/tanks/tank_01.png')
+
+        // --- TANKS ---
         this.addImage('red_tank', 'images/tanks/red.png')
         this.addImage('green_tank', 'images/tanks/green.png')
         this.addImage('yellow_tank', 'images/tanks/yellow.png')
         this.addImage('blue_tank', 'images/tanks/blue.png')
         this.addImage('grey_tank', 'images/tanks/grey.png')
+        this.addImage('hover_tank_01', 'images/tanks/hover_tank_01.png')
+        this.addImage('hover_tank_02', 'images/tanks/hover_tank_02.png')
+        this.addImage('hover_tank_03', 'images/tanks/hover_tank_03.png')
+        this.addImage('hover_tank_04', 'images/tanks/hover_tank_04.png')
+        this.addImage('hover_tank_05', 'images/tanks/hover_tank_05.png')
+
+        // --- TURRETS ---        
         this.addImage('red_tank_turret', 'images/tanks/turret_red.png')
         this.addImage('green_tank_turret', 'images/tanks/turret_green.png')
         this.addImage('yellow_tank_turret', 'images/tanks/turret_yellow.png')
         this.addImage('blue_tank_turret', 'images/tanks/turret_blue.png')
         this.addImage('grey_tank_turret', 'images/tanks/turret_grey.png')
+        this.addImage('hover_tank_turret_single_barrel', 'images/tanks/hover_tank_turret_single_barrel.png')
+        this.addImage('hover_tank_turret_dual_laser', 'images/tanks/hover_tank_turret_dual_laser.png')
+        this.addImage('hover_tank_turret_dual_barrel', 'images/tanks/hover_tank_turret_dual_barrel.png')
+
         this.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
         this.addTilemap('campaign_01_room_001_map', 'maps/campaign_01_room_001.json')
         this.addTilemap('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')
