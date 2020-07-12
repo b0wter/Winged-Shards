@@ -35,7 +35,6 @@ export class PlayerEntity extends PhysicalEntity
         const turretAngleCallback = () => this.angle + this._turretSprite.angle
         const hullAngleCallback = () => this.angle
         group.forEach(([e, h]) => { 
-            console.log(h)
             const isHullMounted = h.position === HardPointPosition.Hull
             if(e.heatPerTrigger <= this.remainingHeatBudget)
             {

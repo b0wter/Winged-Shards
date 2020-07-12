@@ -7,6 +7,7 @@ import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
 import { Manufacturers } from '~/utilities/Manufacturers';
 import { SmallShieldGenerator } from './templates/ShieldGenerators';
 import PhysicalEntity from './PhysicalEntity';
+import { Weapon } from './Weapon';
 
 export class HardpointEquipmentQuery {
     private static alwaysEquipmentPredicate: (Equipment) => boolean = (_) => true
