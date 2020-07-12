@@ -22,14 +22,15 @@ export class PlayerEntity extends PhysicalEntity
     {
         super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
-        this._turretSprite = scene.add.image(5, 0, _tank.turretSpriteKey) 
+        this._turretSprite = scene.add.image(_tank.turretOffset.x, _tank.turretOffset.y, _tank.turretSpriteKey) 
         this.add(this._turretSprite)
     }
 
     private triggerEquipmentGroup(group: [TriggeredEquipment, HardPoint][], t: number)
     {
-        const turretAngleCallback = () => this.angle + this._turretSprite.angle
-        const hullAngleCallback = () => this.angle
+        function turretAngleCallbackFunc(p: PlayerEntity, hardPointAngle: number) : EquipmentAngleCallback { return () => p.angle + p._turretSprite.angle + hardPointAngle }
+        function hullAngleCallbackFunc (p: PlayerEntity, hardPointAngle: number) : EquipmentAngleCallback  { return () => p.angle + hardPointAngle }
+
         group.forEach(([e, h]) => { 
             const isHullMounted = h.position === HardPointPosition.Hull
             if(e.heatPerTrigger <= this.remainingHeatBudget)
@@ -39,7 +40,7 @@ export class PlayerEntity extends PhysicalEntity
                     const offset = Phaser.Math.Rotate(offsetPoint, angleCallback() * Phaser.Math.DEG_TO_RAD)
                     return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
                 }
-                const angle = isHullMounted ? hullAngleCallback : turretAngleCallback
+                const angle = isHullMounted ? hullAngleCallbackFunc(this, h.angle) : turretAngleCallbackFunc(this, h.angle)
                 const heatGenerated = e.trigger(positionCallback, angle, t, this.name)
                 this.heatValue.add(heatGenerated)
             }
@@ -132,7 +133,7 @@ export class PlayerEntity extends PhysicalEntity
 
     public exportState()
     {
-        return new PlayerState(this.shieldValue, this.hullValue, this.structureValue, this.heatValue)
+        return new PlayerState(this.shieldValue, this.hullValue, this.structureValue, this.heatValue, this.angle)
     }
 
     public importState(state: PlayerState)
@@ -142,6 +143,7 @@ export class PlayerEntity extends PhysicalEntity
         this.hullValue.current = state.hull.current
         this.structureValue.current = state.structure.current
         this.heatValue.current = state.heat.current
+        this.setAngle(state.angle)
 
         // TODO: Equipment status and cooldowns need to be set as well!
     }
@@ -155,7 +157,8 @@ export class PlayerState
         public shield: ClampedNumber,
         public hull: ClampedNumber,
         public structure: ClampedNumber,
-        public heat: ClampedNumber
+        public heat: ClampedNumber,
+        public angle: number
     )
     {
         //  
