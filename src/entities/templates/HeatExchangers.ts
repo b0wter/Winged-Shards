@@ -4,10 +4,30 @@ import { HardPointSize, HardPointType } from '../Hardpoint'
 
 export class SmallHeatExchanger extends HeatExchanger
 {
-    public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "HEx-001s"
-    public readonly hardPointSize = HardPointSize.Small
-    public readonly hardPointType = HardPointType.WithoutExtras
-    public readonly heatPerSecond = -5
-    public readonly maxHeatBonus = 0
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "HEx-001s"
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithoutExtras
+    heatPerSecond = -5
+    maxHeatBonus = 0
+}
+
+export class MediumHeatExchanger extends HeatExchanger
+{
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "HEx-001m"
+    hardPointSize = HardPointSize.Medium
+    hardPointType = HardPointType.WithoutExtras
+    heatPerSecond = -8
+    maxHeatBonus = 0
+}
+
+export class LargeHeatExchanger extends HeatExchanger
+{
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "HEx-001l"
+    hardPointSize = HardPointSize.Large
+    hardPointType = HardPointType.WithoutExtras
+    heatPerSecond = -11
+    maxHeatBonus = 0
 }
