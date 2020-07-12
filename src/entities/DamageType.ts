@@ -44,6 +44,16 @@ export class Damage
             this.heat * x
         )
     }
+
+    public toString()
+    {
+        return `
+Energy:    ${this.energy.toPrecision(4).padStart(3 + 2 + 1, " ")}
+Physical:  ${this.physical.toPrecision(4).padStart(3 + 2 + 1, " ")}
+Explosion: ${this.explosion.toPrecision(4).padStart(3 + 2 + 1, " ")}
+Heat:      ${this.heat.toPrecision(4).padStart(3 + 2 + 1, " ")}
+`
+    }
 }
 
 export const None = new Damage(0, 0, 0, 0)
