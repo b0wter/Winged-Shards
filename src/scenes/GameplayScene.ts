@@ -21,9 +21,7 @@ export default abstract class GameplayScene extends BaseScene
 {
     private static readonly PlayerSpawnTag = "spawn_player"
     private static readonly EnemySpawnTag = "spawn_enemy"
-    private static readonly EnemyShipTypeTag = "ship_type"
     private static readonly EntitiesTag = "entities"
-    private static readonly PathTag = "path"
     private static readonly ObjectivesTag = "objectives"
     private static readonly ObjectivesTargetTag = "target"
 
@@ -182,7 +180,7 @@ export default abstract class GameplayScene extends BaseScene
             }
             else if(x.type === enemySpawn) {
                 const properties = EnemyTiledObject.fromTileObject(x)
-                this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.shipType])
+                this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.template])
             }
         })
         this.previousPlayerState = []

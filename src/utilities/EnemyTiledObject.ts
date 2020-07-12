@@ -6,11 +6,11 @@ export default class EnemyTiledObject
     private static readonly ShieldPercentageTag = "shield_percentage"
     private static readonly HullPercentageTag = "hull_percentage"
     private static readonly StructurePercentageTag = "structure_percentage"
-    private static readonly ShipTypeTag = "ship_type"
+    private static readonly Template = "template"
     private static readonly Group = "group"
     private static readonly AllEnemyPropertyTags = [ 
         EnemyTiledObject.AiTag, EnemyTiledObject.AngleTag, EnemyTiledObject.HeatPercentageTag, EnemyTiledObject.ShieldPercentageTag,
-        EnemyTiledObject.HullPercentageTag, EnemyTiledObject.StructurePercentageTag, EnemyTiledObject.ShipTypeTag, EnemyTiledObject.Group
+        EnemyTiledObject.HullPercentageTag, EnemyTiledObject.StructurePercentageTag, EnemyTiledObject.Template, EnemyTiledObject.Group
     ]
 
     constructor(
@@ -20,7 +20,7 @@ export default class EnemyTiledObject
         public shield: number,
         public hull: number,
         public structure: number,
-        public shipType: string,
+        public template: string,
         public group: string
     )
     { 

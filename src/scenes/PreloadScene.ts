@@ -35,24 +35,6 @@ export class PreloadScene extends Phaser.Scene
     {
         console.log("Starting preloading of ressources.")
         new FullRessourceList().load(this)
-        /*
-        this.load.image('tiles', 'images/tilesets/scifi_floor.png')
-        this.load.image('collision_tiles', 'images/tilesets/collision.png')
-        this.load.image('spaceship_01', 'images/ships/orange_01.png')
-        this.load.image('spaceship_02', 'images/ships/red_01.png')
-        this.load.image('projectile_01', 'images/projectiles/projectile-green.png')
-        this.load.image('shield_regular', 'images/equipment/shield_regular.png')
-        this.load.image('shield_circular', 'images/equipment/shield_circular_irregular_small.png')
-        this.load.image('debris', 'images/effects/debris.png')
-        this.load.image('particle_blue', 'images/effects/particle-blue.png')
-        this.load.image('particle_red', 'images/effects/particle-red.png')
-        this.load.image('tank_01', 'images/tanks/tank_01.png')
-        this.load.image('fusion_01', 'images/projectiles/fusion-01.png')
-        this.load.spritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
-        this.load.tilemapTiledJSON('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')
-        this.load.image('tiles', 'images/tilesets/scifi_floor.png')
-        this.load.tilemapTiledJSON('defeat', 'maps/defeat.json')
-        */
     }
 
     initProgressBar()

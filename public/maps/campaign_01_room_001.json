@@ -207,14 +207,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -260,14 +260,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -313,14 +313,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -366,14 +366,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
