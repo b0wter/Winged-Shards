@@ -81,6 +81,8 @@ export class Tank
         return this.equipmentBy().map(([e, _]) => e)
     }
 
+    public get turretOffset() { return this._turretOffset }
+
     private equipmentChangedListeners: TankEquipmentChangedListener[] = []
 
     constructor(private readonly _hull: number,
@@ -93,6 +95,7 @@ export class Tank
                 private readonly _hardpoints: HardPoint[],
                 public readonly spriteKey: string,
                 public readonly turretSpriteKey: string,
+                private readonly _turretOffset: Phaser.Geom.Point,
                 public readonly manufacturer: Manufacturers,
                 public readonly modelName: string
                )
@@ -160,5 +163,27 @@ export class Tank
         this.equipmentChangedListeners.forEach( (item, index) => {
             if(item === l) this.equipmentChangedListeners.splice(index,1);
         });
+    }
+}
+
+export abstract class TankTemplate
+{
+    public abstract modelName: string
+    public abstract manufacturer: Manufacturers
+    public abstract spriteKey: string
+    public abstract turretSpriteKey: string
+    public abstract hull: number
+    public abstract structure: number
+    public abstract maxHeat: number
+    public abstract heatDissipation: number
+    public abstract maxSpeed: number
+    public abstract angularSpeed: number
+    public abstract turretAngularSpeed: number
+    public abstract hardpoints: HardPoint[] 
+    public abstract turretOffset: Phaser.Geom.Point
+
+    public instantiate()
+    {
+        return new Tank(this.hull, this.structure, this.maxSpeed, this.angularSpeed, this.turretAngularSpeed, this.maxHeat, this.heatDissipation, this.hardpoints, this.spriteKey, this.turretSpriteKey, this.turretOffset, this.manufacturer, this.modelName)
     }
 }
