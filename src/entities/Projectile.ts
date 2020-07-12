@@ -160,32 +160,3 @@ export class ProjectileTemplate
     public size = Phaser.Math.Vector2.ZERO
 }
 
-export const LightLaserTemplate : ProjectileTemplate =
-{
-    spriteKey: 'projectile_01',
-    velocity: 400,
-    damage: new Damage.Damage(0, 20, 0, 0),
-    friendlyFire: false,
-    ignoresShields: false,
-    ignoresHull: false,
-    range: 500,
-    pierces: false,
-    pierceHitsContinuously: false,
-    angularSpeed: 0,
-    size: new Phaser.Math.Vector2(23, 9)
-}
-
-export const FusionGunTemplate : ProjectileTemplate =
-{
-    spriteKey: 'fusion_01',
-    velocity: 200,
-    damage: new Damage.Damage(0, 200, 0, 50),
-    friendlyFire: false,
-    ignoresHull: false,
-    ignoresShields: false,
-    range: 1000,
-    pierces: true,
-    pierceHitsContinuously: false,
-    angularSpeed: 45,
-    size: new Phaser.Math.Vector2(44, 44)
-}
