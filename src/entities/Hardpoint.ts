@@ -90,6 +90,7 @@ export class HardPoint
                 public readonly position: HardPointPosition,
                 public readonly offsetX: number,
                 public readonly offsetY: number,
+                public readonly angle: number,
                 equipment?: Equipment,
                 public equipmentGroup: number = HardPoint.UnsetEquipmentGroup
                 )
@@ -110,13 +111,13 @@ export class HardPoint
           })        
     }
 
-    public static empty(size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number)
+    public static empty(size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number, angle: number)
     {
-        return new HardPoint(size, type, position, xOffset, yOffset, undefined, undefined)
+        return new HardPoint(size, type, position, xOffset, yOffset, angle, undefined, undefined)
     }
 
-    public static withEquipment(e: Equipment, size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number, equipmentGroup?: number)
+    public static withEquipment(e: Equipment, size: HardPointSize, type: HardPointType, position: HardPointPosition, xOffset: number, yOffset: number, angle: number, equipmentGroup?: number)
     {
-        return new HardPoint(size, type, position, xOffset, yOffset, e, equipmentGroup)
+        return new HardPoint(size, type, position, xOffset, yOffset, angle, e, equipmentGroup)
     }
 }
