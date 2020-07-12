@@ -29,6 +29,13 @@ const config: Phaser.Types.Core.GameConfig = {
 		gamepad: true,
 		mouse: true
 	},
+	/*
+	render: {
+		pixelArt: true,
+		
+	},
+	zoom: 1,
+	*/
 	scale: {
 		width: 1920,
 		height: 1080,

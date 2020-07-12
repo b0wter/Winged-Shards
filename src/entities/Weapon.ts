@@ -1,12 +1,11 @@
 import Phaser from 'phaser'
 import * as Projectile from './Projectile'
 import { Teams } from './Teams'
-import { TriggeredEquipment, EquipmentPositionCallback, EquipmentAngleCallback } from './TriggeredEquipment'
-import PhysicalEntity from './PhysicalEntity'
+import { TriggeredEquipment, EquipmentPositionCallback, EquipmentAngleCallback, TriggeredEquipmentTemplate } from './TriggeredEquipment'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { MaxStatusChange, CurrentStatusChange } from './StatusChanges'
-import { HardPointType, HardPointSize, HardPoint } from './Hardpoint'
-import { Manufacturers } from '~/utilities/Manufacturers'
+import { HardPointType, HardPointSize } from './Hardpoint'
+import { Manufacturers, manufacturerToString } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
 
 export interface None { }
@@ -71,5 +70,48 @@ export class Weapon extends TriggeredEquipment
     protected internalUpdate(t: number, dt: number)
     {
         //
+    }
+}
+
+export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
+{
+    public abstract readonly name: string
+    public abstract readonly cooldown: number 
+    public abstract readonly projectile: Projectile.ProjectileTemplate
+    public abstract readonly projectilesPerShot: number
+    public abstract readonly heatPerShot: number
+    public abstract readonly spread: WeaponSpread
+    public abstract readonly initialDelay: number
+    public abstract readonly delayBetweenShots: number
+    public abstract readonly hardPointSize: HardPointSize
+    public abstract readonly hardPointType: HardPointType
+    public abstract readonly manufacturer: Manufacturers
+    public abstract readonly modelName: string
+
+    private get firingInterval() { return this.cooldown + (this.delayBetweenShots - 1) * this.projectilesPerShot }
+    private get firingIntervalPerSecod() { return 1 / (this.firingInterval / 1000) }
+    public get dps() { return this.projectile.damage.scale(this.firingIntervalPerSecod * this.projectilesPerShot) }
+    public get heatPerSecond() { return this.firingIntervalPerSecod * this.heatPerShot }
+
+    constructor()
+    {
+        super()
+    }
+
+    public get stats()
+    {   
+        return `
+TEMPLATE: ${this.modelName} (${manufacturerToString(this.manufacturer)})
+DPS: ${this.dps}
+HPS: ${this.heatPerSecond.toFixed(2)}
+Firing interval: ${this.firingInterval}
+Shots/sec: ${this.firingIntervalPerSecod}
+Triggers/sec: ${this.firingIntervalPerSecod}
+`
+    }
+
+    public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams) : Weapon
+    {
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
     }
 }

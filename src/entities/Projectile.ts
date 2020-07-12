@@ -160,21 +160,6 @@ export class ProjectileTemplate
     public size = Phaser.Math.Vector2.ZERO
 }
 
-export const EmptyTemplate: ProjectileTemplate =
-{
-    spriteKey: '',
-    velocity: 0,
-    damage: Damage.None,
-    friendlyFire: false,
-    ignoresShields: false,
-    ignoresHull: false,
-    range: 0,
-    pierces: false,
-    pierceHitsContinuously: false,
-    angularSpeed : 0,
-    size: Phaser.Math.Vector2.ZERO
-}
-
 export const LightLaserTemplate : ProjectileTemplate =
 {
     spriteKey: 'projectile_01',
