@@ -4,7 +4,7 @@ import { WeaponSpread, NoSpread, Weapon } from '../Weapon'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Teams } from '../Teams'
 import { HardPointSize, HardPointType } from '../Hardpoint'
-import { Manufacturers } from '~/utilities/Manufacturers'
+import { Manufacturers, manufacturerToString } from '~/utilities/Manufacturers'
 
 export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
 {
@@ -21,11 +21,34 @@ export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
     public abstract readonly manufacturer: Manufacturers
     public abstract readonly modelName: string
 
+    private get firingInterval() { return this.cooldown + (this.delayBetweenShots - 1) * this.projectilesPerShot }
+    private get firingIntervalPerSecod() { return 1 / (this.firingInterval / 1000) }
+    public get dps() { return this.projectile.damage.scale(this.firingIntervalPerSecod * this.projectilesPerShot) }
+    public get heatPerSecond() { return this.firingIntervalPerSecod * this.heatPerShot }
+
+    constructor()
+    {
+        super()
+    }
+
+    public get stats()
+    {   
+        return `
+TEMPLATE: ${this.modelName} (${manufacturerToString(this.manufacturer)})
+DPS: ${this.dps}
+HPS: ${this.heatPerSecond.toFixed(2)}
+Firing interval: ${this.firingInterval}
+Shots/sec: ${this.firingIntervalPerSecod}
+Triggers/sec: ${this.firingIntervalPerSecod}
+`
+    }
+
     public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams) : Weapon
     {
         return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
     }
 }
+
 
 export class LightLaserTemplate extends WeaponTemplate {
     public readonly name = "Light Laser"
@@ -44,20 +67,20 @@ export class LightLaserTemplate extends WeaponTemplate {
 export const LightLaser = new LightLaserTemplate()
 
 export class TripleLaserTemplate extends WeaponTemplate {
-    public readonly name = "Light Laser"
+    public readonly name = "Tri"
     public readonly cooldown = 666
     public readonly projectile = Projectile.LightLaserTemplate
     public readonly projectilesPerShot = 3
-    public readonly heatPerShot = 10
+    public readonly heatPerShot = 12
     public readonly spread = NoSpread
     public readonly initialDelay = 0
     public readonly delayBetweenShots = 16*4
     public readonly hardPointSize = HardPointSize.Small
     public readonly hardPointType = HardPointType.WithoutExtras
     public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "Light Laser A"
+    public readonly modelName = "Triple Tap"
 }
-export const TripleLaster = new TripleLaserTemplate()
+export const TripleLaser = new TripleLaserTemplate()
 
 export class FusionGun extends WeaponTemplate {
     public readonly name = "Fusion Gun"
@@ -73,3 +96,5 @@ export class FusionGun extends WeaponTemplate {
     public readonly manufacturer = Manufacturers.BattlePrep
     public readonly modelName = "Fusion Master 2000"
 }
+
+export const AllTemplates = [ LightLaser, TripleLaser ]

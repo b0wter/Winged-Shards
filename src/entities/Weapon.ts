@@ -23,7 +23,7 @@ export class Weapon extends TriggeredEquipment
 
     public get range() { return this.projectile.range }
 
-    get cooldown() { return this._cooldown + this.initialDelay + this._projectilesPerShot * this.delayBetweenShots} 
+    get cooldown() { return this._cooldown + this.initialDelay + (this._projectilesPerShot - 1) * this.delayBetweenShots} 
 
     public readonly maxStatusChange = MaxStatusChange.zero
 

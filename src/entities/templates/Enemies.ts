@@ -4,7 +4,7 @@ import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Enemy } from '../Enemy'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
-import { TripleLaserTemplate, TripleLaster, LightLaser } from './Weapons'
+import { TripleLaserTemplate, TripleLaser, LightLaser } from './Weapons'
 
 export abstract class EnemyTemplate
 {
