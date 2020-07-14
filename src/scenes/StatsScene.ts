@@ -6,7 +6,7 @@ export class StatsScene extends BaseScene
 {
     constructor()
     {
-        super("stats")
+        super(StatsScene.name)
     }
 
     create()

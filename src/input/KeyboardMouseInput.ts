@@ -12,6 +12,11 @@ export default class KeyboardMouseInput extends PlayerInput
 	private pointerLeftDown = false
 	private pointerRightDown = false
 
+	private previousLeftAxisHorizontal = 0
+	private previousLeftAxisVertical = 0
+	private previousRightAxisHorizontal = 0
+	private previousRightAxisVertical = 0
+
 	private action1Key!: Phaser.Input.Keyboard.Key
 	private action2Key!: Phaser.Input.Keyboard.Key
 	private action3Key!: Phaser.Input.Keyboard.Key
@@ -42,7 +47,7 @@ export default class KeyboardMouseInput extends PlayerInput
 	private bumperRightInput = ButtonInput.Empty()
 
 	constructor(private scene: Phaser.Scene, 
-				private player: Phaser.GameObjects.Container)
+				private player: Phaser.GameObjects.Container | undefined)
 	{
 		super()
 
@@ -115,7 +120,12 @@ export default class KeyboardMouseInput extends PlayerInput
 
 		const displacement = horizontal + vertical === 0 ? 0 : 1
 
-        return new AxisInput(horizontal, vertical, direction, displacement)
+		const firstHorizontal = this.previousLeftAxisHorizontal === 0 && horizontal !== 0
+		const firstVertical = this.previousLeftAxisVertical === 0 && vertical !== 0
+		this.previousLeftAxisHorizontal = horizontal
+		this.previousLeftAxisVertical = vertical
+
+        return new AxisInput(horizontal, vertical, direction, displacement, firstHorizontal, firstVertical)
 	}
 
 	rightAxis()
@@ -124,12 +134,12 @@ export default class KeyboardMouseInput extends PlayerInput
 		const deltaY = this.pointer.deltaY
 
 		let direction = 0;
-		if(this.pointer.worldX !== 0 || this.pointer.worldY !== 0)
+		if((this.pointer.worldX !== 0 || this.pointer.worldY !== 0) && this.player !== undefined)
 			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.pointer.worldX, this.pointer.worldY) * Phaser.Math.RAD_TO_DEG
 
 		const displacement = deltaX + deltaY === 0 ? 0 : 1
 
-        return new AxisInput(deltaX, deltaY, direction, displacement)
+        return new AxisInput(deltaX, deltaY, direction, displacement, false, false)
 	}
 
 	triggerAxis()

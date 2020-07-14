@@ -9,7 +9,7 @@ export class DefeatScene extends BaseScene
 
     constructor()
     {
-        super("defeat")
+        super(DefeatScene.name)
     }
 
     create()
@@ -20,10 +20,5 @@ export class DefeatScene extends BaseScene
             if(progress >= 0.9999)
                 setTimeout(() => window.location.reload(), 5000)
         })
-    }
-
-    protected createPreloadRessourcePairs()
-    {
-        return new FullRessourceList()
     }
 }

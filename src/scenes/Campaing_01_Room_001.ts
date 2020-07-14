@@ -12,18 +12,13 @@ export default class Campaign_01_Room_001 extends GameplayScene
 
 	constructor()
 	{
-        super('campaign_01_room_001')
+        super(Campaign_01_Room_001.name)
     }
 
     create()
     {
         super.create()
         this.cameras.main.fadeIn(1000, 0, 0, 0)
-    }
-    
-    protected createPreloadRessourcePairs()
-    {
-        return new FullRessourceList()
     }
 
     protected sceneSpecificUpdate(t: number, dt: number)

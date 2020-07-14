@@ -4,6 +4,7 @@ import FullscreenStatusBar from '~/interface/FullscreenProgressBar'
 import Color = Phaser.Display.Color
 import ShieldBar from '~/interface/ShieldBar'
 import { FullRessourceList } from './PreloadRessourcePair'
+import TankSelectionScene from './TankSelectionScene'
 
 export class PreloadScene extends Phaser.Scene
 {
@@ -11,9 +12,11 @@ export class PreloadScene extends Phaser.Scene
     private width!: number
     private height!: number
 
+    private nextScene = TankSelectionScene.name
+
     constructor()
     {
-        super("preload")
+        super(PreloadScene.name)
     }
 
     create()
@@ -56,7 +59,7 @@ export class PreloadScene extends Phaser.Scene
             this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {
                 if(progress >= 0.9999) {
                     this.scene.stop()
-                    this.scene.start("campaign_01_room_001")
+                    this.scene.start(this.nextScene)
                 }
             })
         }, 500)

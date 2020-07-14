@@ -115,3 +115,11 @@ Triggers/sec: ${this.firingIntervalPerSecod}
         return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
     }
 }
+
+export abstract class PrefilledWeaponTemplate extends WeaponTemplate
+{
+    constructor()
+    {
+        super()
+    }
+}

@@ -10,7 +10,7 @@ import { Projectile } from '~/entities/Projectile';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import TilemapDefinition from './TilemapDefinition';
 import EnemyTiledObject from '~/utilities/EnemyTiledObject';
-import { MediumTankTemplate } from '~/entities/templates/Tanks';
+import { MediumTankTemplate, LightHoverTankTemplate, HoverScoutTemplate, SupportHoverTankTemplate, MediumTank } from '~/entities/templates/Tanks';
 import { asHardPointEquipment } from '~/entities/Hardpoint';
 import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
 import { Navigation } from '~/utilities/Navigation';
@@ -40,11 +40,6 @@ export default abstract class GameplayScene extends BaseScene
      */
     protected enemies: Enemy[] = []
     protected userInputs: PlayerInput[] = []
-    /**
-     * Number of active players. Sets the number of spawned PlayerEntities.
-     * Must not exceed 3 and should not be less than one.
-     */
-    protected numberOfPlayers = 1
     /**
      * Handles all collision interaction.
      */
@@ -190,18 +185,18 @@ export default abstract class GameplayScene extends BaseScene
     {
         const tank = new MediumTankTemplate().instantiate()
         const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc)
-        /*
-        player.tank.hardpoints[0].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
+        player.tank.hardpoints[0].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
         player.tank.hardpoints[0].equipmentGroup = 0
+        /*
         player.tank.hardpoints[1].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
         player.tank.hardpoints[1].equipmentGroup = 0
-        */
         player.tank.hardpoints[2].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
         player.tank.hardpoints[2].equipmentGroup = 0
+        */
         const fusionGun = new Weapons.FusionGun().instantiate(this, this.colliders.addProjectileFunc, Teams.Players)
-        player.tank.hardpoints[3].equipment = asHardPointEquipment(fusionGun)
-        player.tank.hardpoints[3].equipmentGroup = 1
-        player.tank.hardpoints[4].equipment = asHardPointEquipment(new SmallShieldGenerator())
+        player.tank.hardpoints[1].equipment = asHardPointEquipment(fusionGun)
+        player.tank.hardpoints[1].equipmentGroup = 1
+        player.tank.hardpoints[2].equipment = asHardPointEquipment(new SmallShieldGenerator())
         this.createInterface(player, this.playerInterfaces)
         player.addKilledCallback(this.onPlayerKilled.bind(this))
         if(this.previousPlayerState.length !== 0)

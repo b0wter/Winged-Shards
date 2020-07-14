@@ -1,9 +1,17 @@
 import Phaser, { Scene } from 'phaser'
-import { PreloadRessourceList } from './PreloadRessourcePair'
+import { PreloadRessourceList, FullRessourceList } from './PreloadRessourcePair'
 import TilemapDefinition from './TilemapDefinition'
 
 export default abstract class BaseScene extends Scene
 {
+    /**
+     * Number of active players. Sets the number of spawned PlayerEntities.
+     * Must not exceed 3 and should not be less than one.
+     */
+    protected get numberOfPlayers() { return this._numberOfPlayers }
+    protected set numberOfPlayers(count: number) { this._numberOfPlayers = Math.min(Math.max(0, count), 3)}
+    private _numberOfPlayers = 1
+
     navMeshPlugin: any
     protected get navMesh() 
     {
@@ -53,5 +61,8 @@ export default abstract class BaseScene extends Scene
         return map
     }
 
-    protected abstract createPreloadRessourcePairs() : PreloadRessourceList
+    protected createPreloadRessourcePairs() : PreloadRessourceList
+    {
+        return new FullRessourceList()
+    }
 }

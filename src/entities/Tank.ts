@@ -181,6 +181,7 @@ export abstract class TankTemplate
     public abstract turretAngularSpeed: number
     public abstract hardpoints: HardPoint[] 
     public abstract turretOffset: Phaser.Geom.Point
+    public abstract description: string
 
     public instantiate()
     {

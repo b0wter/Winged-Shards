@@ -6,7 +6,7 @@ import { TripleLaser } from './Weapons'
 
 export class MediumTankTemplate extends TankTemplate
 {
-    modelName = "Rapier V-37"
+    modelName = "Broadsword"
     manufacturer = Manufacturers.Roskosmos
     spriteKey = "red_tank"
     turretSpriteKey = "red_tank_turret"
@@ -23,7 +23,9 @@ export class MediumTankTemplate extends TankTemplate
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0)
     ]
     turretOffset = new Point(0, 0)
+    description = "Versatile"
 }
+export const MediumTank = new MediumTankTemplate()
 
 export class HoverScoutTemplate extends TankTemplate
 {
@@ -44,7 +46,9 @@ export class HoverScoutTemplate extends TankTemplate
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 20, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, -20, 0)
     ]
+    description = "Fast, Hovering"
 }
+export const HoverScout = new HoverScoutTemplate()
 
 export class SupportHoverTankTemplate extends TankTemplate
 {
@@ -66,8 +70,10 @@ export class SupportHoverTankTemplate extends TankTemplate
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -9, -15, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull,  2,  15, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull,  2, -15, 0)
-    ]    
+    ]
+    description = "Support, Hovering"
 }
+export const SupportHoverTank = new SupportHoverTankTemplate()
 
 export class LightHoverTankTemplate extends TankTemplate
 {
@@ -90,4 +96,8 @@ export class LightHoverTankTemplate extends TankTemplate
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2,  12, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2, -12, 0)
     ]
+    description = "Light, Hovering"
 }
+export const LightHoverTank = new LightHoverTankTemplate()
+
+export const AllTemplates : TankTemplate[] = [ MediumTank, LightHoverTank, SupportHoverTank, HoverScout ]
