@@ -6,6 +6,8 @@ import { manufacturerToString } from '~/utilities/Manufacturers';
 import PlayerInput from '~/input/PlayerInput';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
+import TriggerAxisInput from '~/input/TriggerAxisInput';
+import { PlayerEntity } from '~/entities/Player';
 
 class SelectorBox
 {
@@ -22,15 +24,40 @@ class SelectorBox
         new Phaser.Display.Color(20, 0, 77).color
     ]
 
-    public set selectedBy(playerIndex: number)
+    public setActiveFor(index: number)
     {
-        const bg = playerIndex >= 0 && playerIndex <= 2 ? SelectorBox.activeBackgroundColors[playerIndex] : SelectorBox.backgroundColor
-        const border = playerIndex >= 0 && playerIndex <= 2 ? SelectorBox.activeBorderColors[playerIndex] : SelectorBox.borderColor
-        this.background.fillColor = bg
-        this.border.fillColor = border
+        this._activeBy = index
+        this.setColors(index)
     }
 
-    public get selectedBy() { return this._selectedBy }
+    public setFinishedFor(index: number)
+    {
+        this._finishedBy = index
+        this.setColors(index)
+    }
+
+    private _finishedBy = -1
+    
+    public get isFinished() { return this._finishedBy !== -1 }
+
+    public get isActive() { return this._activeBy !== -1}
+
+    private setColors(playerIndex: number)
+    {
+        this.background.fillColor = SelectorBox.backgroundColor
+        this.border.fillColor = SelectorBox.borderColor
+
+        if(playerIndex < 0 || playerIndex > 2)
+            return
+
+        if(this.isActive)
+            this.border.fillColor = SelectorBox.activeBorderColors[playerIndex]
+
+        if(this.isFinished) {
+            this.border.fillColor = SelectorBox.activeBorderColors[playerIndex]
+            this.background.fillColor = SelectorBox.activeBackgroundColors[playerIndex]
+        }
+    }
 
     constructor(
         public template: TankTemplate,
@@ -42,11 +69,12 @@ class SelectorBox
         public modelName: Phaser.GameObjects.Text,
         public description: Phaser.GameObjects.Text,
         public readonly index: number,
-        private _selectedBy: number,
+        private _activeBy: number,
         )
     {
-        this.selectedBy = _selectedBy
+        this.setActiveFor(_activeBy)
     }
+
 }
 
 export default class TankSelectionScene extends InterfaceScene
@@ -63,12 +91,19 @@ export default class TankSelectionScene extends InterfaceScene
     private readonly selectors : SelectorBox[] = []
     private inputs: PlayerInput[] = []
     private selections: number[] = []
+    private finished: boolean[] = []
+    private newlyFinished: boolean[] = []
 
     constructor()
     {
         super(TankSelectionScene.name)
-        for(let i = 0; i < this.numberOfPlayers; i++)
+
+        this.numberOfPlayers = 2
+        for(let i = 0; i < this.numberOfPlayers; i++) {
             this.selections.push(i)
+            this.finished.push(false)
+            this.newlyFinished.push(false)
+        }
     }
 
     create()
@@ -79,14 +114,20 @@ export default class TankSelectionScene extends InterfaceScene
 
     update()
     {
+        this.inputs.forEach(i => i.update())
+        this.newlyFinished.forEach(i => i = false)
         this.updateSelections()
         this.updateGraphics()
+        this.updateFinished()
     }
 
     private updateSelections()
     {
         for(let i = 0; i < this.numberOfPlayers; i++)
         {
+            if(this.finished[i])
+                return
+
             function step(selections: number[], selectors: SelectorBox[], playerIndex: number, steps: number, stepSize: number) : number {
                 const currentSelection = selections[playerIndex]
                 let targetSelection = currentSelection + stepSize * steps
@@ -98,7 +139,6 @@ export default class TankSelectionScene extends InterfaceScene
                     return targetSelection
             }
 
-            this.inputs[i].update()
             const leftAxis = this.inputs[i].leftAxis()
             if(leftAxis.horizontalFirstFrameDown) {
                this.selections[i] = step(this.selections, this.selectors, i, Math.ceil(leftAxis.horizontal), 1)
@@ -111,11 +151,26 @@ export default class TankSelectionScene extends InterfaceScene
 
     private updateGraphics()
     {
-        this.selectors.forEach(s => s.selectedBy = -1)
+        this.selectors.forEach(s => s.setActiveFor(-1))
+        this.selectors.forEach(s => s.setFinishedFor(-1))
         for(let i = 0; i < this.selections.length; i++) {
+            // color for the box
             const box = this.selectors.find(selector => selector.index === this.selections[i])
             if(box !== undefined)
-                box.selectedBy = i
+                if(this.finished[i])
+                    box.setFinishedFor(i)
+                else
+                    box.setActiveFor(i)
+        }
+    }
+
+    private updateFinished()
+    {
+        for(let i = 0; i < this.numberOfPlayers; i++) {
+            if(this.inputs[i].action1.firstFrameDown || this.inputs[i].action2.firstFrameDown || this.inputs[i].action3.firstFrameDown || this.inputs[i].action4.firstFrameDown) {
+                this.finished[i] = !this.finished[i]
+                this.newlyFinished[i] = this.finished[i]
+            }
         }
     }
 
@@ -131,7 +186,6 @@ export default class TankSelectionScene extends InterfaceScene
         const text = this.add.text(0, 50, "Select your tank")
         text.x = 1920 / 2 - text.width / 2
         text.depth = UI_TEXT_DEPTH
-        console.log(text)
     }
 
     private initTanks(tanks: TankTemplate[])
