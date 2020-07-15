@@ -8,6 +8,7 @@ import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
 import TriggerAxisInput from '~/input/TriggerAxisInput';
 import { PlayerEntity } from '~/entities/Player';
+import Campaign_01_Room_001 from './Campaing_01_Room_001';
 
 class SelectorBox
 {
@@ -92,17 +93,16 @@ export default class TankSelectionScene extends InterfaceScene
     private inputs: PlayerInput[] = []
     private selections: number[] = []
     private finished: boolean[] = []
-    private newlyFinished: boolean[] = []
+
+    private allFinished = false
 
     constructor()
     {
         super(TankSelectionScene.name)
 
-        this.numberOfPlayers = 2
         for(let i = 0; i < this.numberOfPlayers; i++) {
             this.selections.push(i)
             this.finished.push(false)
-            this.newlyFinished.push(false)
         }
     }
 
@@ -115,10 +115,10 @@ export default class TankSelectionScene extends InterfaceScene
     update()
     {
         this.inputs.forEach(i => i.update())
-        this.newlyFinished.forEach(i => i = false)
         this.updateSelections()
         this.updateGraphics()
         this.updateFinished()
+        this.changeIfAllFinished()
     }
 
     private updateSelections()
@@ -169,8 +169,24 @@ export default class TankSelectionScene extends InterfaceScene
         for(let i = 0; i < this.numberOfPlayers; i++) {
             if(this.inputs[i].action1.firstFrameDown || this.inputs[i].action2.firstFrameDown || this.inputs[i].action3.firstFrameDown || this.inputs[i].action4.firstFrameDown) {
                 this.finished[i] = !this.finished[i]
-                this.newlyFinished[i] = this.finished[i]
             }
+        }
+    }
+
+    private changeIfAllFinished()
+    {
+        const allFinished = this.finished.reduce((a, b) => a && b)
+        if(allFinished && this.allFinished === false)
+        {
+            this.allFinished = true
+            setTimeout(() => {
+                this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {
+                    if(progress >= 0.9999) {
+                        this.scene.stop()
+                        this.scene.start(Campaign_01_Room_001.name)
+                    }
+                })
+            }, 500)
         }
     }
 
