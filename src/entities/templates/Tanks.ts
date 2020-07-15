@@ -34,8 +34,8 @@ export class HoverScoutTemplate extends TankTemplate
     spriteKey = "hover_tank_01"
     hull = 50
     structure = 35
-    heatDissipation = 5
-    maxHeat = 75
+    heatDissipation = 4
+    maxHeat = 50
     maxSpeed = 175
     angularSpeed = 135
     turretSpriteKey = "hover_tank_turret_single_barrel"
@@ -65,7 +65,7 @@ export class SupportHoverTankTemplate extends TankTemplate
     turretAngularSpeed = 180
     turretOffset = new Point(0, 0)
     hardpoints = [
-        HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Turret, -3, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Turret, -3, 0, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -9,  15, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -9, -15, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull,  2,  15, 0),
@@ -93,8 +93,8 @@ export class LightHoverTankTemplate extends TankTemplate
         HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Turret, -7, 0, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 10,  12, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 10, -12, 0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2,  12, 0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2, -12, 0)
+        //HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2,  12, 0),
+        //HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2, -12, 0)
     ]
     description = "Light, Hovering"
 }
