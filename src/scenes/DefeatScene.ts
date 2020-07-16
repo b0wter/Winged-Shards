@@ -1,15 +1,16 @@
 import BaseScene from './BaseScene';
-import { PreloadRessourceList, FullRessourceList } from './PreloadRessourcePair';
 import TilemapDefinition from './TilemapDefinition';
 
 export class DefeatScene extends BaseScene
 {
+    public static readonly SceneName = "DefeatScene"
+
     protected get mapName() { return "defeat" }
     protected map!: Phaser.Tilemaps.Tilemap
 
     constructor()
     {
-        super(DefeatScene.name)
+        super(DefeatScene.SceneName)
     }
 
     create()

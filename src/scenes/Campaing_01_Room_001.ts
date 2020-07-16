@@ -5,6 +5,8 @@ import TilemapDefinition from './TilemapDefinition'
 
 export default class Campaign_01_Room_001 extends GameplayScene
 {
+    public static readonly SceneName = "Campaign_01_Room_001"
+
     protected get mapName() { return "campaign_01_room_001_map" }
 
     protected get tilemapDefinitions() { return [ new TilemapDefinition("terrain", "floor", "tiles") ]}
@@ -12,7 +14,7 @@ export default class Campaign_01_Room_001 extends GameplayScene
 
 	constructor()
 	{
-        super(Campaign_01_Room_001.name)
+        super(Campaign_01_Room_001.SceneName)
     }
 
     create()

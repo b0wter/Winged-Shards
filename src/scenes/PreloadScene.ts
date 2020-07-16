@@ -8,15 +8,17 @@ import TankSelectionScene from './TankSelectionScene'
 
 export class PreloadScene extends Phaser.Scene
 {
+    public static readonly SceneName = "PreloadScene"
+
     private progressBar!: HorizontalStatusBar
     private width!: number
     private height!: number
 
-    private nextScene = TankSelectionScene.name
+    private nextScene = TankSelectionScene.SceneName
 
     constructor()
     {
-        super(PreloadScene.name)
+        super(PreloadScene.SceneName)
     }
 
     create()

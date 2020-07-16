@@ -4,9 +4,10 @@ import { AllTemplates } from '~/entities/templates/Weapons';
 
 export class StatsScene extends BaseScene
 {
+    public static readonly SceneName = "StatsScene"
     constructor()
     {
-        super(StatsScene.name)
+        super(StatsScene.SceneName)
     }
 
     create()

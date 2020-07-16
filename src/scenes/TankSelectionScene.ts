@@ -77,6 +77,8 @@ class SelectorBox
 
 export default class TankSelectionScene extends InterfaceScene
 {
+    public static readonly SceneName = "TankSelectionScene"
+
     private readonly tankSelectorYOffset = 150
     private readonly tankSelectorXOffset = 40
     private readonly tankSelectorWidth = 220
@@ -95,7 +97,7 @@ export default class TankSelectionScene extends InterfaceScene
 
     constructor()
     {
-        super(TankSelectionScene.name)
+        super(TankSelectionScene.SceneName)
 
         for(let i = 0; i < this.numberOfPlayers; i++) {
             this.selections.push(i)
@@ -190,7 +192,7 @@ export default class TankSelectionScene extends InterfaceScene
                 this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {
                     if(progress >= 0.9999) {
                         this.scene.stop()
-                        this.scene.start(Campaign_01_Room_001.name)
+                        this.scene.start(Campaign_01_Room_001.SceneName)
                     }
                 })
             }, 500)
