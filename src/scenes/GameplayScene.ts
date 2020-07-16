@@ -20,6 +20,7 @@ import { PrefitTank } from '~/entities/templates/PrefitTanks';
 import { WeaponTemplate } from '~/entities/Weapon';
 import { Equipment } from '~/entities/Equipment';
 import { DefeatScene } from './DefeatScene';
+import { EnemyMarker } from '~/entities/EnemyMarker';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -88,6 +89,8 @@ export default abstract class GameplayScene extends BaseScene
     private previousPlayerState: PlayerState[] = []
     
     public navigation!: Navigation
+
+    private enemyMarkers: EnemyMarker[] = []
 
     constructor(name: string)
     {
@@ -217,6 +220,14 @@ export default abstract class GameplayScene extends BaseScene
     {
         const enemy = template.instatiate(this, x, y, angle, this.colliders.addEntityFunc, this.colliders.addProjectileFunc)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
+        enemy.addVisibilityChangedCallback((e, isVisible) => {
+            if(!isVisible) {
+                //TODO: should one remove the callback?
+                const marker = new EnemyMarker(this, e.x, e.y, e)
+                e.addKilledCallback(_ => marker.destroy(true))
+                this.add.existing(marker)
+            }
+        })
         this.enemies.push(enemy)
     }
 

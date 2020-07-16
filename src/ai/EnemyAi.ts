@@ -16,6 +16,6 @@ export abstract class EnemyAi extends Ai
 
     protected inactivityAiResult(enemy: Enemy)
     {
-        return new AiResult(enemy.angle, Phaser.Math.Vector2.ZERO, enemy.equipment.map(x => [x, false]), [])
+        return new AiResult(enemy.angle, Phaser.Math.Vector2.ZERO, enemy.equipment.map(x => [x, false]), [], false)
     }
 }

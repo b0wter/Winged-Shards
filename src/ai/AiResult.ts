@@ -10,10 +10,13 @@ export default class AiResult
 
     get route() { return this._route }
 
+    get isVisible() { return this._isVisible }
+
     constructor(private _desiredAngle,
                 private _desiredVelocity,
                 private _equipmentTriggers : [TriggeredEquipment, boolean][],
-                private _route: Phaser.Geom.Point[]
+                private _route: Phaser.Geom.Point[],
+                private _isVisible: boolean
                )
     {
         //

@@ -11,6 +11,8 @@ import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point
 import { HardPoint, HardPointSize, HardPointType, HardPointPosition } from './Hardpoint'
 
+export type VisibilityChangedCallback = (_: Enemy, isVisible: boolean) => void
+
 export class Enemy extends PhysicalEntity
 {
     public get angularSpeed() { return this._angularSpeed }
@@ -26,6 +28,8 @@ export class Enemy extends PhysicalEntity
 
     private _debugRouteElements : Phaser.GameObjects.Line[] = []
     private _debugColor = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+
+    private _visibilityChangedCallbacks: VisibilityChangedCallback[] = []
 
     constructor(scene: GameplayScene, 
                 x: number, y: number, 
@@ -52,6 +56,7 @@ export class Enemy extends PhysicalEntity
               collider,
               angle,
               0)
+        this.visible = false
     }
 
     protected killInternal()
@@ -83,6 +88,9 @@ export class Enemy extends PhysicalEntity
             return
 
         const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
+        if(this.visible !== ai.isVisible)
+            this._visibilityChangedCallbacks.forEach(c => c(this, ai.isVisible))
+        this.visible = ai.isVisible
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
@@ -144,5 +152,17 @@ export class Enemy extends PhysicalEntity
                 this._debugRouteElements.push(line)
             }
         }
+    }
+
+    public addVisibilityChangedCallback(c: VisibilityChangedCallback)
+    {
+        this._visibilityChangedCallbacks.push(c)
+    }
+
+    public removeVisibilityChangedCallback(c: VisibilityChangedCallback)
+    {
+        this._visibilityChangedCallbacks.forEach( (item, index) => {
+            if(item === c) this._visibilityChangedCallbacks.splice(index,1);
+          });
     }
 }

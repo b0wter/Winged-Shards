@@ -81,7 +81,7 @@ export default class DefaultEnemyAi extends EnemyAi
 
             const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
 
-            return new AiResult(angleToLook, desiredVelocity, triggers, route)
+            return new AiResult(angleToLook, desiredVelocity, triggers, route, visiblePlayers.length > 0)
         }
     }
 
