@@ -1,5 +1,5 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, WeaponTemplate, Weapon, AngularSpread } from '../Weapon'
+import { NoSpread, WeaponTemplate, Weapon, AngularSpread, ParallelSpread } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
@@ -35,6 +35,23 @@ export class TripleLaserTemplate extends WeaponTemplate {
     modelName = "Triple Tap"
 }
 export const TripleLaser = new TripleLaserTemplate()
+
+export class LightMultiLaserTemplate extends WeaponTemplate
+{
+    cooldown = 666
+    projectile = Projectiles.LightLaser
+    shotsPerTrigger = 1
+    projectilesPerTrigger = 3
+    heatPerTrigger = 15
+    spread = ParallelSpread(10)
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Medium
+    hardPointType = HardPointType.WithoutExtras
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Multi Laser A"
+}
+export const LightMultiLaser = new LightMultiLaserTemplate()
 
 export class SpreadLaserTemplate extends WeaponTemplate {
     cooldown = 666

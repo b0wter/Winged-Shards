@@ -15,7 +15,7 @@ export type WeaponSpread = None | Angular | Parallel
 
 export const NoSpread : None = { kind: "None" }
 export function AngularSpread(angle: number) { return { degreesDistance: angle, kind: "Angular" } }
-export function ParallelSpread(distanceToNext: number) { return { distanceToNext: distanceToNext, kind: "parallel" } }
+export function ParallelSpread(distanceToNext: number) { return { distanceToNext: distanceToNext, kind: "Parallel" } }
 
 export class Weapon extends TriggeredEquipment
 {
@@ -67,14 +67,22 @@ export class Weapon extends TriggeredEquipment
                 case "Angular":
                     if(this._projectilesPerShot === 1)
                         console.warn("Triggered a weapon with angular spread but only a single projectile per shot. Is this what you want?")
-                    const spread = this.spread as Angular
-                    const start = -(this._projectilesPerShot - 1) * spread.degreesDistance / 2
-                    console.log(start)
+                    const angularSpread = this.spread as Angular
+                    const angularStart = -(this._projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this._projectilesPerShot; i++)
-                        Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle + start + i * spread.degreesDistance, this.projectile, this.colliderFunc, ownerId) 
-
-
+                        Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, this.colliderFunc, ownerId) 
+                    break
                 case "Parallel":
+                    if(this._projectilesPerShot === 1)
+                        console.warn("Triggered a weapon with parallel spread but only a single projectile per shot. Is this what you want?")
+                    const parallelSpread = this.spread as Parallel
+                    const parallelStart = -(this._projectilesPerShot - 1) * parallelSpread.distanceToNext / 2
+                    for(let i = 0; i < this._projectilesPerShot; i++){
+                        const rot = Phaser.Math.Rotate(new Phaser.Geom.Point(0, parallelStart + i * parallelSpread.distanceToNext), angle * Phaser.Math.DEG_TO_RAD)
+                        const posX = pos.x + rot.x
+                        const posY = pos.y + rot.y
+                        Projectile.fromTemplate(this.scene, posX, posY, this._team, angle, this.projectile, this.colliderFunc, ownerId) 
+                    }
                     break
             }
         }
