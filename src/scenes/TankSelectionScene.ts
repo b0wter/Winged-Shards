@@ -1,13 +1,10 @@
 import InterfaceScene from './InterfaceScene';
-import * as Tanks from '~/entities/templates/Tanks'
-import { Tank, TankTemplate } from '~/entities/Tank';
+import * as Prefits from '~/entities/templates/PrefitTanks'
 import { UI_TEXT_DEPTH } from '~/utilities/Constants';
 import { manufacturerToString } from '~/utilities/Manufacturers';
 import PlayerInput from '~/input/PlayerInput';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
-import TriggerAxisInput from '~/input/TriggerAxisInput';
-import { PlayerEntity } from '~/entities/Player';
 import Campaign_01_Room_001 from './Campaing_01_Room_001';
 
 class SelectorBox
@@ -61,7 +58,7 @@ class SelectorBox
     }
 
     constructor(
-        public template: TankTemplate,
+        public template: Prefits.PrefitTank,
         public background: Phaser.GameObjects.Rectangle,
         public border: Phaser.GameObjects.Rectangle,
         public hullImage: Phaser.GameObjects.Image,
@@ -114,10 +111,12 @@ export default class TankSelectionScene extends InterfaceScene
 
     update()
     {
-        this.inputs.forEach(i => i.update())
-        this.updateSelections()
+        if(this.allFinished === false) {
+            this.inputs.forEach(i => i.update())
+            this.updateSelections()
+            this.updateFinished()
+        }
         this.updateGraphics()
-        this.updateFinished()
         this.changeIfAllFinished()
     }
 
@@ -179,6 +178,14 @@ export default class TankSelectionScene extends InterfaceScene
         if(allFinished && this.allFinished === false)
         {
             this.allFinished = true
+            for(let i = 0; i < this.numberOfPlayers; i++) {
+                const key = i.toString()
+                const selection = this.selections[i]
+                const selector = this.selectors[selection]
+                const template = selector.template
+                this.registry.set(key, template)
+                console.log(this.data.getAll())
+            }
             setTimeout(() => {
                 this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {
                     if(progress >= 0.9999) {
@@ -192,7 +199,7 @@ export default class TankSelectionScene extends InterfaceScene
 
     private initGraphics()
     {
-        const tanks = Tanks.AllTemplates
+        const tanks = Prefits.AllPrefits
         this.initHeader()
         this.initTanks(tanks)
     }
@@ -204,28 +211,28 @@ export default class TankSelectionScene extends InterfaceScene
         text.depth = UI_TEXT_DEPTH
     }
 
-    private initTanks(tanks: TankTemplate[])
+    private initTanks(tanks: Prefits.PrefitTank[])
     {
         for(let i = 0; i < tanks.length; i++)
             this.selectors.push(this.initTank(tanks[i], i))
     }
 
-    private initTank(tank: TankTemplate, index: number) : SelectorBox
+    private initTank(prefit: Prefits.PrefitTank, index: number) : SelectorBox
     {
         const position = this.computeTankPosition(index)
         const borderRectangle = this.add.rectangle(position.x, position.y, this.tankSelectorWidth, this.tankSelectorHeight, 0)
         const backgroundRectangle = this.add.rectangle(position.x, position.y, this.tankSelectorWidth - 2 * this.borderWidth, this.tankSelectorHeight - 2 * this.borderWidth, 0)
-        const hullImage = this.add.image(position.x, position.y, tank.spriteKey)
-        const hullTurret = this.add.image(position.x + tank.turretOffset.x, position.y, tank.turretSpriteKey)
-        const manufacturer = this.add.text(position.x, position.y - this.tankSelectorHeight / 2 + 20, manufacturerToString(tank.manufacturer))
+        const hullImage = this.add.image(position.x, position.y, prefit.tank.spriteKey)
+        const hullTurret = this.add.image(position.x + prefit.tank.turretOffset.x, position.y, prefit.tank.turretSpriteKey)
+        const manufacturer = this.add.text(position.x, position.y - this.tankSelectorHeight / 2 + 20, manufacturerToString(prefit.tank.manufacturer))
         manufacturer.x = position.x - manufacturer.width / 2
-        const modelName = this.add.text(position.x, manufacturer.y + manufacturer.height + 2, tank.modelName)
+        const modelName = this.add.text(position.x, manufacturer.y + manufacturer.height + 2, prefit.tank.modelName)
         modelName.x = position.x - modelName.width / 2
-        const description = this.add.text(position.x, position.y + this.tankSelectorHeight / 2 - 20, tank.description)
+        const description = this.add.text(position.x, position.y + this.tankSelectorHeight / 2 - 20, prefit.tank.description)
         description.x = position.x - description.width / 2
         description.y = description.y - description.height
 
-        return new SelectorBox(tank, backgroundRectangle, borderRectangle, hullImage, hullTurret, manufacturer, modelName, description, index, index < this.numberOfPlayers ? index : -1)
+        return new SelectorBox(prefit, backgroundRectangle, borderRectangle, hullImage, hullTurret, manufacturer, modelName, description, index, index < this.numberOfPlayers ? index : -1)
     }
 
     private computeTankPosition(index: number) : Phaser.Geom.Point

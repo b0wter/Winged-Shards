@@ -14,6 +14,7 @@ export interface Angular { degreesDistance: number }
 export interface Parallel { distanceToNext: number }
 export type WeaponSpread = None | Angular | Parallel
 export type RequestPositionCallback = () => Phaser.Geom.Point
+export function AngularSpread(angle: number) { return { degreesDistance: angle } }
 
 export class Weapon extends TriggeredEquipment
 {
@@ -75,11 +76,19 @@ export class Weapon extends TriggeredEquipment
 
 export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
 {
-    public abstract readonly name: string
     public abstract readonly cooldown: number 
     public abstract readonly projectile: Projectile.ProjectileTemplate
-    public abstract readonly projectilesPerShot: number
-    public abstract readonly heatPerShot: number
+    /**
+     * A single weapon trigger can trigger multiple shots of multiple projectiles.
+     * `shotsPerTrigger` is the number of shots fired. The number of shots
+     * per projectile is defined by `projectilesPerShot`.
+     */
+    public abstract readonly shotsPerTrigger: number
+    /**
+     * A single weapon trigger can trigger multiple shots. These shots may contain multiple projectiles.
+     */
+    public abstract readonly projectilesPerTrigger: number
+    public abstract readonly heatPerTrigger: number
     public abstract readonly spread: WeaponSpread
     public abstract readonly initialDelay: number
     public abstract readonly delayBetweenShots: number
@@ -88,10 +97,10 @@ export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
     public abstract readonly manufacturer: Manufacturers
     public abstract readonly modelName: string
 
-    private get firingInterval() { return this.cooldown + (this.delayBetweenShots - 1) * this.projectilesPerShot }
+    private get firingInterval() { return this.cooldown + (this.delayBetweenShots - 1) * this.shotsPerTrigger }
     private get firingIntervalPerSecod() { return 1 / (this.firingInterval / 1000) }
-    public get dps() { return this.projectile.damage.scale(this.firingIntervalPerSecod * this.projectilesPerShot) }
-    public get heatPerSecond() { return this.firingIntervalPerSecod * this.heatPerShot }
+    public get dps() { return this.projectile.damage.scale(this.firingIntervalPerSecod * this.shotsPerTrigger) }
+    public get heatPerSecond() { return this.firingIntervalPerSecod * this.heatPerTrigger }
 
     constructor()
     {
@@ -112,7 +121,7 @@ Triggers/sec: ${this.firingIntervalPerSecod}
 
     public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams) : Weapon
     {
-        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerShot, this.cooldown, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.name, team)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
     }
 }
 

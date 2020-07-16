@@ -16,6 +16,9 @@ import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
 import { Navigation } from '~/utilities/Navigation';
 import PhysicalEntity from '~/entities/PhysicalEntity';
 import { EnemyTemplates, EnemyTemplate } from '~/entities/templates/Enemies';
+import { PrefitTank } from '~/entities/templates/PrefitTanks';
+import { WeaponTemplate } from '~/entities/Weapon';
+import { Equipment } from '~/entities/Equipment';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -171,7 +174,7 @@ export default abstract class GameplayScene extends BaseScene
         layer?.objects.forEach(x => { 
             if(x.type === playerSpawn) { 
                 if(this.players.length < this.numberOfPlayers)
-                    this.players.push(this.createPlayer(x.x, x.y, 0, undefined));
+                    this.players.push(this.createPlayer(x.x, x.y, 0, this.players.length));
             }
             else if(x.type === enemySpawn) {
                 const properties = EnemyTiledObject.fromTileObject(x)
@@ -181,13 +184,30 @@ export default abstract class GameplayScene extends BaseScene
         this.previousPlayerState = []
     }
 
-    private createPlayer(x, y, angle, template)
+    private createPlayer(x, y, angle: number, index: number)
     {
-        const tank = new MediumTankTemplate().instantiate()
+        const data = this.registry.get(index.toString()) as PrefitTank
+
+        const tank = data.tank.instantiate()  //new MediumTankTemplate().instantiate()
         const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc)
+        for(let i = 0; i < data.equipment.length; i++)
+        {
+            const current = data.equipment[i]
+            if((current as WeaponTemplate).projectile !== undefined)
+            {
+                const weapon = current as WeaponTemplate
+                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
+                player.tank.hardpoints[i].equipmentGroup = 0
+            }
+            else
+            {
+                const eq = current as Equipment
+                player.tank.hardpoints[i].equipment = asHardPointEquipment(eq)
+            }
+        }
+        /*
         player.tank.hardpoints[0].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
         player.tank.hardpoints[0].equipmentGroup = 0
-        /*
         player.tank.hardpoints[1].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
         player.tank.hardpoints[1].equipmentGroup = 0
         player.tank.hardpoints[2].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))

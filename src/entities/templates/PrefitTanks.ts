@@ -26,7 +26,7 @@ export class HoverScout extends PrefitTank
 {
     tank = Tanks.HoverScout
     equipment = [
-        Weapons.TripleLaser,
+        Weapons.LightLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
     ]

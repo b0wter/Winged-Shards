@@ -1,53 +1,70 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, WeaponTemplate } from '../Weapon'
+import { NoSpread, WeaponTemplate, Weapon, AngularSpread } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
+import { Projectile } from '../Projectile'
 
 export class LightLaserTemplate extends WeaponTemplate {
-    public readonly name = "Light Laser"
-    public readonly cooldown = 333
-    public readonly projectile = Projectiles.LightLaserTemplate
-    public readonly projectilesPerShot = 1
-    public readonly heatPerShot = 4
-    public readonly spread = NoSpread
-    public readonly initialDelay = 0
-    public readonly delayBetweenShots = 0
-    public readonly hardPointSize = HardPointSize.Small
-    public readonly hardPointType = HardPointType.WithoutExtras
-    public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "Light Laser A"
+    cooldown = 333
+    projectile = Projectiles.LightLaserTemplate
+    shotsPerTrigger = 1
+    projectilesPerTrigger = 1
+    heatPerTrigger = 4
+    spread = NoSpread
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithoutExtras
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Light Laser A"
 }
 export const LightLaser = new LightLaserTemplate()
 
 export class TripleLaserTemplate extends WeaponTemplate {
-    public readonly name = "Tri"
-    public readonly cooldown = 666
-    public readonly projectile = Projectiles.LightLaserTemplate
-    public readonly projectilesPerShot = 3
-    public readonly heatPerShot = 12
-    public readonly spread = NoSpread
-    public readonly initialDelay = 0
-    public readonly delayBetweenShots = 16*4
-    public readonly hardPointSize = HardPointSize.Small
-    public readonly hardPointType = HardPointType.WithoutExtras
-    public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "Triple Tap"
+    cooldown = 666
+    projectile = Projectiles.LightLaserTemplate
+    shotsPerTrigger = 3
+    projectilesPerTrigger = 1
+    heatPerTrigger = 12
+    spread = NoSpread
+    initialDelay = 0
+    delayBetweenShots = 16*4
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithoutExtras
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Triple Tap"
 }
 export const TripleLaser = new TripleLaserTemplate()
 
+export class SpreadLaserTemplate extends WeaponTemplate {
+    cooldown = 666
+    projectile = Projectiles.LightLaserTemplate
+    shotsPerTrigger = 1
+    projectilesPerTrigger = 5
+    heatPerTrigger = 10
+    spread = AngularSpread(15)
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Medium
+    hardPointType = HardPointType.WithoutExtras
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Laser Shotgun"
+}
+export const SpreadLaser = new SpreadLaserTemplate()
+
 export class FusionGun extends WeaponTemplate {
-    public readonly name = "Fusion Gun"
-    public readonly cooldown = 3000
-    public readonly projectile = Projectiles.FusionGunTemplate
-    public readonly projectilesPerShot = 1
-    public readonly heatPerShot = 50
-    public readonly spread = NoSpread
-    public readonly initialDelay = 1000
-    public readonly delayBetweenShots = 0
-    public readonly hardPointSize = HardPointSize.Small
-    public readonly hardPointType = HardPointType.WithoutExtras
-    public readonly manufacturer = Manufacturers.BattlePrep
-    public readonly modelName = "Fusion Master 2000"
+    cooldown = 3000
+    projectile = Projectiles.FusionGunTemplate
+    shotsPerTrigger = 1
+    projectilesPerTrigger = 1
+    heatPerTrigger = 50
+    spread = NoSpread
+    initialDelay = 1000
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithoutExtras
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Fusion Master 2000"
 }
 
 export const AllTemplates = [ LightLaser, TripleLaser ]
