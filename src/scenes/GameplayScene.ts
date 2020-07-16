@@ -299,7 +299,7 @@ export default abstract class GameplayScene extends BaseScene
         {
             this.cameras.main.fadeOut(2500, 0, 0, 0, (_, progress) => { if(progress >= 0.9999) { 
                 this.scene.stop()
-                this.scene.start(DefeatScene.name)
+                this.scene.start(DefeatScene.SceneName)
             }})
         }
     }
