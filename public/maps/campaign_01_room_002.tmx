@@ -141,10 +141,10 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="6" name="objectives" visible="0">
+ <objectgroup id="6" name="objectives">
   <object id="20" type="objectives_change_room" x="736" y="928" width="192" height="64">
    <properties>
-    <property name="target" value="campaign_01_room_001"/>
+    <property name="target" value="Campaign_01_Room_001"/>
    </properties>
   </object>
   <object id="23" type="objectives_change_room" x="992" y="32" width="192" height="64"/>

@@ -107,7 +107,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -401,7 +401,7 @@
                         {
                          "name":"target",
                          "type":"string",
-                         "value":"campaign_01_room_002"
+                         "value":"Campaign_01_Room_002"
                         }],
                  "rotation":0,
                  "type":"objectives_change_room",
@@ -412,7 +412,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],
