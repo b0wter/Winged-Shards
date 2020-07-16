@@ -90,11 +90,9 @@ export class LightHoverTankTemplate extends TankTemplate
     turretOffset = new Point(0, 0)
     turretAngularSpeed = 180
     hardpoints = [
-        HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Turret, -7, 0, 0),
+        HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Turret, 20, 0, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 10,  12, 0),
         HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 10, -12, 0),
-        //HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2,  12, 0),
-        //HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, -2, -12, 0)
     ]
     description = "Light, Hovering"
 }

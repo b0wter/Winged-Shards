@@ -19,6 +19,7 @@ import { EnemyTemplates, EnemyTemplate } from '~/entities/templates/Enemies';
 import { PrefitTank } from '~/entities/templates/PrefitTanks';
 import { WeaponTemplate } from '~/entities/Weapon';
 import { Equipment } from '~/entities/Equipment';
+import { DefeatScene } from './DefeatScene';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -197,7 +198,7 @@ export default abstract class GameplayScene extends BaseScene
             {
                 const weapon = current as WeaponTemplate
                 player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
-                player.tank.hardpoints[i].equipmentGroup = 0
+                player.tank.hardpoints[i].equipmentGroup = i
             }
             else
             {
@@ -205,18 +206,6 @@ export default abstract class GameplayScene extends BaseScene
                 player.tank.hardpoints[i].equipment = asHardPointEquipment(eq)
             }
         }
-        /*
-        player.tank.hardpoints[0].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
-        player.tank.hardpoints[0].equipmentGroup = 0
-        player.tank.hardpoints[1].equipment = asHardPointEquipment(new Weapons.LightLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
-        player.tank.hardpoints[1].equipmentGroup = 0
-        player.tank.hardpoints[2].equipment = asHardPointEquipment(new Weapons.TripleLaserTemplate().instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
-        player.tank.hardpoints[2].equipmentGroup = 0
-        */
-        const fusionGun = new Weapons.FusionGun().instantiate(this, this.colliders.addProjectileFunc, Teams.Players)
-        player.tank.hardpoints[1].equipment = asHardPointEquipment(fusionGun)
-        player.tank.hardpoints[1].equipmentGroup = 1
-        player.tank.hardpoints[2].equipment = asHardPointEquipment(new SmallShieldGenerator())
         this.createInterface(player, this.playerInterfaces)
         player.addKilledCallback(this.onPlayerKilled.bind(this))
         if(this.previousPlayerState.length !== 0)
@@ -310,7 +299,7 @@ export default abstract class GameplayScene extends BaseScene
         {
             this.cameras.main.fadeOut(2500, 0, 0, 0, (_, progress) => { if(progress >= 0.9999) { 
                 this.scene.stop()
-                this.scene.start("defeat")
+                this.scene.start(DefeatScene.name)
             }})
         }
     }

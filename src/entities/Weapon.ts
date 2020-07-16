@@ -8,13 +8,14 @@ import { HardPointType, HardPointSize } from './Hardpoint'
 import { Manufacturers, manufacturerToString } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
 
-export interface None { }
-export const NoSpread : None = { }
-export interface Angular { degreesDistance: number }
-export interface Parallel { distanceToNext: number }
+export interface None { kind: string }
+export interface Angular { degreesDistance: number, kind: string }
+export interface Parallel { distanceToNext: number, kind: string }
 export type WeaponSpread = None | Angular | Parallel
-export type RequestPositionCallback = () => Phaser.Geom.Point
-export function AngularSpread(angle: number) { return { degreesDistance: angle } }
+
+export const NoSpread : None = { kind: "None" }
+export function AngularSpread(angle: number) { return { degreesDistance: angle, kind: "Angular" } }
+export function ParallelSpread(distanceToNext: number) { return { distanceToNext: distanceToNext, kind: "parallel" } }
 
 export class Weapon extends TriggeredEquipment
 {
@@ -23,7 +24,7 @@ export class Weapon extends TriggeredEquipment
 
     public get range() { return this.projectile.range }
 
-    get cooldown() { return this._cooldown + this.initialDelay + (this._projectilesPerShot - 1) * this.delayBetweenShots} 
+    get cooldown() { return this._cooldown + this.initialDelay + (this._shotsPerTrigger - 1) * this.delayBetweenShots} 
 
     public readonly maxStatusChange = MaxStatusChange.zero
 
@@ -32,6 +33,7 @@ export class Weapon extends TriggeredEquipment
                 private projectile: Projectile.ProjectileTemplate, 
                 heatPerShot: number,
                 _cooldown: number,
+                private _shotsPerTrigger: number,
                 private _projectilesPerShot: number,
                 private spread: WeaponSpread,
                 private initialDelay: number,
@@ -50,15 +52,36 @@ export class Weapon extends TriggeredEquipment
     /**
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
-    protected internalTrigger(equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string) {
+    protected internalTrigger(equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string) {
         const fire = () => { 
-            const pos = equipmentPosition(angle)
-            Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle(), this.projectile, this.colliderFunc, ownerId) 
+            const pos = equipmentPosition(angleFunc)
+            const angle = angleFunc()
+            switch(this.spread.kind)
+            {
+                case "None":
+                    if(this._projectilesPerShot > 1)
+                        console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want?")
+                    for(let i = 0; i < this._projectilesPerShot; i++)
+                        Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle, this.projectile, this.colliderFunc, ownerId) 
+                    break
+                case "Angular":
+                    if(this._projectilesPerShot === 1)
+                        console.warn("Triggered a weapon with angular spread but only a single projectile per shot. Is this what you want?")
+                    const spread = this.spread as Angular
+                    const start = -(this._projectilesPerShot - 1) * spread.degreesDistance / 2
+                    console.log(start)
+                    for(let i = 0; i < this._projectilesPerShot; i++)
+                        Projectile.fromTemplate(this.scene, pos.x, pos.y, this._team, angle + start + i * spread.degreesDistance, this.projectile, this.colliderFunc, ownerId) 
+
+
+                case "Parallel":
+                    break
+            }
         }
 
         let configuredFire : () => void
-        if(this._projectilesPerShot > 1)
-            configuredFire = () => { const timer = new Phaser.Time.TimerEvent({ repeat: this._projectilesPerShot - 1, callback: fire, callbackScope: this, delay: this.delayBetweenShots}); this.scene.time.addEvent(timer) }
+        if(this._shotsPerTrigger > 1)
+            configuredFire = () => { const timer = new Phaser.Time.TimerEvent({ repeat: this._shotsPerTrigger - 1, callback: fire, callbackScope: this, delay: this.delayBetweenShots}); this.scene.time.addEvent(timer) }
         else
             configuredFire = fire
 
@@ -121,7 +144,7 @@ Triggers/sec: ${this.firingIntervalPerSecod}
 
     public instantiate(scene: Phaser.Scene, colliderFunc: AddProjectileFunc, team: Teams) : Weapon
     {
-        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
+        return new Weapon(scene, colliderFunc, this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.projectilesPerTrigger, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
     }
 }
 

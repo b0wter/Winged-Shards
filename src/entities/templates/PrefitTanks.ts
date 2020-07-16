@@ -48,7 +48,7 @@ export class LightHoverTank extends PrefitTank
 {
     tank = Tanks.LightHoverTank
     equipment = [
-        Weapons.TripleLaser,
+        Weapons.SpreadLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new HeatExchangers.SmallHeatExchanger(),
     ]

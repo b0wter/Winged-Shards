@@ -107,7 +107,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
+         "visible":false,
          "x":0,
          "y":0
         }, 
@@ -207,14 +207,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -260,14 +260,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -313,14 +313,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -366,14 +366,14 @@
                          "value":100
                         }, 
                         {
-                         "name":"ship_type",
-                         "type":"string",
-                         "value":"light_fighter"
-                        }, 
-                        {
                          "name":"structure_percentage",
                          "type":"float",
                          "value":100
+                        }, 
+                        {
+                         "name":"template",
+                         "type":"string",
+                         "value":"light_fighter"
                         }],
                  "rotation":0,
                  "type":"spawn_enemy",
@@ -401,7 +401,7 @@
                         {
                          "name":"target",
                          "type":"string",
-                         "value":"campaign_01_room_002"
+                         "value":"Campaign_01_Room_002"
                         }],
                  "rotation":0,
                  "type":"objectives_change_room",
@@ -412,7 +412,7 @@
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":false,
+         "visible":true,
          "x":0,
          "y":0
         }],

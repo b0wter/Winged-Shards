@@ -6,7 +6,7 @@ import { Projectile } from '../Projectile'
 
 export class LightLaserTemplate extends WeaponTemplate {
     cooldown = 333
-    projectile = Projectiles.LightLaserTemplate
+    projectile = Projectiles.LightLaser
     shotsPerTrigger = 1
     projectilesPerTrigger = 1
     heatPerTrigger = 4
@@ -22,7 +22,7 @@ export const LightLaser = new LightLaserTemplate()
 
 export class TripleLaserTemplate extends WeaponTemplate {
     cooldown = 666
-    projectile = Projectiles.LightLaserTemplate
+    projectile = Projectiles.LightLaser
     shotsPerTrigger = 3
     projectilesPerTrigger = 1
     heatPerTrigger = 12
@@ -38,7 +38,7 @@ export const TripleLaser = new TripleLaserTemplate()
 
 export class SpreadLaserTemplate extends WeaponTemplate {
     cooldown = 666
-    projectile = Projectiles.LightLaserTemplate
+    projectile = Projectiles.LightLaserShotgun
     shotsPerTrigger = 1
     projectilesPerTrigger = 5
     heatPerTrigger = 10
@@ -54,7 +54,7 @@ export const SpreadLaser = new SpreadLaserTemplate()
 
 export class FusionGun extends WeaponTemplate {
     cooldown = 3000
-    projectile = Projectiles.FusionGunTemplate
+    projectile = Projectiles.FusionGun
     shotsPerTrigger = 1
     projectilesPerTrigger = 1
     heatPerTrigger = 50
