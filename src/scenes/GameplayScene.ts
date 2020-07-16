@@ -21,6 +21,7 @@ import { WeaponTemplate } from '~/entities/Weapon';
 import { Equipment } from '~/entities/Equipment';
 import { DefeatScene } from './DefeatScene';
 import { EnemyMarker } from '~/entities/EnemyMarker';
+import { FacebookInstantGamesPlugin } from 'phaser';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -248,6 +249,8 @@ export default abstract class GameplayScene extends BaseScene
 
         this.enemies.forEach(x => x.update(t, dt, this.players))
 
+        this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
+
         this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
         this.sceneSpecificUpdate(t, dt)
     }
@@ -298,6 +301,20 @@ export default abstract class GameplayScene extends BaseScene
     {
         const tiles = this.collisionLayer.getTilesWithinShape(ray)
         return tiles.every(t => t.index === -1)
+    }
+
+    public updateProjectileVisibility(projectiles: Phaser.GameObjects.GameObject[], players: PlayerEntity[])
+    {
+        function check(players: PlayerEntity[], projectile: Phaser.GameObjects.GameObject, scene: GameplayScene) : boolean
+        {
+            const rays = players.map(p => new Phaser.Geom.Line(p.x, p.y, (projectile.body as Phaser.Physics.Arcade.Body).x, (projectile.body as Phaser.Physics.Arcade.Body).y))
+            for(let i = 0; i < rays.length; i++)
+                if(scene.computeWallIntersection(rays[i]))
+                    return true
+            return false
+        }
+
+        projectiles.forEach(p => (p as Projectile).visible = check(players, p, this))
     }
 
     private onPlayerKilled(p: PhysicalEntity)

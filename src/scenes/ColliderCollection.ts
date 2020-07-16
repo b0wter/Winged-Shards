@@ -14,6 +14,11 @@ export type AddProjectileFunc = (_: Projectile) => void
 
 export class ColliderCollection
 {
+    public get allProjectiles()
+    {
+        return [ ...this.playerProjectiles.getChildren(), ...this.enemyProjectiles.getChildren() ]
+    }
+
     protected players!: Phaser.Physics.Arcade.Group
     protected playerProjectiles!: Phaser.Physics.Arcade.Group
     protected enemies!: Phaser.Physics.Arcade.Group
