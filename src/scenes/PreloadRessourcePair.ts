@@ -63,6 +63,7 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('fusion_01', 'images/projectiles/fusion-01.png')
         this.addImage('tank_01', 'images/tanks/tank_01.png')
         this.addImage('question_mark', 'images/effects/question_mark_red.png')
+        this.addImage('semi_transparent', 'images/effects/semi_transparent.png')
 
         // --- TANKS ---
         this.addImage('red_tank', 'images/tanks/red.png')

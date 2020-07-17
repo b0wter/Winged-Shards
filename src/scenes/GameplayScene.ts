@@ -22,6 +22,7 @@ import { Equipment } from '~/entities/Equipment';
 import { DefeatScene } from './DefeatScene';
 import { EnemyMarker } from '~/entities/EnemyMarker';
 import { FacebookInstantGamesPlugin } from 'phaser';
+import { Mrpas } from 'mrpas'
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -91,7 +92,11 @@ export default abstract class GameplayScene extends BaseScene
     
     public navigation!: Navigation
 
-    private enemyMarkers: EnemyMarker[] = []
+    public fov!: Mrpas
+
+    protected isEvenFrame = false
+
+    protected localCounter = 0
 
     constructor(name: string)
     {
@@ -118,9 +123,10 @@ export default abstract class GameplayScene extends BaseScene
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
             this.navmeshLayer = this.map.getObjectLayer("navmesh")
             this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 64))
-            this.tilemapDefinitions.forEach(def => this.createTilemapLayer(this.map, def))
+            this.tilemapDefinitions.forEach(def => this.layers.push(this.createTilemapLayer(this.map, def)))
             this.createEntities(this.map.objects)
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
+            this.fov = this.initFov(this.map)
         }
         this.finishedInitialization = true
     }
@@ -143,6 +149,16 @@ export default abstract class GameplayScene extends BaseScene
         for (let index = 0; index < playerStates.length; index++) {
             this.players[index].importState(playerStates[index])
         }
+    }
+
+    private initFov(map: Phaser.Tilemaps.Tilemap) : Mrpas
+    {
+        const fov = new Mrpas(map.width, map.height, (x, y) => {
+            const tile = this.collisionLayer.getTileAt(x, y)
+            const isTransparent = tile === null || tile.index === -1
+            return isTransparent
+        })
+        return fov
     }
 
     protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
@@ -251,8 +267,15 @@ export default abstract class GameplayScene extends BaseScene
 
         this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
 
+        this.updateTileVisibility(this.fov, this.players, this.layers[0], this.map)
+
         this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
         this.sceneSpecificUpdate(t, dt)
+
+        this.isEvenFrame = !this.isEvenFrame
+        this.localCounter++
+        if(this.localCounter >= 60)
+            this.localCounter = 0
     }
 
     private switchSceneIfOnObjective(players: PlayerEntity[], objectives: Phaser.Tilemaps.ObjectLayer | undefined)
@@ -303,7 +326,7 @@ export default abstract class GameplayScene extends BaseScene
         return tiles.every(t => t.index === -1)
     }
 
-    public updateProjectileVisibility(projectiles: Phaser.GameObjects.GameObject[], players: PlayerEntity[])
+    private updateProjectileVisibility(projectiles: Phaser.GameObjects.GameObject[], players: PlayerEntity[])
     {
         function check(players: PlayerEntity[], projectile: Phaser.GameObjects.GameObject, scene: GameplayScene) : boolean
         {
@@ -316,6 +339,67 @@ export default abstract class GameplayScene extends BaseScene
 
         projectiles.forEach(p => (p as Projectile).visible = check(players, p, this))
     }
+
+    private updateTileVisibility(fov: Mrpas, players: PlayerEntity[], layer: Phaser.Tilemaps.StaticTilemapLayer, map: Phaser.Tilemaps.Tilemap)
+    {
+        if(this.localCounter % 20 !== 0)
+            console.log("exit")
+
+        for(let x = 0; x < map.width; x++) {
+            for(let y = 0; y < map.height; y++) {
+                const tile = layer.getTileAt(x, y)
+                if(tile)
+                    tile.alpha = 0.33
+            }
+        }
+        players.forEach(p => {
+            const tilePositon = this.map.worldToTileXY(p.x, p.y)
+            fov.compute(tilePositon.x, tilePositon.y, Infinity, 
+                (x, y) => {
+                    const tile = layer.getTileAt(x, y)
+                    if(tile)
+                        return tile.alpha > 0.5
+                    else
+                        return false
+                },
+                (x, y) => {
+                    const tile = layer.getTileAt(x, y)
+                    if(tile)
+                        tile.alpha = 1
+                }
+            )
+        })
+    }
+
+    /*
+    private updateTileVisibility(layer: Phaser.Tilemaps.StaticTilemapLayer, players: PlayerEntity[])
+    {
+        function check(players: PlayerEntity[], tile: Phaser.Tilemaps.Tile, scene: GameplayScene) : boolean
+        {
+            const rays = players.map(p => new Phaser.Geom.Line(tile.pixelX, tile.pixelY, p.x, p.y))
+            for(let i = 0; i < rays.length; i++)
+                if(scene.computeWallIntersection(rays[i]))
+                    return true
+            return false
+        }
+
+        const invisibleColor = new Phaser.Display.Color(255, 0, 0).color
+        const visibleColor = new Phaser.Display.Color(255, 255, 255).color
+        for(let x = 0; x < this.map.width; x++)
+            for(let y = 0; y < this.map.height; y++) {
+                const tile = layer.getTileAt(x, y)
+                if(tile !== null) {
+                    if(check(players, tile, this))
+                        tile.clearAlpha()
+                    else
+                        tile.alpha = 0.5
+                }
+            }
+
+        //layer.getTilesWithin(0, 0, 2000, 1100).forEach(t => t.setVisible(check(players, t, this)))
+        //shades.forEach(row => row.forEach(s => s.visible = check(players, s, this)))
+    }
+    */
 
     private onPlayerKilled(p: PhysicalEntity)
     {

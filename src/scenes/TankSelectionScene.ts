@@ -186,7 +186,6 @@ export default class TankSelectionScene extends InterfaceScene
                 const selector = this.selectors[selection]
                 const template = selector.template
                 this.registry.set(key, template)
-                console.log(this.data.getAll())
             }
             setTimeout(() => {
                 this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {

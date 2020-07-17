@@ -27,6 +27,7 @@
 	},
 	"dependencies": {
 		"guid-typescript": "^1.0.9",
+		"mrpas": "^2.0.0",
 		"phaser": "^3.22.0",
 		"phaser-navmesh": "^2.0.5",
 		"ts-nameof": "^5.0.0"
