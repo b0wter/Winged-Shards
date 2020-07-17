@@ -27,6 +27,16 @@ export class MediumTankTemplate extends TankTemplate
 }
 export const MediumTank = new MediumTankTemplate()
 
+export class TestingTankTemplate extends MediumTankTemplate
+{
+    modelName = "TEST TEST"
+    hull = 1000
+    heatDissipation = 1000
+    maxSpeed = 300
+    angularSpeed = 120
+}
+export const TestingTank = new TestingTankTemplate()
+
 export class HoverScoutTemplate extends TankTemplate
 {
     modelName = "Wasp"
@@ -98,4 +108,4 @@ export class LightHoverTankTemplate extends TankTemplate
 }
 export const LightHoverTank = new LightHoverTankTemplate()
 
-export const AllTemplates : TankTemplate[] = [ MediumTank, LightHoverTank, SupportHoverTank, HoverScout ]
+export const AllTemplates : TankTemplate[] = [ TestingTank, MediumTank, LightHoverTank, SupportHoverTank, HoverScout ]

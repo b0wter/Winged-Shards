@@ -22,6 +22,11 @@ export class MediumTank extends PrefitTank
     ]
 }
 
+export class TestingTank extends MediumTank
+{
+    tank = Tanks.TestingTank
+}
+
 export class HoverScout extends PrefitTank
 {
     tank = Tanks.HoverScout
@@ -54,4 +59,4 @@ export class LightHoverTank extends PrefitTank
     ]
 }
 
-export const AllPrefits = [ new MediumTank(), new HoverScout(), new SupportHoverTank(), new LightHoverTank() ]
+export const AllPrefits = [ new TestingTank(), new MediumTank(), new HoverScout(), new SupportHoverTank(), new LightHoverTank() ]
