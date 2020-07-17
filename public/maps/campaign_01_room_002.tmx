@@ -186,12 +186,16 @@
     <property name="target" value="Campaign_01_Room_001"/>
    </properties>
   </object>
-  <object id="23" type="objectives_change_room" x="992" y="32" width="192" height="64"/>
+  <object id="23" type="objectives_change_room" x="992" y="32" width="192" height="64">
+   <properties>
+    <property name="target" value="Campaign_01_Room_003"/>
+   </properties>
+  </object>
   <object id="24" x="-192" y="256"/>
   <object id="25" x="-192" y="256"/>
   <object id="26" type="objectives_change_room" x="832" y="544" width="256" height="64">
    <properties>
-    <property name="target" value="campaign_01_room_004"/>
+    <property name="target" value="Campaign_01_Room_004"/>
    </properties>
   </object>
  </objectgroup>

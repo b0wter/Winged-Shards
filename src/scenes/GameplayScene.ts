@@ -350,7 +350,6 @@ export default abstract class GameplayScene extends BaseScene
         }
         players.forEach(p => {
             const tilePositon = this.map.worldToTileXY(p.x, p.y)
-            console.log(tilePositon)
             fov.compute(tilePositon.x, tilePositon.y, Infinity, 
                 (x, y) => {
                     const tile = layer.getTileAt(x, y)

@@ -49,21 +49,20 @@ export class FullRessourceList extends PreloadRessourceList
     constructor()
     {
         super()
+        // --- MAPS ---
+        this.addTilemap('campaign_01_room_001_map', 'maps/campaign_01_room_001.json')
+        this.addTilemap('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')
+        this.addTilemap('campaign_01_room_003_map', 'maps/campaign_01_room_003.json')
+        this.addTilemap('defeat', 'maps/defeat.json')
 
+        // --- BASIC TILESETS ---
         this.addImage('tiles', 'images/tilesets/scifi_floor.png')
         this.addImage('heights', 'images/tilesets/heights.png')
         this.addImage('collision_tiles', 'images/tilesets/collision.png')
+
+        // --- ENEMIES ---
         this.addImage('spaceship_01', 'images/ships/orange_01.png')
         this.addImage('spaceship_02', 'images/ships/red_01.png')
-        this.addImage('projectile_01', 'images/projectiles/projectile-green.png')
-        this.addImage('shield_regular', 'images/equipment/shield_regular.png')
-        this.addImage('shield_circular', 'images/equipment/shield_circular_irregular_small.png')
-        this.addImage('debris', 'images/effects/debris.png')
-        this.addImage('particle_blue', 'images/effects/particle-blue.png')
-        this.addImage('particle_red', 'images/effects/particle-red.png')
-        this.addImage('fusion_01', 'images/projectiles/fusion-01.png')
-        this.addImage('tank_01', 'images/tanks/tank_01.png')
-        this.addImage('question_mark', 'images/effects/question_mark_red.png')
 
         // --- TANKS ---
         this.addImage('red_tank', 'images/tanks/red.png')
@@ -87,9 +86,19 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('hover_tank_turret_dual_laser', 'images/tanks/hover_tank_turret_dual_laser.png')
         this.addImage('hover_tank_turret_dual_barrel', 'images/tanks/hover_tank_turret_dual_barrel.png')
 
+        // --- EQUIPMENT ---
+        this.addImage('shield_regular', 'images/equipment/shield_regular.png')
+        this.addImage('shield_circular', 'images/equipment/shield_circular_irregular_small.png')
+
+        // --- PROJECTILES ---
+        this.addImage('fusion_01', 'images/projectiles/fusion-01.png')
+        this.addImage('projectile_01', 'images/projectiles/projectile-green.png')
+
+        // --- EFFECTS ---
+        this.addImage('debris', 'images/effects/debris.png')
+        this.addImage('particle_blue', 'images/effects/particle-blue.png')
+        this.addImage('particle_red', 'images/effects/particle-red.png')
+        this.addImage('question_mark', 'images/effects/question_mark_red.png')
         this.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
-        this.addTilemap('campaign_01_room_001_map', 'maps/campaign_01_room_001.json')
-        this.addTilemap('campaign_01_room_002_map', 'maps/campaign_01_room_002.json')
-        this.addTilemap('defeat', 'maps/defeat.json')
     }
 }

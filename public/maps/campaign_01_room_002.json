@@ -525,7 +525,7 @@
                         {
                          "name":"target",
                          "type":"string",
-                         "value":"campaign_01_room_003"
+                         "value":"Campaign_01_Room_003"
                         }],
                  "rotation":0,
                  "type":"objectives_change_room",
@@ -564,7 +564,7 @@
                         {
                          "name":"target",
                          "type":"string",
-                         "value":"campaign_01_room_004"
+                         "value":"Campaign_01_Room_004"
                         }],
                  "rotation":0,
                  "type":"objectives_change_room",

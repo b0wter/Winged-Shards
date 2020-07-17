@@ -6,6 +6,8 @@ import Campaign_01_Room_002 from './scenes/campaign_01/Campaign_01_Room_002'
 import { DefeatScene } from './scenes/DefeatScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import TankSelectionScene from './scenes/TankSelectionScene';
+import Campaign_01_Room_003 from './scenes/campaign_01/Campaign_01_Room_003';
+import * as Campaign01 from './scenes/campaign_01/Campaign_01';
 
 const isLinux = window.navigator.platform.indexOf("Linux") >= 0
 const renderer = isLinux ? Phaser.CANVAS : Phaser.WEBGL
@@ -42,7 +44,7 @@ const config: Phaser.Types.Core.GameConfig = {
 		height: 1080,
 		mode: Phaser.Scale.ScaleModes.WIDTH_CONTROLS_HEIGHT
 	},
-	scene: [ PreloadScene, Campaign_01_Room_001, Campaign_01_Room_002, DefeatScene, TankSelectionScene ]
+	scene: [ PreloadScene, DefeatScene, TankSelectionScene, ...Campaign01.AllRooms ]
 }
 
 export default new Phaser.Game(config)

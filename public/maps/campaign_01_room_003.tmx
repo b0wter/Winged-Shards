@@ -194,7 +194,7 @@
   </object>
   <object id="23" type="objectives_change_room" x="1824" y="704" width="64" height="192">
    <properties>
-    <property name="target" value="campaign_01_room_005"/>
+    <property name="target" value="Campaign_01_Room_005"/>
    </properties>
   </object>
   <object id="24" x="-192" y="256"/>
