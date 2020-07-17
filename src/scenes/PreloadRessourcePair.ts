@@ -51,6 +51,7 @@ export class FullRessourceList extends PreloadRessourceList
         super()
 
         this.addImage('tiles', 'images/tilesets/scifi_floor.png')
+        this.addImage('heights', 'images/tilesets/heights.png')
         this.addImage('collision_tiles', 'images/tilesets/collision.png')
         this.addImage('spaceship_01', 'images/ships/orange_01.png')
         this.addImage('spaceship_02', 'images/ships/red_01.png')
@@ -63,7 +64,6 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('fusion_01', 'images/projectiles/fusion-01.png')
         this.addImage('tank_01', 'images/tanks/tank_01.png')
         this.addImage('question_mark', 'images/effects/question_mark_red.png')
-        this.addImage('semi_transparent', 'images/effects/semi_transparent.png')
 
         // --- TANKS ---
         this.addImage('red_tank', 'images/tanks/red.png')

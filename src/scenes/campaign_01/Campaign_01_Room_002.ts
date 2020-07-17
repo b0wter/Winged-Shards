@@ -1,8 +1,5 @@
-import Phaser from 'phaser'
-import GameplayScene from './GameplayScene'
-import { PreloadRessourceList, FullRessourceList } from './PreloadRessourcePair'
-import TilemapDefinition from './TilemapDefinition'
-import Campaign_01_Room_001 from './Campaing_01_Room_001'
+import GameplayScene from './../GameplayScene'
+import TilemapDefinition from './../TilemapDefinition'
 
 export default class Campaign_01_Room_002 extends GameplayScene
 {

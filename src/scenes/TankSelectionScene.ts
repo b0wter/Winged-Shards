@@ -5,7 +5,7 @@ import { manufacturerToString } from '~/utilities/Manufacturers';
 import PlayerInput from '~/input/PlayerInput';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
-import Campaign_01_Room_001 from './Campaing_01_Room_001';
+import Campaign_01_Room_001 from './campaign_01/Campaign_01_Room_001';
 
 class SelectorBox
 {

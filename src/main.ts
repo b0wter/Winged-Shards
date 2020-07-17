@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
 import PhaserNavMeshPlugin from "phaser-navmesh";
 
-import Campaign_01_Room_001 from './scenes/Campaing_01_Room_001'
-import Campaign_01_Room_002 from './scenes/Campaign_01_Room_002'
+import Campaign_01_Room_001 from './scenes/campaign_01/Campaign_01_Room_001'
+import Campaign_01_Room_002 from './scenes/campaign_01/Campaign_01_Room_002'
 import { DefeatScene } from './scenes/DefeatScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import TankSelectionScene from './scenes/TankSelectionScene';
