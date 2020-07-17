@@ -46,15 +46,6 @@ export default class DefaultEnemyAi extends EnemyAi
 
         const visiblePlayers = players.filter(p => enemy.seesPoint(p.point))
         if(visiblePlayers.length === 0 && this.lastPlayerSeenAt === undefined) return this.inactivityAiResult(enemy)
-        /*
-        const playersInRange = players.map((p: PlayerEntity) : [PlayerEntity, number] => [p, Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y)])
-                                     .filter(x => x[1] <= (this.active ? Number.MAX_SAFE_INTEGER : this._activityDistance)).sort(x => x[1])
-                                     */
-        //const distances = players.map(p => Phaser.Math.Distance.Between(p.x, p.y, enemy.x, enemy.y))
-        //console.log(players[0].x, players[0].y, enemy.x, enemy.y, Phaser.Math.Distance.Between(players[0].x, players[0].y, enemy.x, enemy.y))
-
-
-        //if(playersInRange.length === 0) return this.inactivityAiResult(enemy)
 
         const target = this.findPriorityTarget(enemy, players, seesPoint, this.lastPlayerSeenAt)
         if(target.target === undefined) {
@@ -69,7 +60,7 @@ export default class DefaultEnemyAi extends EnemyAi
             const wantsToBackOff = hasLineOfSight ? distance < this.minimalDistance : false
             const wantsToClose = hasLineOfSight ? distance > this.maximalDistance : true
             const route = navigateBetween(enemy.point, targetPoint); if(route === undefined) { return this.inactivityAiResult(enemy) };
-            const nextRoutePoint = route[1]
+            const nextRoutePoint = route.length === 0 ? enemy.point : route[1]
             const angleToLook = this.turnTo(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, targetPoint)
             const angleToMove = this.turnTo(dt, enemy.x, enemy.y, enemy.angle, enemy.angularSpeed, nextRoutePoint) * (wantsToBackOff ? -1 : 1)
 
