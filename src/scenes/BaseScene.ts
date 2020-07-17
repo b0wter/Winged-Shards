@@ -1,6 +1,7 @@
 import Phaser, { Scene } from 'phaser'
 import { PreloadRessourceList, FullRessourceList } from './PreloadRessourcePair'
 import TilemapDefinition from './TilemapDefinition'
+import { HeightLayer } from '~/utilities/HeightLayer'
 
 export default abstract class BaseScene extends Scene
 {
@@ -52,7 +53,14 @@ export default abstract class BaseScene extends Scene
     {
         const layer = this.createTilemapLayer(map, definition)
         layer.setCollisionByExclusion([-1], true)
+        layer.setVisible(false)
         return layer
+    }
+
+    protected createHeightTilemapLayer(map: Phaser.Tilemaps.Tilemap, definition: TilemapDefinition)
+    {
+        const layer = this.createTilemapLayer(map, definition)
+        return new HeightLayer(layer)   
     }
 
     protected createMap(mapName: string)

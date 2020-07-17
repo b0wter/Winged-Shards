@@ -23,6 +23,7 @@ import { DefeatScene } from './DefeatScene';
 import { EnemyMarker } from '~/entities/EnemyMarker';
 import { FacebookInstantGamesPlugin } from 'phaser';
 import { Mrpas } from 'mrpas'
+import { HeightLayer } from '~/utilities/HeightLayer';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -66,6 +67,11 @@ export default abstract class GameplayScene extends BaseScene
     protected collisionLayer!: Phaser.Tilemaps.StaticTilemapLayer
 
     /**
+     * Tilemap layer used to determine the height of the playing field.
+     */
+    protected heightsLayer!: HeightLayer
+
+    /**
      * Name of this map's ressource key.
      */
     protected abstract get mapName()
@@ -79,6 +85,11 @@ export default abstract class GameplayScene extends BaseScene
      * Single tilemap definition for the collision layer.
      */
     protected abstract get collisionTilemapDefinition()
+
+    /**
+     * Single tilemap definition for the heights layer.
+     */
+    protected abstract get heightTilemapDefition()
 
     protected navmeshLayer!: Phaser.Tilemaps.ObjectLayer
 
@@ -119,6 +130,7 @@ export default abstract class GameplayScene extends BaseScene
                                                     this.enemyBulletHitsEnemy.bind(this),
                                                     this.enemyBulletHitsPlayer.bind(this)
                                                     )
+            this.heightsLayer = this.createHeightTilemapLayer(this.map, this.heightTilemapDefition)
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
             this.navmeshLayer = this.map.getObjectLayer("navmesh")
             this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 64))
@@ -153,9 +165,21 @@ export default abstract class GameplayScene extends BaseScene
     private initFov(map: Phaser.Tilemaps.Tilemap) : Mrpas
     {
         const fov = new Mrpas(map.width, map.height, (x, y) => {
+            const p = this.players[0].point
+            const pHeight = this.heightsLayer.getHeightAtWorldXY(p.x, p.y)
+            const tHeight = this.heightsLayer.getHeight(x, y)
+            const isLowerHeight = pHeight > tHeight
+            const isEqualHeight = pHeight === tHeight
             const tile = this.collisionLayer.getTileAt(x, y)
-            const isTransparent = tile === null || tile.index === -1
-            return isTransparent
+            const isCollider = tile === null || tile.index === -1
+
+            if(isLowerHeight)
+                return true
+            else if(isEqualHeight)
+                return isCollider
+            else
+                return false
+            //return isCollider || isLowerHeight
         })
         return fov
     }
@@ -266,7 +290,7 @@ export default abstract class GameplayScene extends BaseScene
 
         this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
 
-        this.updateTileVisibility(t, this.fov, this.players, this.layers[0], this.map)
+        this.updateTileVisibility(t, this.fov, this.players, this.layers.find(l => l.layer.name === "terrain")!, this.map)
 
         this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
         this.sceneSpecificUpdate(t, dt)
