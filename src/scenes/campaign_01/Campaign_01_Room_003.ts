@@ -9,6 +9,7 @@ export default class Campaign_01_Room_003 extends GameplayScene
 
     protected get tilemapDefinitions() { return [ new TilemapDefinition("terrain", "floor", "tiles") ]}
     protected get collisionTilemapDefinition() { return new TilemapDefinition("collision", "collision", "collision_tiles")}
+    protected get heightTilemapDefition() { return new TilemapDefinition("height", "heights", "heights")}
 
 	constructor()
 	{
