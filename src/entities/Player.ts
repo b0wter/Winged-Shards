@@ -5,7 +5,7 @@ import PlayerInput from './../input/PlayerInput'
 import { TriggeredEquipment, EquipmentAngleCallback } from './TriggeredEquipment'
 import { Damage } from './DamageType'
 import ClampedNumber from '~/utilities/ClampedNumber'
-import { AddEntityFunc } from '~/scenes/ColliderCollection'
+import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Tank } from './Tank'
 import { HardPoint, HardPointPosition } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
@@ -18,7 +18,7 @@ export class PlayerEntity extends PhysicalEntity
 
     private _turretSprite: Phaser.GameObjects.Image
 
-    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc)
+    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc)
     {
         super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
@@ -41,7 +41,7 @@ export class PlayerEntity extends PhysicalEntity
                     return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
                 }
                 const angle = isHullMounted ? hullAngleCallbackFunc(this, h.angle) : turretAngleCallbackFunc(this, h.angle)
-                const heatGenerated = e.trigger(positionCallback, angle, t, this.name)
+                const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, positionCallback, angle, t, this.name)
                 this.heatValue.add(heatGenerated)
             }
         })
@@ -77,17 +77,17 @@ export class PlayerEntity extends PhysicalEntity
     {
         let group: [TriggeredEquipment, HardPoint][] = []
         if(input.bumperLeft.isDown)
-            group = this.tank.triggeredEquipmentGroup(0) //this.primaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(0)
         else if(input.bumperRight.isDown)
-            group = this.tank.triggeredEquipmentGroup(1) //this.secondaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(1)
         else if(input.action1.isDown)
-            group = this.tank.triggeredEquipmentGroup(2) //this.tertiaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(2)
         else if(input.action2.isDown)
-            group = this.tank.triggeredEquipmentGroup(3) //this.quaternaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(3)
         else if(input.action3.isDown)
-            group = this.tank.triggeredEquipmentGroup(4) //this.quinaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(4)
         else if(input.action4.isDown)
-            group = this.tank.triggeredEquipmentGroup(5) //this.senaryEquipmentGroup
+            group = this.tank.triggeredEquipmentGroup(5)
 
         this.triggerEquipmentGroup(group, t)
     }

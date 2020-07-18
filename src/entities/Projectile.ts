@@ -19,7 +19,11 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     private _originX: number
     private _originY: number
 
-    constructor(scene, x, y, spriteKey, angle, velocity: number | undefined, 
+    constructor(scene: Phaser.Scene, 
+                x: number, y: number, 
+                spriteKey: string, 
+                angle: number, 
+                velocity: number | undefined, 
                 protected _team: Teams,
                 protected _damage: Damage.Damage,
                 private _colliderFunc: AddProjectileFunc,
@@ -39,6 +43,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         super(scene, x, y, spriteKey)
         scene.add.existing(this)
         scene.physics.add.existing(this)
+        console.log(this._colliderFunc)
         this._colliderFunc(this)
         this.setAngle(angle)
         this.setImmovable(true)

@@ -36,6 +36,7 @@ export class Enemy extends PhysicalEntity
                 spriteKey: string, 
                 angle: number, 
                 collider: AddEntityFunc, 
+                private _projectileCollider: AddProjectileFunc,
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
@@ -126,14 +127,10 @@ export class Enemy extends PhysicalEntity
 
     private fireWeapon(t: number, e: TriggeredEquipment)
     {
-        //const body = (this.body as Phaser.Physics.Arcade.Body)
-        //const offset = 0 //(body.width / 2) ?? 0
-        //const offsetX = offset * Math.cos(this.rotation)
-        //const offsetY = offset * Math.sin(this.rotation)
         const angle = () => this.angle
         const position = (_: any) => new Phaser.Geom.Point(this.x, this.y)
 
-        e.trigger(position, angle, t, this.name)
+        e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name)
     }
 
     private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])

@@ -232,14 +232,14 @@ export default abstract class GameplayScene extends BaseScene
         const data = this.registry.get(index.toString()) as PrefitTank
 
         const tank = data.tank.instantiate()  //new MediumTankTemplate().instantiate()
-        const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc)
+        const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc)
         for(let i = 0; i < data.equipment.length; i++)
         {
             const current = data.equipment[i]
             if((current as WeaponTemplate).projectile !== undefined)
             {
                 const weapon = current as WeaponTemplate
-                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate(this, this.colliders.addProjectileFunc, Teams.Players))
+                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate(Teams.Players))
                 player.tank.hardpoints[i].equipmentGroup = i
             }
             else
