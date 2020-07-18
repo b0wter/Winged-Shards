@@ -156,7 +156,6 @@ export default abstract class GameplayScene extends BaseScene
         if(playerStates === undefined) {
             return
         }
-        console.log(playerStates, this.players)
         for (let index = 0; index < playerStates.length; index++) {
             this.players[index].importState(playerStates[index])
         }
@@ -165,21 +164,21 @@ export default abstract class GameplayScene extends BaseScene
     private initFov(map: Phaser.Tilemaps.Tilemap) : Mrpas
     {
         const fov = new Mrpas(map.width, map.height, (x, y) => {
-            const p = this.players[0].point
-            const pHeight = this.heightsLayer.getHeightAtWorldXY(p.x, p.y)
+            //const p = this.players[0].point
+            const pHeights = this.players.map(p => this.heightsLayer.getHeightAtWorldXY(p.x, p.y))
+            //const pHeight = this.heightsLayer.getHeightAtWorldXY(p.x, p.y)
             const tHeight = this.heightsLayer.getHeight(x, y)
-            const isLowerHeight = pHeight > tHeight
-            const isEqualHeight = pHeight === tHeight
+            const isLowerHeight = pHeights.some(p => p > tHeight)
+            const isEqualHeight = pHeights.some(p => p === tHeight)
             const tile = this.collisionLayer.getTileAt(x, y)
-            const isCollider = tile === null || tile.index === -1
+            const isTransparent = tile === null || tile.index === -1
 
             if(isLowerHeight)
                 return true
             else if(isEqualHeight)
-                return isCollider
+                return isTransparent
             else
                 return false
-            //return isCollider || isLowerHeight
         })
         return fov
     }
@@ -333,6 +332,7 @@ export default abstract class GameplayScene extends BaseScene
     {
         console.log(`Changing room to '${sceneName}'.`)
         this.leftEntranceObjective = false
+        this.time.removeAllEvents()
         this.userInputs.forEach(i => i.deactivate());
         (this.scene.get(sceneName) as GameplayScene).resume(this.players.map(p => p.exportState()))
         this.scene.switch(sceneName)
@@ -348,7 +348,12 @@ export default abstract class GameplayScene extends BaseScene
     {
         function check(players: PlayerEntity[], projectile: Phaser.GameObjects.GameObject, scene: GameplayScene) : boolean
         {
-            const rays = players.map(p => new Phaser.Geom.Line(p.x, p.y, (projectile.body as Phaser.Physics.Arcade.Body).x, (projectile.body as Phaser.Physics.Arcade.Body).y))
+            const body = projectile.body as Phaser.Physics.Arcade.Body
+            const projectileHeight = scene.heightsLayer.getHeightAtWorldXY(body.x, body.y)
+            const playerIsHigherThanProjectile = players.map(p => scene.heightsLayer.getHeightAtWorldXY(p.x, p.y)).some(h => h > projectileHeight)
+            if(playerIsHigherThanProjectile)
+                return true
+            const rays = players.map(p => new Phaser.Geom.Line(p.x, p.y, body.x, body.y))
             for(let i = 0; i < rays.length; i++)
                 if(scene.computeWallIntersection(rays[i]))
                     return true
