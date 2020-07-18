@@ -133,7 +133,7 @@ export class PlayerEntity extends PhysicalEntity
 
     public exportState()
     {
-        return new PlayerState(this.shieldValue, this.hullValue, this.structureValue, this.heatValue, this.angle)
+        return new PlayerState(this.shieldValue, this.hullValue, this.structureValue, this.heatValue)
     }
 
     public importState(state: PlayerState)
@@ -143,7 +143,6 @@ export class PlayerEntity extends PhysicalEntity
         this.hullValue.current = state.hull.current
         this.structureValue.current = state.structure.current
         this.heatValue.current = state.heat.current
-        this.setAngle(state.angle)
 
         // TODO: Equipment status and cooldowns need to be set as well!
     }
@@ -158,7 +157,6 @@ export class PlayerState
         public hull: ClampedNumber,
         public structure: ClampedNumber,
         public heat: ClampedNumber,
-        public angle: number
     )
     {
         //  
