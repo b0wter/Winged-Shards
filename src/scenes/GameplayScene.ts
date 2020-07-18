@@ -133,7 +133,7 @@ export default abstract class GameplayScene extends BaseScene
             this.heightsLayer = this.createHeightTilemapLayer(this.map, this.heightTilemapDefition)
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
             this.navmeshLayer = this.map.getObjectLayer("navmesh")
-            this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 64))
+            this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 16))
             this.tilemapDefinitions.forEach(def => this.layers.push(this.createTilemapLayer(this.map, def)))
             this.createEntities(this.map.objects)
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))

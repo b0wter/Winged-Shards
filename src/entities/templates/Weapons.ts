@@ -53,6 +53,13 @@ export class LightMultiLaserTemplate extends WeaponTemplate
 }
 export const LightMultiLaser = new LightMultiLaserTemplate()
 
+export class TestLaserTemplate extends LightMultiLaserTemplate
+{
+    cooldown = 100
+    heatPerTrigger = 0
+}
+export const TestLaser = new TestLaserTemplate()
+
 export class SpreadLaserTemplate extends WeaponTemplate {
     cooldown = 666
     projectile = Projectiles.LightLaserShotgun

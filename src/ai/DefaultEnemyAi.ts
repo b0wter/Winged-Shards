@@ -68,7 +68,7 @@ export default class DefaultEnemyAi extends EnemyAi
             this.active = true
 
             const speed = wantsToBackOff || wantsToClose || !hasLineOfSight ? enemy.maxVelocity : 0
-            const desiredVelocity = new Vector2(Math.cos(angleToMove * DEG_TO_RAD) * RAD_TO_DEG, Math.sin(angleToMove * DEG_TO_RAD) * RAD_TO_DEG).normalize().scale(speed)
+            const desiredVelocity = route.length === 0 ? Vector2.ZERO : new Vector2(Math.cos(angleToMove * DEG_TO_RAD) * RAD_TO_DEG, Math.sin(angleToMove * DEG_TO_RAD) * RAD_TO_DEG).normalize().scale(speed)
 
             const triggers = enemy.equipment.map(this.shouldTrigger.bind(this))
 

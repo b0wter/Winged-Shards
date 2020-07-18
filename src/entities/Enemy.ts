@@ -106,6 +106,8 @@ export class Enemy extends PhysicalEntity
         this.setVelocity(ai.desiredVelocity.x, ai.desiredVelocity.y)
 
         ai.equipmentTriggers.forEach(x => { if(x[1]) { this.fireWeapon(t, x[0]) }} )
+
+        //this.debugRouteElements(this.point, ai.route)
     }
 
     public seesPoint(point: Phaser.Geom.Point) : boolean

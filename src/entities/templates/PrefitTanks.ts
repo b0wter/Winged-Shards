@@ -22,9 +22,14 @@ export class MediumTank extends PrefitTank
     ]
 }
 
-export class TestingTank extends MediumTank
+export class TestingTank extends PrefitTank
 {
     tank = Tanks.TestingTank
+    equipment = [
+        Weapons.TestLaser,
+        new ShieldGenerators.SmallShieldGenerator(),
+        new ShieldGenerators.SmallShieldGenerator()
+    ]
 }
 
 export class HoverScout extends PrefitTank
