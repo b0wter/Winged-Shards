@@ -12,11 +12,13 @@ import GameplayScene from '~/scenes/GameplayScene'
 export interface None { kind: string }
 export interface Angular { degreesDistance: number, kind: string }
 export interface Parallel { distanceToNext: number, kind: string }
-export type WeaponSpread = None | Angular | Parallel
+export interface Random { maxDegrees: number, kind: string}
+export type WeaponSpread = None | Angular | Parallel | Random
 
-export const NoSpread : None = { kind: "None" }
-export function AngularSpread(angle: number) { return { degreesDistance: angle, kind: "Angular" } }
-export function ParallelSpread(distanceToNext: number) { return { distanceToNext: distanceToNext, kind: "Parallel" } }
+export const NoSpread : WeaponSpread = { kind: "None" }
+export function AngularSpread(angle: number) : WeaponSpread { return { degreesDistance: angle, kind: "Angular" } }
+export function ParallelSpread(distanceToNext: number) : WeaponSpread { return { distanceToNext: distanceToNext, kind: "Parallel" } }
+export function RandomSpread(maxAngle: number) : WeaponSpread { return { maxDegrees: maxAngle, kind: "Random" } }
 
 export class Weapon extends TriggeredEquipment
 {
@@ -59,7 +61,7 @@ export class Weapon extends TriggeredEquipment
             {
                 case "None":
                     if(this._projectilesPerShot > 1)
-                        console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want?")
+                        console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want? The projectiles will overlay.")
                     for(let i = 0; i < this._projectilesPerShot; i++)
                         Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle, this.projectile, colliderFunc, ownerId) 
                     break
@@ -70,6 +72,13 @@ export class Weapon extends TriggeredEquipment
                     const angularStart = -(this._projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this._projectilesPerShot; i++)
                         Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId) 
+                    break
+                case "Random":
+                    const randomSpread = this.spread as Random
+                    for(let i = 0; i < this._projectilesPerShot; i++) {
+                        const s = Math.random() * randomSpread.maxDegrees
+                        Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId) 
+                    }
                     break
                 case "Parallel":
                     if(this._projectilesPerShot === 1)

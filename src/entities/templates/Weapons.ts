@@ -1,5 +1,5 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, WeaponTemplate, Weapon, AngularSpread, ParallelSpread } from '../Weapon'
+import { NoSpread, WeaponTemplate, Weapon, AngularSpread, ParallelSpread, RandomSpread } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
@@ -76,7 +76,7 @@ export class SpreadLaserTemplate extends WeaponTemplate {
 }
 export const SpreadLaser = new SpreadLaserTemplate()
 
-export class FusionGun extends WeaponTemplate {
+export class FusionGunTemplate extends WeaponTemplate {
     cooldown = 3000
     projectile = Projectiles.FusionGun
     shotsPerTrigger = 1
@@ -90,5 +90,23 @@ export class FusionGun extends WeaponTemplate {
     manufacturer = Manufacturers.BattlePrep
     modelName = "Fusion Master 2000"
 }
+export const FusionGun = new FusionGunTemplate()
 
-export const AllTemplates = [ LightLaser, TripleLaser ]
+export class ShotgunTemplate extends WeaponTemplate 
+{
+    cooldown = 1500
+    projectile = Projectiles.Bullet
+    shotsPerTrigger = 3
+    projectilesPerTrigger = 3
+    heatPerTrigger = 1
+    spread = RandomSpread(30)
+    initialDelay = 0
+    delayBetweenShots = 10
+    hardPointSize = HardPointSize.Medium
+    hardPointType = HardPointType.WithAmmoBox
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Boom"
+}
+export const Shotgun = new ShotgunTemplate()
+
+export const AllTemplates = [ LightLaser, TripleLaser, LightMultiLaser, SpreadLaser, FusionGun, Shotgun ]

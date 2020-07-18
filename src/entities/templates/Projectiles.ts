@@ -39,3 +39,19 @@ export class FusionGunTemplate extends ProjectileTemplate
     size = new Vector2(44, 44)
 }
 export const FusionGun = new FusionGunTemplate()
+
+export class BulletTemplate extends ProjectileTemplate
+{
+    spriteKey = "bullet"
+    velocity = 500
+    damage = new Damage(15, 0, 0, 0)
+    friendlyFire = false
+    ignoresShields = false
+    ignoresHull = false
+    range = 400
+    pierces = false
+    pierceHitsContinuously = false
+    angularSpeed = 0
+    size = new Vector2(6,6)
+}
+export const Bullet = new BulletTemplate()
