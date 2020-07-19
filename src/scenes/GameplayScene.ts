@@ -237,7 +237,7 @@ export default abstract class GameplayScene extends BaseScene
             if((current as WeaponTemplate).projectile !== undefined)
             {
                 const weapon = current as WeaponTemplate
-                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate(Teams.Players))
+                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate())
                 player.tank.hardpoints[i].equipmentGroup = i
             }
             else

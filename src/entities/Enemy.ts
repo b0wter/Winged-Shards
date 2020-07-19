@@ -129,7 +129,7 @@ export class Enemy extends PhysicalEntity
         const angle = () => this.angle
         const position = (_: any) => new Phaser.Geom.Point(this.x, this.y)
 
-        e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name)
+        e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name, this.team)
     }
 
     private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])

@@ -43,17 +43,15 @@ export class Weapon extends TriggeredEquipment
                 public readonly hardPointType: HardPointType,
                 public readonly manufacturer: Manufacturers,
                 public readonly modelName: string,
-                team: Teams
                )
     {
-        super(_cooldown, heatPerShot, team)
-        if(this._team !== Teams.Players) this.cooldownModifier = 2
+        super(_cooldown, heatPerShot)
     }
 
     /**
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
-    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string) {
+    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string, team: Teams) {
         const fire = () => { 
             const pos = equipmentPosition(angleFunc)
             const angle = angleFunc()
@@ -63,7 +61,7 @@ export class Weapon extends TriggeredEquipment
                     if(this._projectilesPerShot > 1)
                         console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want? The projectiles will overlay.")
                     for(let i = 0; i < this._projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle, this.projectile, colliderFunc, ownerId) 
                     break
                 case "Angular":
                     if(this._projectilesPerShot === 1)
@@ -71,13 +69,13 @@ export class Weapon extends TriggeredEquipment
                     const angularSpread = this.spread as Angular
                     const angularStart = -(this._projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this._projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId) 
                     break
                 case "Random":
                     const randomSpread = this.spread as Random
                     for(let i = 0; i < this._projectilesPerShot; i++) {
                         const s = Math.random() * randomSpread.maxDegrees
-                        Projectile.fromTemplate(scene, pos.x, pos.y, this._team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId) 
                     }
                     break
                 case "Parallel":
@@ -89,11 +87,13 @@ export class Weapon extends TriggeredEquipment
                         const rot = Phaser.Math.Rotate(new Phaser.Geom.Point(0, parallelStart + i * parallelSpread.distanceToNext), angle * Phaser.Math.DEG_TO_RAD)
                         const posX = pos.x + rot.x
                         const posY = pos.y + rot.y
-                        Projectile.fromTemplate(scene, posX, posY, this._team, angle, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, posX, posY, team, angle, this.projectile, colliderFunc, ownerId) 
                     }
                     break
             }
         }
+
+        if(team !== Teams.Players) this.cooldownModifier = 2
 
         let configuredFire : () => void
         if(this._shotsPerTrigger > 1)
@@ -158,9 +158,9 @@ Triggers/sec: ${this.firingIntervalPerSecod}
 `
     }
 
-    public instantiate(team: Teams) : Weapon
+    public instantiate() : Weapon
     {
-        return new Weapon(this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
+        return new Weapon(this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName)
     }
 }
 
