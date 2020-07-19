@@ -164,9 +164,7 @@ export default abstract class GameplayScene extends BaseScene
     private initFov(map: Phaser.Tilemaps.Tilemap) : Mrpas
     {
         const fov = new Mrpas(map.width, map.height, (x, y) => {
-            //const p = this.players[0].point
             const pHeights = this.players.map(p => this.heightsLayer.getHeightAtWorldXY(p.x, p.y))
-            //const pHeight = this.heightsLayer.getHeightAtWorldXY(p.x, p.y)
             const tHeight = this.heightsLayer.getHeight(x, y)
             const isLowerHeight = pHeights.some(p => p > tHeight)
             const isEqualHeight = pHeights.some(p => p === tHeight)
@@ -231,7 +229,7 @@ export default abstract class GameplayScene extends BaseScene
     {
         const data = this.registry.get(index.toString()) as PrefitTank
 
-        const tank = data.tank.instantiate()  //new MediumTankTemplate().instantiate()
+        const tank = data.tank.instantiate()
         const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index)
         for(let i = 0; i < data.equipment.length; i++)
         {
@@ -264,6 +262,7 @@ export default abstract class GameplayScene extends BaseScene
                 //TODO: should one remove the callback?
                 const marker = new EnemyMarker(this, e.x, e.y, e)
                 e.addKilledCallback(_ => marker.destroy(true))
+                e.addVisibilityChangedCallback(_ => marker.destroy(true))
                 this.add.existing(marker)
             }
         })
@@ -290,6 +289,8 @@ export default abstract class GameplayScene extends BaseScene
         this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
 
         this.updateTileVisibility(t, this.fov, this.players, this.layers.find(l => l.layer.name === "terrain")!, this.map)
+
+        this.updateEnemyVisibility(this.layers.find(l => l.layer.name === "terrain")!, this.players, this.enemies)
 
         this.switchSceneIfOnObjective(this.players, this.objectivesLayer)
         this.sceneSpecificUpdate(t, dt)
@@ -361,6 +362,29 @@ export default abstract class GameplayScene extends BaseScene
         }
 
         projectiles.forEach(p => (p as Projectile).visible = check(players, p, this))
+    }
+
+    private updateEnemyVisibility(layer: Phaser.Tilemaps.StaticTilemapLayer, players: PlayerEntity[], enemies: Enemy[])
+    {
+        function check(enemy: Enemy, losCheck: (ray: Phaser.Geom.Line) => boolean) {
+            const tile = layer.getTileAtWorldXY(enemy.x, enemy.y)
+            if(tile !== null && tile !== undefined && tile.alpha === 1)
+                return true
+            const rays = players.map(p => new Phaser.Geom.Line(enemy.x, enemy.y, p.x, p.y))
+            for(let i = 0; i < rays.length; i++)
+                if(losCheck(rays[i]))
+                    return true
+            return false
+        }
+
+        const los = this.computeWallIntersection.bind(this)
+        enemies.forEach(e => {
+            const isVisible = check(e, los)
+            if(isVisible != e.visible)
+            {
+                const xx = e.setVisible(isVisible)
+            }
+        })
     }
 
     private updateTileVisibility(t: number, fov: Mrpas, players: PlayerEntity[], layer: Phaser.Tilemaps.StaticTilemapLayer, map: Phaser.Tilemaps.Tilemap)

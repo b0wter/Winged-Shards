@@ -89,9 +89,6 @@ export class Enemy extends PhysicalEntity
             return
 
         const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
-        if(this.visible !== ai.isVisible)
-            this._visibilityChangedCallbacks.forEach(c => c(this, ai.isVisible))
-        this.visible = ai.isVisible
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
@@ -163,5 +160,14 @@ export class Enemy extends PhysicalEntity
         this._visibilityChangedCallbacks.forEach( (item, index) => {
             if(item === c) this._visibilityChangedCallbacks.splice(index,1);
           });
+    }
+
+    public setVisible(value: boolean)
+    {
+        if(value != this.visible) {
+            super.setVisible(value)
+            this._visibilityChangedCallbacks.forEach(c => c(this, value))
+        }
+        return this
     }
 }
