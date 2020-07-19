@@ -9,21 +9,39 @@ import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Tank } from './Tank'
 import { HardPoint, HardPointPosition } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
+import PlayerColor from '~/utilities/PlayerColor'
 
 export class PlayerEntity extends PhysicalEntity
 {
+    public static readonly Colors = [ 
+        new PlayerColor(Phaser.Display.Color.HexStringToColor("#FF0700")), 
+        new PlayerColor(Phaser.Display.Color.HexStringToColor("#02F4FF")), 
+        new PlayerColor(Phaser.Display.Color.HexStringToColor("#A7FF00"))
+    ]
+
     public get indexedEquipment() : [number, TriggeredEquipment[]][] { return [0, 1, 2, 3, 4, 5].map(i => [i, this.tank.triggeredEquipmentGroup(i).map(([e, _]) => e)]) }
 
     public get tank() { return this._tank }
 
     private _turretSprite: Phaser.GameObjects.Image
+    private _turretDirection: Phaser.GameObjects.Line
 
-    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc)
+    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc, index: number)
     {
         super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
         this._turretSprite = scene.add.image(_tank.turretOffset.x, _tank.turretOffset.y, _tank.turretSpriteKey) 
         this.add(this._turretSprite)
+        
+        const directionArrow = scene.add.line(35, 0, 0, 0, 35, 0, PlayerEntity.Colors[index].lighter)
+        directionArrow.setOrigin(0, 0)
+        directionArrow.setLineWidth(2)
+        this.add(directionArrow)
+
+        this._turretDirection = scene.add.line(_tank.turretOffset.x, _tank.turretOffset.y, 35 , 0, 70, 0, PlayerEntity.Colors[index].normal)
+        this._turretDirection.setOrigin(0, 0)
+        this._turretDirection.setLineWidth(2)
+        this.add(this._turretDirection)
     }
 
     private triggerEquipmentGroup(group: [TriggeredEquipment, HardPoint][], t: number)
@@ -110,6 +128,7 @@ export class PlayerEntity extends PhysicalEntity
         const rightAxis = input.rightAxis()
         const turretDirection = -(this.angle - rightAxis.direction)
         this._turretSprite.setAngle(turretDirection)
+        this._turretDirection.setAngle(turretDirection)
     }
 
     public takeDamage(damage: Damage)

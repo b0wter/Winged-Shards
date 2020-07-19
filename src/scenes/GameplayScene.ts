@@ -232,7 +232,7 @@ export default abstract class GameplayScene extends BaseScene
         const data = this.registry.get(index.toString()) as PrefitTank
 
         const tank = data.tank.instantiate()  //new MediumTankTemplate().instantiate()
-        const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc)
+        const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index)
         for(let i = 0; i < data.equipment.length; i++)
         {
             const current = data.equipment[i]
