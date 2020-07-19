@@ -6,20 +6,21 @@ import PlayerInput from '~/input/PlayerInput';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
 import Campaign_01_Room_001 from './campaign_01/Campaign_01_Room_001';
+import { PlayerEntity } from '~/entities/Player';
 
 class SelectorBox
 {
     public static readonly borderColor = new Phaser.Display.Color(32, 32, 32).color
     public static readonly backgroundColor = new Phaser.Display.Color(16, 16, 16).color
     public static readonly activeBorderColors = [
-        new Phaser.Display.Color(255, 216, 0).color,
-        new Phaser.Display.Color(53, 179, 0).color,
-        new Phaser.Display.Color(0, 38, 255).color
+        PlayerEntity.Colors[0].lighter,
+        PlayerEntity.Colors[1].lighter,
+        PlayerEntity.Colors[2].lighter
     ]
     public static readonly activeBackgroundColors = [
-        new Phaser.Display.Color(56, 47, 0).color,
-        new Phaser.Display.Color(19, 64, 0).color,
-        new Phaser.Display.Color(20, 0, 77).color
+        PlayerEntity.Colors[0].darkest,
+        PlayerEntity.Colors[1].darker,
+        PlayerEntity.Colors[2].darker
     ]
 
     public setActiveFor(index: number)

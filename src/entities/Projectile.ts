@@ -43,7 +43,6 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         super(scene, x, y, spriteKey)
         scene.add.existing(this)
         scene.physics.add.existing(this)
-        console.log(this._colliderFunc)
         this._colliderFunc(this)
         this.setAngle(angle)
         this.setImmovable(true)

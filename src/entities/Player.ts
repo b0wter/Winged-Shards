@@ -38,7 +38,7 @@ export class PlayerEntity extends PhysicalEntity
         directionArrow.setLineWidth(2)
         this.add(directionArrow)
 
-        this._turretDirection = scene.add.line(_tank.turretOffset.x, _tank.turretOffset.y, 35 , 0, 70, 0, PlayerEntity.Colors[index].normal)
+        this._turretDirection = scene.add.line(_tank.turretOffset.x, _tank.turretOffset.y, 35 , 0, 70, 0, PlayerEntity.Colors[index].darker)
         this._turretDirection.setOrigin(0, 0)
         this._turretDirection.setLineWidth(2)
         this.add(this._turretDirection)
