@@ -87,7 +87,7 @@ export default class PlayerPlate
 
     private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)
     {
-        const bar = new CooldownBar(scene, x, y, height, 0, e.cooldown, index, 0, width)
+        const bar = new CooldownBar(scene, x, y, height, 0, e.completeCooldown, index, 0, width)
         e.addCooldownChangedCallback((e, remaining) => bar.current = remaining)
         return bar
     }

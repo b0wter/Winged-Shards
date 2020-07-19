@@ -14,7 +14,7 @@ export type EquipmentPositionCallback = (angle: EquipmentAngleCallback) => Phase
 
 export abstract class TriggeredEquipment extends Equipment
 {
-    public abstract readonly cooldown: number 
+    protected abstract readonly cooldown: number 
     public abstract readonly completeCooldown: number
     public abstract readonly heatPerTrigger: number
 
@@ -43,7 +43,7 @@ export abstract class TriggeredEquipment extends Equipment
     public trigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string, team: Teams) : number
     {
         const passed = time - this.lastUsedAt
-        if(passed > this.cooldown * this.cooldownModifier) {
+        if(passed > this.completeCooldown * this.cooldownModifier) {
             this.internalTrigger(scene, colliderFunc, equipmentPosition, angle, time, ownerId, team)
             this.lastUsedAt = time
             return this.heatPerTrigger
