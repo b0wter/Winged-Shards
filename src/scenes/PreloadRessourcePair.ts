@@ -56,6 +56,7 @@ export class FullRessourceList extends PreloadRessourceList
         this.addTilemap('campaign_01_room_004_map', 'maps/campaign_01_room_004.json')
         this.addTilemap('campaign_01_room_005_map', 'maps/campaign_01_room_005.json')
         this.addTilemap('campaign_01_room_006_map', 'maps/campaign_01_room_006.json')
+        this.addTilemap('campaign_01_room_007_map', 'maps/campaign_01_room_007.json')
         this.addTilemap('defeat', 'maps/defeat.json')
 
         // --- BASIC TILESETS ---

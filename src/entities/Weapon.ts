@@ -126,7 +126,7 @@ export abstract class WeaponTemplate extends TriggeredEquipmentTemplate
     /**
      * A single weapon trigger can trigger multiple shots. These shots may contain multiple projectiles.
      */
-    public abstract readonly projectilesPerTrigger: number
+    public abstract readonly projectilesPerShot: number
     public abstract readonly heatPerTrigger: number
     public abstract readonly spread: WeaponSpread
     public abstract readonly initialDelay: number
@@ -160,7 +160,7 @@ Triggers/sec: ${this.firingIntervalPerSecod}
 
     public instantiate(team: Teams) : Weapon
     {
-        return new Weapon(this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.projectilesPerTrigger, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
+        return new Weapon(this.projectile, this.heatPerTrigger, this.cooldown, this.shotsPerTrigger, this.projectilesPerShot, this.spread, this.initialDelay, this.delayBetweenShots, this.hardPointSize, this.hardPointType, this.manufacturer, this.modelName, team)
     }
 }
 

@@ -8,7 +8,7 @@ export class LightLaserTemplate extends WeaponTemplate {
     cooldown = 333
     projectile = Projectiles.LightLaser
     shotsPerTrigger = 1
-    projectilesPerTrigger = 1
+    projectilesPerShot = 1
     heatPerTrigger = 4
     spread = NoSpread
     initialDelay = 0
@@ -24,7 +24,7 @@ export class TripleLaserTemplate extends WeaponTemplate {
     cooldown = 666
     projectile = Projectiles.LightLaser
     shotsPerTrigger = 3
-    projectilesPerTrigger = 1
+    projectilesPerShot = 1
     heatPerTrigger = 12
     spread = NoSpread
     initialDelay = 0
@@ -41,7 +41,7 @@ export class LightMultiLaserTemplate extends WeaponTemplate
     cooldown = 666
     projectile = Projectiles.LightLaser
     shotsPerTrigger = 1
-    projectilesPerTrigger = 3
+    projectilesPerShot = 3
     heatPerTrigger = 15
     spread = ParallelSpread(10)
     initialDelay = 0
@@ -64,7 +64,7 @@ export class SpreadLaserTemplate extends WeaponTemplate {
     cooldown = 666
     projectile = Projectiles.LightLaserShotgun
     shotsPerTrigger = 1
-    projectilesPerTrigger = 5
+    projectilesPerShot = 5
     heatPerTrigger = 10
     spread = AngularSpread(15)
     initialDelay = 0
@@ -80,7 +80,7 @@ export class FusionGunTemplate extends WeaponTemplate {
     cooldown = 3000
     projectile = Projectiles.FusionGun
     shotsPerTrigger = 1
-    projectilesPerTrigger = 1
+    projectilesPerShot = 1
     heatPerTrigger = 50
     spread = NoSpread
     initialDelay = 1000
@@ -97,7 +97,7 @@ export class ShotgunTemplate extends WeaponTemplate
     cooldown = 1500
     projectile = Projectiles.Bullet
     shotsPerTrigger = 3
-    projectilesPerTrigger = 3
+    projectilesPerShot = 3
     heatPerTrigger = 1
     spread = RandomSpread(30)
     initialDelay = 0
@@ -108,5 +108,12 @@ export class ShotgunTemplate extends WeaponTemplate
     modelName = "Boom"
 }
 export const Shotgun = new ShotgunTemplate()
+
+export class DoomsdayTemplate extends SpreadLaserTemplate
+{
+    projectilesPerShot = 180
+    spread = AngularSpread(2)
+}
+export const Doomsday = new DoomsdayTemplate()
 
 export const AllTemplates = [ LightLaser, TripleLaser, LightMultiLaser, SpreadLaser, FusionGun, Shotgun ]
