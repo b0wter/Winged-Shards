@@ -41,7 +41,7 @@
          "name":"collision",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":60,
          "x":0,
          "y":0
@@ -644,7 +644,7 @@
                         {
                          "name":"target",
                          "type":"string",
-                         "value":"Campaign_01_Room_005"
+                         "value":"Campaign_01_Room_007"
                         }],
                  "rotation":0,
                  "type":"objectives_change_room",
