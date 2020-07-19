@@ -9,16 +9,19 @@ import * as HeatExchangers from './HeatExchangers'
 export abstract class PrefitTank
 {
     public abstract readonly tank: TankTemplate
-    public abstract readonly equipment: (TriggeredEquipmentTemplate | Equipment)[]
+    public abstract readonly equipment: Equipment[]
+    public abstract readonly triggeredEquipment: TriggeredEquipmentTemplate[]
 }
 
 export class MediumTank extends PrefitTank
 {
     tank = Tanks.MediumTank
     equipment = [
-        Weapons.TripleLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
+    ]
+    triggeredEquipment =[
+        Weapons.TripleLaserTemplate,
     ]
 }
 
@@ -26,9 +29,11 @@ export class TestingTank extends PrefitTank
 {
     tank = Tanks.TestingTank
     equipment = [
-        Weapons.TestLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
+    ]
+    triggeredEquipment = [
+        Weapons.TestLaserTemplate
     ]
 }
 
@@ -36,9 +41,11 @@ export class HoverScout extends PrefitTank
 {
     tank = Tanks.HoverScout
     equipment = [
-        Weapons.LightMultiLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
+    ]
+    triggeredEquipment = [
+        Weapons.LightMultiLaserTemplate
     ]
 }
 
@@ -46,11 +53,13 @@ export class SupportHoverTank extends PrefitTank
 {
     tank = Tanks.SupportHoverTank
     equipment = [
-        Weapons.LightLaser,
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator(),
         new HeatExchangers.SmallHeatExchanger(),
         new HeatExchangers.SmallHeatExchanger()
+    ]
+    triggeredEquipment = [
+        Weapons.LightLaserTemplate
     ]
 }
 
@@ -58,9 +67,11 @@ export class LightHoverTank extends PrefitTank
 {
     tank = Tanks.LightHoverTank
     equipment = [
-        Weapons.Shotgun,
         new ShieldGenerators.SmallShieldGenerator(),
         new HeatExchangers.SmallHeatExchanger(),
+    ]
+    triggeredEquipment = [
+        Weapons.ShotgunTemplate
     ]
 }
 

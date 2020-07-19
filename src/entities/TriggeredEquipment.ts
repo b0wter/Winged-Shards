@@ -14,15 +14,9 @@ export type EquipmentPositionCallback = (angle: EquipmentAngleCallback) => Phase
 
 export abstract class TriggeredEquipment extends Equipment
 {
-    /**
-     * Cooldown in milliseconds.
-     */
-    get cooldown() { return this._cooldown }
-
-    /**
-     * Amount of heat generated per trigger.
-     */
-    get heatPerTrigger() { return this._heatPerTrigger}
+    public abstract readonly cooldown: number 
+    public abstract readonly completeCooldown: number
+    public abstract readonly heatPerTrigger: number
 
     abstract get range() : number
 
@@ -38,9 +32,7 @@ export abstract class TriggeredEquipment extends Equipment
     public static readonly class = "triggered"
     public readonly class = TriggeredEquipment.class
 
-    constructor(protected _cooldown: number,
-                protected _heatPerTrigger: number
-                )
+    constructor()
     {
         super()
     }
@@ -104,7 +96,4 @@ export abstract class TriggeredEquipment extends Equipment
     */
 }
 
-export abstract class TriggeredEquipmentTemplate
-{
-    public abstract instantiate()
-} 
+export type TriggeredEquipmentTemplate = () => TriggeredEquipment

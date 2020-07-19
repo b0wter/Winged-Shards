@@ -1,10 +1,10 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, WeaponTemplate, Weapon, AngularSpread, ParallelSpread, RandomSpread } from '../Weapon'
+import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTemplate } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
 
-export class LightLaserTemplate extends WeaponTemplate {
+export class LightLaser extends Weapon {
     cooldown = 333
     projectile = Projectiles.LightLaser
     shotsPerTrigger = 1
@@ -18,9 +18,9 @@ export class LightLaserTemplate extends WeaponTemplate {
     manufacturer = Manufacturers.BattlePrep
     modelName = "Light Laser A"
 }
-export const LightLaser = new LightLaserTemplate()
+export const LightLaserTemplate : WeaponTemplate = () => new LightLaser()
 
-export class TripleLaserTemplate extends WeaponTemplate {
+export class TripleLaser extends Weapon{
     cooldown = 666
     projectile = Projectiles.LightLaser
     shotsPerTrigger = 3
@@ -34,9 +34,9 @@ export class TripleLaserTemplate extends WeaponTemplate {
     manufacturer = Manufacturers.BattlePrep
     modelName = "Triple Tap"
 }
-export const TripleLaser = new TripleLaserTemplate()
+export const TripleLaserTemplate : WeaponTemplate = () => new TripleLaser()
 
-export class LightMultiLaserTemplate extends WeaponTemplate
+export class LightMultiLaser extends Weapon
 {
     cooldown = 666
     projectile = Projectiles.LightLaser
@@ -51,16 +51,16 @@ export class LightMultiLaserTemplate extends WeaponTemplate
     manufacturer = Manufacturers.BattlePrep
     modelName = "Multi Laser A"
 }
-export const LightMultiLaser = new LightMultiLaserTemplate()
+export const LightMultiLaserTemplate : WeaponTemplate = () => new LightMultiLaser()
 
-export class TestLaserTemplate extends LightMultiLaserTemplate
+export class TestLaser extends LightMultiLaser
 {
     cooldown = 100
     heatPerTrigger = 0
 }
-export const TestLaser = new TestLaserTemplate()
+export const TestLaserTemplate : WeaponTemplate = () => new TestLaser()
 
-export class SpreadLaserTemplate extends WeaponTemplate {
+export class SpreadLaser extends Weapon{
     cooldown = 666
     projectile = Projectiles.LightLaserShotgun
     shotsPerTrigger = 1
@@ -74,9 +74,9 @@ export class SpreadLaserTemplate extends WeaponTemplate {
     manufacturer = Manufacturers.BattlePrep
     modelName = "Laser Shotgun"
 }
-export const SpreadLaser = new SpreadLaserTemplate()
+export const SpreadLaserTemplate : WeaponTemplate = () => new SpreadLaser()
 
-export class FusionGunTemplate extends WeaponTemplate {
+export class FusionGun extends Weapon{
     cooldown = 3000
     projectile = Projectiles.FusionGun
     shotsPerTrigger = 1
@@ -90,9 +90,9 @@ export class FusionGunTemplate extends WeaponTemplate {
     manufacturer = Manufacturers.BattlePrep
     modelName = "Fusion Master 2000"
 }
-export const FusionGun = new FusionGunTemplate()
+export const FusionGunTemplate : WeaponTemplate = () => new FusionGun()
 
-export class ShotgunTemplate extends WeaponTemplate 
+export class Shotgun extends Weapon
 {
     cooldown = 1500
     projectile = Projectiles.Bullet
@@ -107,13 +107,4 @@ export class ShotgunTemplate extends WeaponTemplate
     manufacturer = Manufacturers.BattlePrep
     modelName = "Boom"
 }
-export const Shotgun = new ShotgunTemplate()
-
-export class DoomsdayTemplate extends SpreadLaserTemplate
-{
-    projectilesPerShot = 180
-    spread = AngularSpread(2)
-}
-export const Doomsday = new DoomsdayTemplate()
-
-export const AllTemplates = [ LightLaser, TripleLaser, LightMultiLaser, SpreadLaser, FusionGun, Shotgun ]
+export const ShotgunTemplate : WeaponTemplate = () => new Shotgun()

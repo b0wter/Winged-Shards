@@ -231,21 +231,18 @@ export default abstract class GameplayScene extends BaseScene
 
         const tank = data.tank.instantiate()
         const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index)
+        for(let i = 0; i < data.triggeredEquipment.length; i++)
+        {
+            const weapon = data.triggeredEquipment[i]()
+            player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon)
+            player.tank.hardpoints[i].equipmentGroup = i
+        }
+
         for(let i = 0; i < data.equipment.length; i++)
         {
-            const current = data.equipment[i]
-            if((current as WeaponTemplate).projectile !== undefined)
-            {
-                const weapon = current as WeaponTemplate
-                player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon.instantiate())
-                player.tank.hardpoints[i].equipmentGroup = i
-            }
-            else
-            {
-                const eq = current as Equipment
-                player.tank.hardpoints[i].equipment = asHardPointEquipment(eq)
-            }
+            player.tank.hardpoints[i + data.triggeredEquipment.length].equipment = asHardPointEquipment(data.equipment[i])
         }
+
         this.createInterface(player, this.playerInterfaces)
         player.addKilledCallback(this.onPlayerKilled.bind(this))
         if(this.previousPlayerState.length !== 0)

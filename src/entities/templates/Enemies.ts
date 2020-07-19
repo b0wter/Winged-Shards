@@ -1,10 +1,10 @@
-import { TriggeredEquipmentTemplate } from '../TriggeredEquipment'
+import { TriggeredEquipmentTemplate, TriggeredEquipment } from '../TriggeredEquipment'
 import GameplayScene from '~/scenes/GameplayScene'
 import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Enemy } from '../Enemy'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
-import { TripleLaserTemplate, TripleLaser, LightLaser } from './Weapons'
+import { TripleLaserTemplate, TripleLaser, LightLaser, LightLaserTemplate } from './Weapons'
 
 export abstract class EnemyTemplate
 {
@@ -18,7 +18,7 @@ export abstract class EnemyTemplate
 
     public instatiate(scene: GameplayScene, x: number, y: number, angle: number, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc)
     {
-        const equipment = this.equipment.map(x => x.instantiate(Teams.Enemies))
+        const equipment = this.equipment.map(e => e())
         return new Enemy(scene, x, y, this.spriteKey, angle, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment)
     }
 }
@@ -30,7 +30,7 @@ export class LightFighter extends EnemyTemplate {
     public readonly hull = 20
     public readonly structure = 10
     public readonly maxVelocity = 175
-    public readonly equipment = [ LightLaser ]
+    public readonly equipment = [ LightLaserTemplate ]
 }
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 
