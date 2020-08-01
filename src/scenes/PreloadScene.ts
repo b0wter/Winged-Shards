@@ -46,6 +46,7 @@ export class PreloadScene extends Phaser.Scene
     {
         console.log("Initializing progress bar.")
         this.progressBar = new FullscreenStatusBar(this, this.cameras.main.centerX, this.cameras.main.centerY, 1920 * 0.8, 200, 4, new Color(200, 200, 200), new Color(150, 150, 150), new Color(50, 50, 50))
+        this.add.existing(this.progressBar)
         this.progressBar.draw()
     }
 
