@@ -1,5 +1,5 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTemplate } from '../Weapon'
+import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTemplate, ProjectileWeapon } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
@@ -92,7 +92,7 @@ export class FusionGun extends Weapon{
 }
 export const FusionGunTemplate : WeaponTemplate = () => new FusionGun()
 
-export class Shotgun extends Weapon
+export class Shotgun extends ProjectileWeapon
 {
     cooldown = 1500
     projectile = Projectiles.Bullet
@@ -106,5 +106,6 @@ export class Shotgun extends Weapon
     hardPointType = HardPointType.WithAmmoBox
     manufacturer = Manufacturers.BattlePrep
     modelName = "Boom"
+    maxAmmo = 50
 }
 export const ShotgunTemplate : WeaponTemplate = () => new Shotgun()

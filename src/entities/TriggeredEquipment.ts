@@ -1,9 +1,7 @@
 import { Teams } from './Teams'
-import PhysicalEntity from './PhysicalEntity'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import { Equipment } from './Equipment'
 import { CurrentStatusChange } from './StatusChanges'
-import { HardPoint } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
 
 export type EquipmentCooldownChangedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
@@ -43,13 +41,15 @@ export abstract class TriggeredEquipment extends Equipment
     public trigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string, team: Teams) : number
     {
         const passed = time - this.lastUsedAt
-        if(passed > this.completeCooldown * this.cooldownModifier) {
+        if(passed > this.completeCooldown * this.cooldownModifier && this.canBeTriggered) {
             this.internalTrigger(scene, colliderFunc, equipmentPosition, angle, time, ownerId, team)
             this.lastUsedAt = time
             return this.heatPerTrigger
         }
         return 0
     }
+
+    protected abstract get canBeTriggered()
 
     public update(t: number, dt: number, _)
     {

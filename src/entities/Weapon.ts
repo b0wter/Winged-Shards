@@ -8,6 +8,7 @@ import { HardPointType, HardPointSize } from './Hardpoint'
 import { Manufacturers, manufacturerToString } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
 import GameplayScene from '~/scenes/GameplayScene'
+import ClampedNumber from '~/utilities/ClampedNumber'
 
 export interface None { kind: string }
 export interface Angular { degreesDistance: number, kind: string }
@@ -31,6 +32,8 @@ export abstract class Weapon extends TriggeredEquipment
      * Time it takes for the weapon to shoot (initial delay, delay between shots, ...) and cool down.
      */
     get completeCooldown() { return this.cooldown + this.initialDelay + (this.shotsPerTrigger - 1) * this.delayBetweenShots} 
+
+    protected get canBeTriggered() { return true }
 
     public readonly maxStatusChange = MaxStatusChange.zero
 
@@ -120,6 +123,30 @@ export abstract class Weapon extends TriggeredEquipment
     protected internalUpdate(t: number, dt: number)
     {
         //
+    }
+}
+
+export abstract class ProjectileWeapon extends Weapon
+{
+    public abstract readonly maxAmmo: number
+
+    public ammo = new ClampedNumber(1)
+
+    constructor()
+    {
+        super()
+        setTimeout(() => this.ammo.setMax(this.maxAmmo, true))
+    }
+
+    protected get canBeTriggered() 
+    {
+        return this.ammo.current > 0
+    }
+
+    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string, team: Teams)
+    {
+        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+        this.ammo.current -= 1
     }
 }
 

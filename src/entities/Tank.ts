@@ -144,15 +144,6 @@ export class Tank
         return CurrentStatusChange.combineAll(updates)
     }
 
-    public trigger(index: number,equipmentPosition: () => Phaser.Geom.Point, angle: () => number, time: number, ownerId: string, h: HardPoint)
-    {
-        this.equipmentGroup(index).forEach(([e, h]) => {
-            const t = e as TriggeredEquipment
-            if(t.trigger !== undefined)
-                t.trigger(equipmentPosition, angle, time, ownerId)
-        })
-    }
-
     public addEquipmentChangedListener(l: TankEquipmentChangedListener)
     {
         this.equipmentChangedListeners.push(l)
