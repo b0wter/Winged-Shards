@@ -19,6 +19,8 @@ import AbilityEquipmentPlate from './AbilityEquipmentPlate'
 import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
 import { Shotgun } from '~/entities/templates/Weapons';
 import AbilitiesPlate from './AbilitiesPlate';
+import { AbilityEquipment } from '~/entities/AbilityEquipment';
+import { Weapon } from '~/entities/Weapon';
 
 export default class PlayerPlate
 {
@@ -67,17 +69,21 @@ export default class PlayerPlate
 
     private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, height: number) : TriggeredEquipmentPlate[]
     {
-        //const abilities: AbilityEquipmentPlate[] = []
-        //for(let i = 0; i < 4; i++)
-        //    abilities.push(new AbilityEquipmentPlate(scene, xOffset, yOffset, i, [ new Shotgun() ]))
-        const abilities = new AbilitiesPlate(scene, equipment[0][1], xOffset, yOffset)
+        const abilities : [number, AbilityEquipment[]][] = equipment.filter(([index, items]) => items.length > 0 && items.every(i => i.kind === AbilityEquipment.class))
+                                                                    .map(([index, items]) => [index, items.map(i => <AbilityEquipment>i)])
 
-        const plates: TriggeredEquipmentPlate[] = []
-        equipment.forEach(([index, equipment]) => {
-            if(equipment.length !== 0)
-                plates.push(new TriggeredEquipmentPlate(scene, xOffset + abilities.width, yOffset, index, equipment))
-        })
-        return plates
+        const weapons : [number, Weapon[]][] = equipment.filter(([index, items]) => items.every(i => i.kind === Weapon.class))
+                                                        .map(([index, items]) => [index, items.map(i => <Weapon>i)])
+
+        if(abilities.length + weapons.length !== equipment.length)
+            console.warn("There were mixed combinations of weapons and abilities. This is currently not supported.")
+
+        const aPlate = this.addAbilityStatusBars(scene, abilities, xOffset, yOffset)
+
+        const wPlate = this.addWeaponStatusBars(scene, weapons, xOffset + 5 + aPlate.width, yOffset)
+
+        return wPlate
+
         /*
         equipment = equipment.filter(([_, e]) => e !== undefined && e.length !== 0)
         // There are six equipment groups, thus the bars are displayed in two columns and three rows:
@@ -101,6 +107,27 @@ export default class PlayerPlate
 
         return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e[0], computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
         */
+    }
+
+    private addAbilityStatusBars(scene: Phaser.Scene, equipment: [number, AbilityEquipment[]][], xOffset: number, yOffset: number)
+    {
+        equipment.forEach(e => ([_, items]) => {
+            if(items.length != 1)
+                console.warn("An attempt was made to create an ability plate for multiple abilities at once.")
+        })
+        const mappedEquipment : [number, AbilityEquipment][] = equipment.map(([number, items]) => [number, items[0]])
+        const abilities = new AbilitiesPlate(scene, mappedEquipment, xOffset, yOffset)
+        return abilities
+    }
+
+    private addWeaponStatusBars(scene: Phaser.Scene, weapons: [number, Weapon[]][], xOffset: number, yOffset: number)
+    {
+        const plates: TriggeredEquipmentPlate[] = []
+        weapons.forEach(([index, equipment]) => {
+            if(equipment.length !== 0)
+                plates.push(new TriggeredEquipmentPlate(scene, xOffset, yOffset, index, equipment))
+        })
+        return plates
     }
 
     private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)

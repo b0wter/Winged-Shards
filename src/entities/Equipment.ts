@@ -7,7 +7,8 @@ export enum EquipmentTypes {
     Engine,
     HeatExchanger,
     Weapon,
-    Shield
+    Shield,
+    Ability
 }
 
 export abstract class Equipment

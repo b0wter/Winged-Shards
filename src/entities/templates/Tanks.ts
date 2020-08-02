@@ -34,6 +34,18 @@ export class TestingTankTemplate extends MediumTankTemplate
     heatDissipation = 1000
     maxSpeed = 300
     angularSpeed = 120
+    hardpoints = [
+        HardPoint.empty(HardPointSize.Large, HardPointType.WithoutExtras, HardPointPosition.Turret, 10, 0, 0),
+        HardPoint.empty(HardPointSize.Large, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0)
+    ]
 }
 export const TestingTank = new TestingTankTemplate()
 

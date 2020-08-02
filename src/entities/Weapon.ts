@@ -30,6 +30,9 @@ export abstract class Weapon extends TriggeredEquipment
 
     public get numberOfUses() { return Number.POSITIVE_INFINITY }
 
+    public static readonly class = "weapon"
+    public readonly kind = Weapon.class
+
     /**
      * Time it takes for the weapon to shoot (initial delay, delay between shots, ...) and cool down.
      */

@@ -27,8 +27,9 @@ export abstract class TriggeredEquipment extends Equipment
 
     public readonly statusChangePerSecond = CurrentStatusChange.zero
 
-    public static readonly class = "triggered"
-    public readonly class = TriggeredEquipment.class
+    public static readonly class: string = "triggered"
+    public readonly class: string = TriggeredEquipment.class
+    public readonly kind: string = "triggered"
 
     public abstract get numberOfUses() : number
 

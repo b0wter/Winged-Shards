@@ -105,5 +105,9 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('particle_red', 'images/effects/particle-red.png')
         this.addImage('question_mark', 'images/effects/question_mark_red.png')
         this.addSpritesheet('explosion_small', 'images/effects/explosion-small.png', { frameWidth: 46, frameHeight: 46})
+
+        // --- UI ---
+        this.addImage('ability_frame', 'images/ui/ability_frame.png')
+        this.addImage('ability_dummy', 'images/ui/ability_dummy.png')
     }
 }
