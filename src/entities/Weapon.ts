@@ -28,6 +28,8 @@ export abstract class Weapon extends TriggeredEquipment
 
     public get range() { return this.projectile.range }
 
+    public get numberOfUses() { return Number.POSITIVE_INFINITY }
+
     /**
      * Time it takes for the weapon to shoot (initial delay, delay between shots, ...) and cool down.
      */
@@ -131,6 +133,11 @@ export abstract class ProjectileWeapon extends Weapon
     public abstract readonly maxAmmo: number
 
     public ammo = new ClampedNumber(1)
+
+    public get numberOfUses()
+    {
+        return this.ammo.current
+    }
 
     constructor()
     {

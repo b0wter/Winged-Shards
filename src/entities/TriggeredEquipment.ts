@@ -30,6 +30,10 @@ export abstract class TriggeredEquipment extends Equipment
     public static readonly class = "triggered"
     public readonly class = TriggeredEquipment.class
 
+    public abstract get numberOfUses() : number
+
+    private cooldownFinishedOnPreviousUpdate = false
+
     constructor()
     {
         super()
@@ -44,6 +48,7 @@ export abstract class TriggeredEquipment extends Equipment
         if(passed > this.completeCooldown * this.cooldownModifier && this.canBeTriggered) {
             this.internalTrigger(scene, colliderFunc, equipmentPosition, angle, time, ownerId, team)
             this.lastUsedAt = time
+            this.cooldownFinishedOnPreviousUpdate = false
             return this.heatPerTrigger
         }
         return 0
@@ -54,7 +59,13 @@ export abstract class TriggeredEquipment extends Equipment
     public update(t: number, dt: number, _)
     {
         this.internalUpdate(t, dt)
-        this.cooldownChangedCallbacks.forEach(x => x(this, Math.max(0, t - this.lastUsedAt)))
+        if(this.cooldownFinishedOnPreviousUpdate === false)
+        {
+            const remainingCooldown = Math.max(0, this.lastUsedAt + this.completeCooldown - t)
+            this.cooldownChangedCallbacks.forEach(x => x(this, remainingCooldown))
+            if(remainingCooldown === 0)
+                this.cooldownFinishedOnPreviousUpdate = true
+        }
         return CurrentStatusChange.zero
     }
 
