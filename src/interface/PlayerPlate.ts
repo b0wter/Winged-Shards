@@ -13,6 +13,12 @@ import HeatBar from './HeatBar';
 import StatusBar from './StatusBar';
 import { TriggeredEquipment, EquipmentCooldownChangedCallback } from '~/entities/TriggeredEquipment';
 import CooldownBar from './CooldownBar';
+import MiniCooldownBar from './MiniCooldownBar';
+import { TriggeredEquipmentPlate } from './TriggeredEquipmentPlate';
+import AbilityEquipmentPlate from './AbilityEquipmentPlate'
+import { SmallShieldGenerator } from '~/entities/templates/ShieldGenerators';
+import { Shotgun } from '~/entities/templates/Weapons';
+import AbilitiesPlate from './AbilitiesPlate';
 
 export default class PlayerPlate
 {
@@ -54,21 +60,32 @@ export default class PlayerPlate
         this.heatBar        = new HeatBar       (scene, this.shieldBar.x + PlayerPlate.HorizontalMargin + this.shieldBar.width, y, this.shieldBar.height + this.hullBar.height + this.structureBar.height + 2 * PlayerPlate.VerticalMargin, heat.min, heat.max, heat.current)
         this.bars = [ this.shieldBar, this.hullBar, this.structureBar, this.heatBar ]
 
-        const cooldownBars = this.addEquipmentStatusBars(scene, equipment, this.heatBar.x + this.heatBar.width + PlayerPlate.HorizontalMargin, y, this.shieldBar.height)
-        cooldownBars.forEach(b => this.bars.push(b))
+        this.addEquipmentStatusBars(scene, equipment, this.heatBar.x + this.heatBar.width + PlayerPlate.HorizontalMargin, y, this.heatBar.height)
 
         this.bars.forEach(x => scene.add.existing(x))
     }
 
-    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, rowHeight: number) 
+    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, height: number) : TriggeredEquipmentPlate[]
     {
+        //const abilities: AbilityEquipmentPlate[] = []
+        //for(let i = 0; i < 4; i++)
+        //    abilities.push(new AbilityEquipmentPlate(scene, xOffset, yOffset, i, [ new Shotgun() ]))
+        const abilities = new AbilitiesPlate(scene, equipment[0][1], xOffset, yOffset)
+
+        const plates: TriggeredEquipmentPlate[] = []
+        equipment.forEach(([index, equipment]) => {
+            if(equipment.length !== 0)
+                plates.push(new TriggeredEquipmentPlate(scene, xOffset + abilities.width, yOffset, index, equipment))
+        })
+        return plates
+        /*
         equipment = equipment.filter(([_, e]) => e !== undefined && e.length !== 0)
         // There are six equipment groups, thus the bars are displayed in two columns and three rows:
         //   0   1
         //   2   3
         //   4   5
         //
-        const rowWidth = rowHeight
+        const rowWidth = 100 //rowHeight
         let computeXOffset = function(index) {
             if(index % 2 === 0)
                 return xOffset
@@ -83,11 +100,12 @@ export default class PlayerPlate
         const existingEquipment = equipment.filter(([_, e]) => e !== undefined)
 
         return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e[0], computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
+        */
     }
 
     private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)
     {
-        const bar = new CooldownBar(scene, x, y, height, 0, e.completeCooldown, index, 0, width)
+        const bar = new MiniCooldownBar(scene, x, y, 0, e.completeCooldown, -1) //, index, 0)//height)
         e.addCooldownChangedCallback((e, remaining) => bar.current = remaining)
         return bar
     }
