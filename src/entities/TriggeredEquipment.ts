@@ -5,10 +5,11 @@ import { CurrentStatusChange } from './StatusChanges'
 import GameplayScene from '~/scenes/GameplayScene'
 
 export type EquipmentCooldownChangedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
-export type EquipmentCooldownFinishedCallback = (equipment: TriggeredEquipment, remainingCooldown: number) => void
+export type EquipmentCooldownFinishedCallback = (equipment: TriggeredEquipment) => void
 
 export type EquipmentAngleCallback = () => number
 export type EquipmentPositionCallback = (angle: EquipmentAngleCallback) => Phaser.Geom.Point
+export type EquipmentNumberOfUsageCallback = (equipment: TriggeredEquipment, usesLeft: number) => void
 
 export abstract class TriggeredEquipment extends Equipment
 {
@@ -23,7 +24,8 @@ export abstract class TriggeredEquipment extends Equipment
     protected cooldownModifier = 1
 
     private readonly cooldownChangedCallbacks : EquipmentCooldownChangedCallback[] = []
-    //private readonly cooldownFinishedCallbacks: EquipmentCooldownFinishedCallback[] = []
+    private readonly numberOfUsesCallbacks : EquipmentNumberOfUsageCallback[] = []
+    private readonly cooldownFinishedCallbacks: EquipmentCooldownFinishedCallback[] = []
 
     public readonly statusChangePerSecond = CurrentStatusChange.zero
 
@@ -65,7 +67,10 @@ export abstract class TriggeredEquipment extends Equipment
             const remainingCooldown = Math.max(0, this.lastUsedAt + this.completeCooldown - t)
             this.cooldownChangedCallbacks.forEach(x => x(this, remainingCooldown))
             if(remainingCooldown === 0)
+            {
                 this.cooldownFinishedOnPreviousUpdate = true
+                this.cooldownFinishedCallbacks.forEach(c => c(this))
+            }
         }
         return CurrentStatusChange.zero
     }
@@ -84,12 +89,15 @@ export abstract class TriggeredEquipment extends Equipment
         this.cooldownChangedCallbacks.push(c)
     }
 
-    /*
-    public addCooldownFinishedCallback(c: EquipmentCooldownChangedCallback)
+    public addCooldownFinishedCallback(c: EquipmentCooldownFinishedCallback)
     {
         this.cooldownFinishedCallbacks.push(c)
     }
-    */
+
+    public addNumberOfUsesCallback(c: EquipmentNumberOfUsageCallback)
+    {
+        this.numberOfUsesCallbacks.push(c)
+    }
 
     public removeCooldownChangedCallback(c: EquipmentCooldownChangedCallback)
     {
@@ -98,14 +106,24 @@ export abstract class TriggeredEquipment extends Equipment
           });
     }
 
-    /*
     public removeCooldownFinishedCallback(c: EquipmentCooldownFinishedCallback)
     {
         this.cooldownFinishedCallbacks.forEach( (item, index) => {
             if(item === c) this.cooldownFinishedCallbacks.splice(index,1);
           });
     }
-    */
+
+    public removeNumberOfUsesCallback(c: EquipmentNumberOfUsageCallback)
+    {
+        this.numberOfUsesCallbacks.forEach( (item, index) => {
+            if(item === c) this.numberOfUsesCallbacks.splice(index,1);
+          });
+    }
+
+    protected triggerNumberOfUsesCallbacks(i: number)
+    {
+        this.numberOfUsesCallbacks.forEach(c => c(this, i))
+    }
 }
 
 export type TriggeredEquipmentTemplate = () => TriggeredEquipment

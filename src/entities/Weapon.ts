@@ -157,6 +157,31 @@ export abstract class ProjectileWeapon extends Weapon
     {
         super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
         this.ammo.current -= 1
+        this.triggerNumberOfUsesCallbacks(this.ammo.current)
+    }
+}
+
+export abstract class MagazineProjectileWeapon extends ProjectileWeapon
+{
+    public abstract shotsPerMagazine: number
+    public abstract magazineReload: number
+    private shotsLeftInMagazine: number = 0
+
+    constructor()
+    {
+        super()
+    }
+
+    public internalUpdate(t: number, dt: number)
+    {
+        super.internalUpdate(t, dt)
+        if(this.shotsLeftInMagazine === 0 && this.ammo.current !== 0)
+            this.reload()
+    }
+
+    private reload()
+    {
+        setTimeout(() => this.shotsLeftInMagazine = Math.min(this.ammo.current, this.shotsPerMagazine), this.magazineReload)
     }
 }
 
