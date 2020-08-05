@@ -67,6 +67,8 @@ export class Enemy extends PhysicalEntity
 
     protected killEffect()
     {
+        if(this.visible === false)
+            return
         const particles = this.scene.add.particles('particle_red')
         const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*750})
         emitter.setPosition(this.x, this.y)
