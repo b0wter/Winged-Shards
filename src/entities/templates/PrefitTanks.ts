@@ -73,7 +73,7 @@ export class LightHoverTank extends PrefitTank
         new HeatExchangers.SmallHeatExchanger(),
     ]
     triggeredEquipment = [
-        Weapons.ShotgunTemplate
+        Weapons.RevolverTemplate
     ]
 }
 

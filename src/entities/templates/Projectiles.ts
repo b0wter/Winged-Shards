@@ -1,6 +1,7 @@
 import { ProjectileTemplate } from '../Projectile'
 import { Damage } from '../DamageType'
 import Vector2 = Phaser.Math.Vector2
+import { Vector } from 'matter'
 
 export class LightLaserTemplate extends ProjectileTemplate
 {
@@ -55,3 +56,13 @@ export class BulletTemplate extends ProjectileTemplate
     size = new Vector2(6,6)
 }
 export const Bullet = new BulletTemplate()
+
+export class MediumBulletTemplate extends BulletTemplate
+{
+    spriteKey = "bullet_medium"
+    velocity = 600
+    damage = new Damage(45, 0, 0, 0)
+    range = 450
+    size = new Vector2(16,8)
+}
+export const MediumBullet = new MediumBulletTemplate()

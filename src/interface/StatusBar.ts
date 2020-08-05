@@ -4,6 +4,7 @@ import { UI_TEXT_DEPTH, UI_ELEMENTS_DEPTH } from '~/utilities/Constants'
 export default abstract class StatusBar extends Phaser.GameObjects.Graphics
 {
     get max() { return this._max }
+    set max(v) { this._max = v }
     get min() { return this._min }
     get current() { return this._current }
     set current(value: number) {

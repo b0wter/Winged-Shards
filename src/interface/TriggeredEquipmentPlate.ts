@@ -16,7 +16,7 @@ export class TriggeredEquipmentPlate
                )
     {
         _equipment.forEach(e => {
-            const bar = (new MiniCooldownBar(scene, x + cooldownBarOffsetX, y + this._bars.length * cooldownBarMarginTop, 0, e.completeCooldown))
+            const bar = (new MiniCooldownBar(scene, x + cooldownBarOffsetX, y + this._bars.length * cooldownBarMarginTop, e))
             this._bars.push(bar)
             scene.add.existing(bar)
             e.addCooldownChangedCallback((_, remaining) => {

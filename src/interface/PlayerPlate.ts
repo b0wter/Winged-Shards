@@ -67,7 +67,7 @@ export default class PlayerPlate
         this.bars.forEach(x => scene.add.existing(x))
     }
 
-    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, height: number) : TriggeredEquipmentPlate[]
+    private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, height: number) 
     {
         const abilities : [number, AbilityEquipment[]][] = equipment.filter(([index, items]) => items.length > 0 && items.every(i => i.kind === AbilityEquipment.class))
                                                                     .map(([index, items]) => [index, items.map(i => <AbilityEquipment>i)])
@@ -79,34 +79,7 @@ export default class PlayerPlate
             console.warn("There were mixed combinations of weapons and abilities. This is currently not supported.")
 
         const aPlate = this.addAbilityStatusBars(scene, abilities, xOffset, yOffset)
-
         const wPlate = this.addWeaponStatusBars(scene, weapons, xOffset + 5 + aPlate.width, yOffset)
-
-        return wPlate
-
-        /*
-        equipment = equipment.filter(([_, e]) => e !== undefined && e.length !== 0)
-        // There are six equipment groups, thus the bars are displayed in two columns and three rows:
-        //   0   1
-        //   2   3
-        //   4   5
-        //
-        const rowWidth = 100 //rowHeight
-        let computeXOffset = function(index) {
-            if(index % 2 === 0)
-                return xOffset
-            else
-                return xOffset + rowWidth + PlayerPlate.HorizontalMargin
-        }
-        let computeYOffset = function(index) {
-            const row = Math.floor(index/2)
-            return row * (rowHeight + PlayerPlate.VerticalMargin) + yOffset
-        }
-
-        const existingEquipment = equipment.filter(([_, e]) => e !== undefined)
-
-        return existingEquipment.map(([i,e]) => this.addEquipmentStatusBar(scene, e[0], computeXOffset(i), computeYOffset(i), rowWidth, rowHeight, i))
-        */
     }
 
     private addAbilityStatusBars(scene: Phaser.Scene, equipment: [number, AbilityEquipment[]][], xOffset: number, yOffset: number)
@@ -132,8 +105,7 @@ export default class PlayerPlate
 
     private addEquipmentStatusBar(scene: Phaser.Scene, e: TriggeredEquipment, x: number, y: number, width: number, height: number, index: number)
     {
-        const bar = new MiniCooldownBar(scene, x, y, 0, e.completeCooldown, -1) //, index, 0)//height)
-        e.addCooldownChangedCallback((e, remaining) => bar.current = remaining)
+        const bar = new MiniCooldownBar(scene, x, y, e) //, index, 0)//height)
         return bar
     }
 

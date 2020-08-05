@@ -21,6 +21,9 @@ export function AngularSpread(angle: number) : WeaponSpread { return { degreesDi
 export function ParallelSpread(distanceToNext: number) : WeaponSpread { return { distanceToNext: distanceToNext, kind: "Parallel" } }
 export function RandomSpread(maxAngle: number) : WeaponSpread { return { maxDegrees: maxAngle, kind: "Random" } }
 
+export type EquipmentReloadChangedCallback = (equipment: MagazineProjectileWeapon, remainingCooldown: number) => void
+export type EquipmentReloadFinishedCallback = (equipment: MagazineProjectileWeapon) => void
+
 export abstract class Weapon extends TriggeredEquipment
 {
     public statusChangePerDeltaTime(dt: number) { return CurrentStatusChange.zero }
@@ -165,23 +168,92 @@ export abstract class MagazineProjectileWeapon extends ProjectileWeapon
 {
     public abstract shotsPerMagazine: number
     public abstract magazineReload: number
-    private shotsLeftInMagazine: number = 0
+    public get shotsLeftInMagazine() { return this._shotsLeftInMagazine }
+
+    private _shotsLeftInMagazine: number = 0
+    private _isReloadingMagazine = false
+    private _startedReloadAt = 0
+
+    private readonly reloadChangedCallbacks : EquipmentReloadChangedCallback[] = []
+    private readonly reloadFinishedCallbacks: EquipmentReloadFinishedCallback[] = []
 
     constructor()
     {
         super()
+        setTimeout(() => {
+            this._shotsLeftInMagazine = this.shotsPerMagazine
+            this.triggerReloadFinishedCallback()
+        })
     }
 
     public internalUpdate(t: number, dt: number)
     {
         super.internalUpdate(t, dt)
-        if(this.shotsLeftInMagazine === 0 && this.ammo.current !== 0)
-            this.reload()
+        if(this._isReloadingMagazine)
+        {
+            const passedSinceReload = t - this._startedReloadAt
+            this.triggerReloadChangedCallback(passedSinceReload)
+        }
     }
 
-    private reload()
+    protected get canBeTriggered()
     {
-        setTimeout(() => this.shotsLeftInMagazine = Math.min(this.ammo.current, this.shotsPerMagazine), this.magazineReload)
+        console.log(this.ammo, this._shotsLeftInMagazine, this._isReloadingMagazine)
+        return super.canBeTriggered && this._isReloadingMagazine === false && this._shotsLeftInMagazine !== 0
+    }
+
+    protected internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+    {
+        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+        this._shotsLeftInMagazine--
+        if(this._shotsLeftInMagazine === 0 && this.ammo.current !== 0)
+            this.reload(time)
+    }
+
+    private reload(time: number)
+    {
+        this._isReloadingMagazine = true
+        this._startedReloadAt = time
+        setTimeout(() => { 
+            this._shotsLeftInMagazine = Math.min(this.ammo.current, this.shotsPerMagazine) //, this.magazineReload
+            this._isReloadingMagazine = false
+            this.triggerReloadFinishedCallback()
+        }, this.magazineReload)
+    }
+
+    public addReloadChangedCallback(c: EquipmentReloadChangedCallback)
+    {
+        this.reloadChangedCallbacks.push(c)
+    }
+
+    public addReloadFinishedCallback(c: EquipmentReloadFinishedCallback)
+    {
+        this.reloadFinishedCallbacks.push(c)
+    }
+
+    public removeReloadChangedCallback(c: EquipmentReloadChangedCallback)
+    {
+        this.reloadChangedCallbacks.forEach( (item, index) => {
+            if(item === c) this.reloadChangedCallbacks.splice(index,1);
+          });
+    }
+
+    public removeReloadFinishedCallback(c: EquipmentReloadFinishedCallback)
+    {
+        this.reloadFinishedCallbacks.forEach( (item, index) => {
+            if(item === c) this.reloadFinishedCallbacks.splice(index,1);
+          });
+    }
+
+    private triggerReloadFinishedCallback()
+    {
+        console.log("trigger reload", this.reloadFinishedCallbacks.length)
+        this.reloadFinishedCallbacks.forEach(c => c(this))
+    }
+
+    private triggerReloadChangedCallback(remaining: number)
+    {
+        this.reloadChangedCallbacks.forEach(c => c(this, remaining))
     }
 }
 

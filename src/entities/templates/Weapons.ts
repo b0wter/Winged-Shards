@@ -1,5 +1,5 @@
 import * as Projectiles from './Projectiles'
-import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTemplate, ProjectileWeapon } from '../Weapon'
+import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTemplate, ProjectileWeapon, MagazineProjectileWeapon } from '../Weapon'
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
@@ -109,3 +109,23 @@ export class Shotgun extends ProjectileWeapon
     maxAmmo = 50
 }
 export const ShotgunTemplate : WeaponTemplate = () => new Shotgun()
+
+export class Revolver extends MagazineProjectileWeapon
+{
+    cooldown = 200
+    projectile = Projectiles.MediumBullet
+    shotsPerTrigger = 1
+    projectilesPerShot = 1
+    heatPerTrigger = 5
+    spread = NoSpread
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Medium
+    hardPointType = HardPointType.WithAmmoBox
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "Western Feeling"
+    maxAmmo = 36
+    magazineReload = 3600
+    shotsPerMagazine = 6
+}
+export const RevolverTemplate : WeaponTemplate = () => new Revolver()
