@@ -129,3 +129,21 @@ export class Revolver extends MagazineProjectileWeapon
     shotsPerMagazine = 6
 }
 export const RevolverTemplate : WeaponTemplate = () => new Revolver()
+
+export class LightAutoCannon extends ProjectileWeapon
+{
+    cooldown = 3500
+    projectile = Projectiles.Bullet
+    shotsPerTrigger = 5
+    projectilesPerShot = 1
+    heatPerTrigger = 2
+    spread = RandomSpread(5)
+    initialDelay = 0
+    delayBetweenShots = 50
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithAmmoBox
+    manufacturer = Manufacturers.Gunnerr
+    modelName = "AC5"
+    maxAmmo = 200
+}
+export const LightAutoCannonTemplate : WeaponTemplate = () => new LightAutoCannon()
