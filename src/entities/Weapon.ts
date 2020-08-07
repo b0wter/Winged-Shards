@@ -148,7 +148,10 @@ export abstract class ProjectileWeapon extends Weapon
     constructor()
     {
         super()
-        setTimeout(() => this.ammo.setMax(this.maxAmmo, true))
+        setTimeout(() => {
+            this.ammo.setMax(this.maxAmmo, true)
+            this.triggerNumberOfUsesCallbacks(this.ammo.current)
+        })
     }
 
     protected get canBeTriggered() 
@@ -198,7 +201,6 @@ export abstract class MagazineProjectileWeapon extends ProjectileWeapon
 
     protected get canBeTriggered()
     {
-        console.log(this.ammo, this._shotsLeftInMagazine, this._isReloadingMagazine)
         return super.canBeTriggered && this._isReloadingMagazine === false && this._shotsLeftInMagazine !== 0
     }
 

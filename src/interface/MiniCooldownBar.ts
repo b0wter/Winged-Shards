@@ -33,7 +33,7 @@ export default class MiniCooldownBar extends HorizontalStatusBar
                 this.draw()
             })
             weapon.addReloadFinishedCallback((w) => {
-                this._ammoCounter.text = w.shotsLeftInMagazine.toFixed() + " / " + w.ammo.current.toFixed()
+                this._ammoCounter.text = w.shotsLeftInMagazine.toFixed() + " / " + (w.ammo.current - w.shotsLeftInMagazine).toFixed()
                 this._equipmentIsReloading = false
                 this.max = w.completeCooldown
                 this.current = 0
@@ -42,7 +42,7 @@ export default class MiniCooldownBar extends HorizontalStatusBar
             weapon.addNumberOfUsesCallback((e) => {
                 const w = e as MagazineProjectileWeapon
                 // -1 because the callback is triggered before shotsLeftInMagazine is reduced
-                this._ammoCounter.text = (w.shotsLeftInMagazine - 1).toFixed() + " / " + w.ammo.current.toFixed() 
+                this._ammoCounter.text = (w.shotsLeftInMagazine - 1).toFixed() + " / " + (w.ammo.current - w.shotsLeftInMagazine + 1).toFixed() 
             })
         }
         else
@@ -51,6 +51,9 @@ export default class MiniCooldownBar extends HorizontalStatusBar
                 this._ammoCounter.text = INFINITY_SYMBOL
             else
                 this._ammoCounter.text = equipment.numberOfUses.toFixed()
+            equipment.addNumberOfUsesCallback((e) => {
+                this._ammoCounter.text = equipment.numberOfUses.toFixed()
+            })
         }
 
         equipment.addCooldownChangedCallback((e, remaining) => {
