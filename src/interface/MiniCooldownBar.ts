@@ -7,7 +7,8 @@ const DefaultBarHeight = 6
 const DefaultBorderSize = 0
 const DefaultBackground = Phaser.Display.Color.HexStringToColor("#2E3436") //new Phaser.Display.Color(200, 200, 200) // new Color(200, 200, 200)
 const DefaultForeground = Phaser.Display.Color.HexStringToColor("#808080") //new Phaser.Display.Color(40, 40, 40)
-const DefaultReloadForeground = Phaser.Display.Color.HexStringToColor("#7F0000")
+const DefaultReloadForeground = Phaser.Display.Color.HexStringToColor("#B2B000")
+const DefaultDestroyedColor = Phaser.Display.Color.HexStringToColor("#7F0000")
 const DefaultBorder = Phaser.Display.Color.HexStringToColor("#A0A0A0")
 const DefaultBarWidth = 100
 
@@ -15,6 +16,7 @@ export default class MiniCooldownBar extends HorizontalStatusBar
 {
     private _ammoCounter: Phaser.GameObjects.Text
     private _equipmentIsReloading = false
+    private _equipmentIsDestroyed = false
 
     constructor(scene: Phaser.Scene, x, y, equipment: TriggeredEquipment) // min, max, current = -1)
     {
@@ -60,6 +62,12 @@ export default class MiniCooldownBar extends HorizontalStatusBar
             this.current = remaining
             this.draw()
         })
+
+        equipment.addEquipmentDestroyedCallback((e, isDestroyed) => {
+            this._equipmentIsDestroyed = isDestroyed
+            this._ammoCounter.text = "DESTROYED"
+            this.draw()
+        })
     }
 
     protected writeText(x, y, width, height) 
@@ -68,6 +76,21 @@ export default class MiniCooldownBar extends HorizontalStatusBar
     }
 
     public draw()
+    {
+        if(this._equipmentIsDestroyed)
+            this.drawDestroyed()
+        else
+            this.drawNonDestroyed()
+    }
+
+    protected drawDestroyed()
+    {
+        this.clear()
+        this.fillStyle(DefaultDestroyedColor.color)
+        this.fillRect(this._border, this._border, this.width - (2 * this._border), this.height - (2 * this._border))
+    }
+
+    protected drawNonDestroyed()
     {
         this.clear()
 

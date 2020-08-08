@@ -7,8 +7,17 @@ import { MaxStatusChange, CurrentStatusChange } from './StatusChanges';
  */
 export default abstract class ActiveEquipment extends Equipment
 {
-    public abstract update(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
     public readonly statusChangePerSecond = CurrentStatusChange.zero
     public static readonly class = "active"
     public readonly class = ActiveEquipment.class
+
+    public update(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
+    {
+        if(this.isDestroyed)
+            return CurrentStatusChange.zero
+        else
+            return this.internalUpdate(t, dt, isMoving)
+    }
+
+    protected abstract internalUpdate(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
 }

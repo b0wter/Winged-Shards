@@ -48,7 +48,7 @@ export abstract class TriggeredEquipment extends Equipment
     public trigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time: number, ownerId: string, team: Teams) : number
     {
         const passed = time - this.lastUsedAt
-        if(passed > this.completeCooldown * this.cooldownModifier && this.canBeTriggered) {
+        if(passed > this.completeCooldown * this.cooldownModifier && this.canBeTriggered && this.isDestroyed === false) {
             this.internalTrigger(scene, colliderFunc, equipmentPosition, angle, time, ownerId, team)
             this.lastUsedAt = time
             this.cooldownFinishedOnPreviousUpdate = false

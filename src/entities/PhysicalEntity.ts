@@ -6,6 +6,7 @@ import ClampedNumber from '~/utilities/ClampedNumber'
 import { Guid } from "guid-typescript";
 import { AddEntityFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
+import DamageDealt from './DamageDealt'
 
 type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
 
@@ -142,13 +143,17 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         // there is no common code between enemies and players.
     }
 
-    public takeDamage(damage: Damage.Damage)
+    public takeDamage(damage: Damage.Damage) : DamageDealt
     {
         let remainder = damage
+        let shieldDamage = 0
+        let hullDamage = 0
+        let structureDamage = 0
         if(this.hasShieldsLeft)
         {
             const [remainingShield, remainingDamage] = this.takeSpecificDamage(damage, Damage.EnergyToShield, Damage.PhysicalToShield, Damage.ExplosionToShield, Damage.HeatToShield, this.shields)
             remainder = remainingDamage
+            shieldDamage = this.shields - remainingShield
             this.shields = remainingShield
         }
 
@@ -156,6 +161,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         {
             const [remainingHull, remainingDamage] = this.takeSpecificDamage(damage, Damage.EnergyToHull, Damage.PhysicalToHull, Damage.ExplosionToHull, Damage.HeatToHull, this.hull)
             remainder = remainingDamage
+            hullDamage = this.hull - remainingHull
             this.hull = remainingHull
         }
 
@@ -163,11 +169,14 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         {
             const [remainingStructure, remainingDamage] = this.takeSpecificDamage(damage, Damage.EnergyToStructure, Damage.PhysicalToStructure, Damage.ExplosionToStructure, Damage.HeatToStructure, this.structure)
             remainder = remainingDamage
+            structureDamage = this.structure - remainingStructure
             this.structure = remainingStructure
         }
 
         if(this.structure <= 0)
             this.kill()
+
+        return new DamageDealt(shieldDamage, hullDamage, structureDamage)
     }
 
     protected takeSpecificDamage(damage: Damage.Damage, energyModifiation: number, projectileModification: number, explosionModification: number, heatModification: number, hitpoints: number) : [number, Damage.Damage]

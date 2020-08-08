@@ -10,6 +10,7 @@ import { Tank } from './Tank'
 import { HardPoint, HardPointPosition } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
 import PlayerColor from '~/utilities/PlayerColor'
+import DamageDealt from './DamageDealt'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -131,9 +132,25 @@ export class PlayerEntity extends PhysicalEntity
         this._turretDirection.setAngle(turretDirection)
     }
 
-    public takeDamage(damage: Damage)
+    public takeDamage(damage: Damage) : DamageDealt
     {
-        super.takeDamage(damage)
+        const damageTaken = super.takeDamage(damage)
+        if(damageTaken.dealtStructureDamage)
+        {
+            const equipmentDestroyedChance = damageTaken.structureDamage / this.structureValue.max
+            console.log(equipmentDestroyedChance)
+            if(Math.random() < equipmentDestroyedChance)
+            {
+                const nonDestroyedEquipment = this.tank.allEquipment.filter(e => e.isDestroyed === false)
+                if(nonDestroyedEquipment.length > 0)
+                {
+                    const equipment = nonDestroyedEquipment[Math.floor(Math.random() * nonDestroyedEquipment.length)]
+                    equipment.destroy()
+                    console.log("Equipment has been destroyed!", equipment.manufacturer, equipment.modelName)
+                }
+            }
+        }
+        return damageTaken
     }
 
     protected killInternal() { }

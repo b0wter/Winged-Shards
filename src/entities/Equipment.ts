@@ -1,7 +1,8 @@
 import { CombinedStatusChange, MaxStatusChange, CurrentStatusChange } from './StatusChanges'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { HardPointSize, HardPointType } from './Hardpoint'
-import { EquipmentCooldownChangedCallback } from './TriggeredEquipment'
+
+export type EquipmentDestroyedCallback = (e: Equipment, isDestroyed: boolean) => void
 
 export enum EquipmentTypes {
     Engine,
@@ -11,7 +12,7 @@ export enum EquipmentTypes {
     Ability
 }
 
-export abstract class Equipment
+export abstract class EquipmentHiddenProperties
 {
     /**
      * Marks this equipment as unusable for the rest of the mission.
@@ -20,6 +21,22 @@ export abstract class Equipment
 
     public get isDestroyed() { return this._isDestroyed }
 
+    private setDestroyed(value: boolean)
+    {
+        this._isDestroyed = value
+        this.triggerDestroyedCallbacks(value)
+    }
+
+    public destroy()
+    {
+        this.setDestroyed(true)
+    }
+
+    protected abstract triggerDestroyedCallbacks(value: boolean)
+}
+
+export abstract class Equipment extends EquipmentHiddenProperties
+{
     public abstract get maxStatusChange() : MaxStatusChange
     public abstract statusChangePerDeltaTime(dt: number): CurrentStatusChange
 
@@ -30,10 +47,29 @@ export abstract class Equipment
     public abstract readonly type: EquipmentTypes
     public abstract readonly class: string
 
+    private equipmentDestroyedCallbacks: EquipmentDestroyedCallback[] = []
+
     constructor()
     {
-        //
+        super()
     }
 
     public abstract update(t: number, dt: number, isMoving: boolean) : CurrentStatusChange
+
+    protected triggerDestroyedCallbacks(value: boolean)
+    {
+        this.equipmentDestroyedCallbacks.forEach(c => c(this, value))
+    }
+
+    public addEquipmentDestroyedCallback(c: EquipmentDestroyedCallback)
+    {
+        this.equipmentDestroyedCallbacks.push(c)
+    }
+
+    public removeEquipmentDestroyedCallback(c: EquipmentDestroyedCallback)
+    {
+        this.equipmentDestroyedCallbacks.forEach( (item, index) => {
+            if(item === c) this.equipmentDestroyedCallbacks.splice(index,1);
+        });
+    }
 }

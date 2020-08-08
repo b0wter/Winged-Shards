@@ -77,7 +77,7 @@ export class Tank
         return this.allEquipment.map(e => e.maxStatusChange.heat).reduce((a, b) => a + b, this._maxHeat)
     }
 
-    protected get allEquipment() {
+    public get allEquipment() {
         return this.equipmentBy().map(([e, _]) => e)
     }
 
