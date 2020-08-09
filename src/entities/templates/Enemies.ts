@@ -17,23 +17,27 @@ export abstract class EnemyTemplate
     public readonly abstract hull
     public readonly abstract structure
     public readonly abstract maxVelocity
+    public readonly abstract maxHeat
+    public readonly abstract heatDissipation
     public readonly abstract equipment : TriggeredEquipmentTemplate[]
 
     public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, playerProvider: IPlayerProvider, lineOfSight: ILineOfSightProvider)
     {
         const equipment = this.equipment.map(e => e())
-        return new Enemy(scene, position, this.spriteKey, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment, playerProvider, lineOfSight)
+        return new Enemy(scene, position, this.spriteKey, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), new ClampedNumber(this.maxHeat, 0, 0), this.heatDissipation, this.maxVelocity, equipment, playerProvider, lineOfSight)
     }
 }
 
 export class LightFighter extends EnemyTemplate {
-    public readonly name = "light_fighter"
-    public readonly spriteKey = "spaceship_02"
-    public readonly shield = 40
-    public readonly hull = 20
-    public readonly structure = 10
-    public readonly maxVelocity = 175
-    public readonly equipment = [ LightLaserTemplate ]
+    name = "light_fighter"
+    spriteKey = "spaceship_02"
+    shield = 40
+    hull = 20
+    structure = 10
+    maxVelocity = 175
+    maxHeat = 100
+    heatDissipation = 10
+    equipment = [ LightLaserTemplate ]
 }
 
 export const EnemyTemplates : { [id: string] : EnemyTemplate; } = { 

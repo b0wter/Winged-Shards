@@ -40,6 +40,8 @@ export class Enemy extends PhysicalEntity
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
+                heat: ClampedNumber,
+                private _heatDissipation: number,
                 private _maxVelocity: number,
                 private _equipment: TriggeredEquipment[],
                 private _playerProvider: IPlayerProvider,
@@ -53,7 +55,7 @@ export class Enemy extends PhysicalEntity
               shields,
               hull,
               structure,
-              new ClampedNumber(Number.MAX_SAFE_INTEGER), 
+              heat,
               collider,
              )
         this.visible = false
@@ -81,6 +83,8 @@ export class Enemy extends PhysicalEntity
     public update(t: number, dt: number)
     {
         this.updatePlayerInteraction(t, dt, this._playerProvider.all())
+        console.log(this.heatValue, this.remainingHeatBudget)
+        this.heatValue.substract(this._heatDissipation * dt / 1000)
     }
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
@@ -107,15 +111,6 @@ export class Enemy extends PhysicalEntity
         //this.debugRouteElements(this.point, ai.route)
     }
 
-/*
-    public seesPoint(point: Phaser.Geom.Point) : boolean
-    {
-        const ray = new Phaser.Geom.Line(this.x, this.y, point.x, point.y)
-        var intersects = this.gameplayScene.computeWallIntersection(ray)
-        return intersects
-    }
-*/
-
     public seesPointFromAllEdges(point: Phaser.Geom.Point) : boolean
     {
         const w = this.width / 2
@@ -131,7 +126,11 @@ export class Enemy extends PhysicalEntity
         const angle = () => this.angle
         const position = (_: any) => new Phaser.Geom.Point(this.x, this.y)
 
-        e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name, this.team)
+        if(this.remainingHeatBudget >= e.heatPerTrigger)
+        {
+            const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name, this.team)
+            this.heatValue.add(heatGenerated)
+        }
     }
 
     private debugRouteElements(start: Phaser.Geom.Point, route: Phaser.Geom.Point[])
