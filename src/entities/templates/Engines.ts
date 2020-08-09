@@ -1,11 +1,6 @@
-import { Engine } from 'matter'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { HardPointSize, HardPointType } from '../Hardpoint'
+import { Engine } from '../Engine'
+import { CurrentStatusChange } from '../StatusChanges'
 
-export class SmallEngine extends Engine
-{
-    manufacturer = Manufacturers.BattlePrep
-    modelName = "Satithrust-031"
-    hardPointSize = HardPointSize.Small
-    hardPointType = HardPointType.Engine
-}
+// Are engines actually required or should they be part of the tank itseld?

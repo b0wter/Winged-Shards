@@ -10,6 +10,7 @@ export class SmallShieldGenerator extends ShieldGenerator
     modelName = "SSG-01a"
     maxShields = 100
     rechargeRate = 2
+    price = 20
 }
 
 export class MediumShieldGenerator extends ShieldGenerator
@@ -20,6 +21,7 @@ export class MediumShieldGenerator extends ShieldGenerator
     modelName = "SSG-01a Deluxe"
     maxShields = 150
     rechargeRate = 4
+    price = 60
 }
 
 export class LargeShieldGenerator extends ShieldGenerator
@@ -30,4 +32,5 @@ export class LargeShieldGenerator extends ShieldGenerator
     modelName = "SSG-01a Extreme"
     maxShields = 200
     rechargeRate = 6
+    price = 120
 }

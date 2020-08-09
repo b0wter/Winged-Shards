@@ -17,6 +17,7 @@ export class LightLaser extends Weapon {
     hardPointType = HardPointType.WithoutExtras
     manufacturer = Manufacturers.BattlePrep
     modelName = "Light Laser A"
+    price = 5
 }
 export const LightLaserTemplate : WeaponTemplate = () => new LightLaser()
 
@@ -33,6 +34,7 @@ export class TripleLaser extends Weapon{
     hardPointType = HardPointType.WithoutExtras
     manufacturer = Manufacturers.BattlePrep
     modelName = "Triple Tap"
+    price = 20
 }
 export const TripleLaserTemplate : WeaponTemplate = () => new TripleLaser()
 
@@ -50,6 +52,7 @@ export class LightMultiLaser extends Weapon
     hardPointType = HardPointType.WithoutExtras
     manufacturer = Manufacturers.BattlePrep
     modelName = "Multi Laser A"
+    price = 20
 }
 export const LightMultiLaserTemplate : WeaponTemplate = () => new LightMultiLaser()
 
@@ -57,6 +60,7 @@ export class TestLaser extends LightMultiLaser
 {
     cooldown = 100
     heatPerTrigger = 0
+    price = Number.MAX_SAFE_INTEGER
 }
 export const TestLaserTemplate : WeaponTemplate = () => new TestLaser()
 
@@ -73,6 +77,7 @@ export class SpreadLaser extends Weapon{
     hardPointType = HardPointType.WithoutExtras
     manufacturer = Manufacturers.BattlePrep
     modelName = "Laser Shotgun"
+    price = 10
 }
 export const SpreadLaserTemplate : WeaponTemplate = () => new SpreadLaser()
 
@@ -89,6 +94,7 @@ export class FusionGun extends Weapon{
     hardPointType = HardPointType.WithoutExtras
     manufacturer = Manufacturers.BattlePrep
     modelName = "Fusion Master 2000"
+    price = 250
 }
 export const FusionGunTemplate : WeaponTemplate = () => new FusionGun()
 
@@ -107,6 +113,7 @@ export class Shotgun extends ProjectileWeapon
     manufacturer = Manufacturers.BattlePrep
     modelName = "Boom"
     maxAmmo = 50
+    price = 80
 }
 export const ShotgunTemplate : WeaponTemplate = () => new Shotgun()
 
@@ -127,6 +134,7 @@ export class Revolver extends MagazineProjectileWeapon
     maxAmmo = 36
     magazineReload = 3600
     shotsPerMagazine = 6
+    price = 40
 }
 export const RevolverTemplate : WeaponTemplate = () => new Revolver()
 
@@ -145,5 +153,6 @@ export class LightAutoCannon extends ProjectileWeapon
     manufacturer = Manufacturers.Gunnerr
     modelName = "AC5"
     maxAmmo = 200
+    price = 100
 }
 export const LightAutoCannonTemplate : WeaponTemplate = () => new LightAutoCannon()

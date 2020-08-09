@@ -46,6 +46,7 @@ export abstract class Equipment extends EquipmentHiddenProperties
     public abstract readonly hardPointType : HardPointType
     public abstract readonly type: EquipmentTypes
     public abstract readonly class: string
+    public abstract readonly price: number
 
     private equipmentDestroyedCallbacks: EquipmentDestroyedCallback[] = []
 

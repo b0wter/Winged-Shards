@@ -17,5 +17,6 @@ export class DummyAbility extends AbilityEquipment
     maxStatusChange = MaxStatusChange.zero
     numberOfUses = 25
     range = 150
+    price = Number.MAX_SAFE_INTEGER
 }
 export const DummyAbilityTemplate : TriggeredEquipmentTemplate = () => new DummyAbility()
