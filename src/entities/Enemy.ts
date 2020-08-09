@@ -10,6 +10,7 @@ import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point
 import InitialPosition from '~/utilities/InitialPosition'
 import { ScenePlayerProvider, IPlayerProvider } from '~/providers/EntityProvider'
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export type VisibilityChangedCallback = (_: Enemy, isVisible: boolean) => void
 
@@ -41,7 +42,8 @@ export class Enemy extends PhysicalEntity
                 structure: ClampedNumber, 
                 private _maxVelocity: number,
                 private _equipment: TriggeredEquipment[],
-                private _playerProvider: IPlayerProvider
+                private _playerProvider: IPlayerProvider,
+                private _los: ILineOfSightProvider
                )
     {
         super(scene, 
@@ -86,7 +88,7 @@ export class Enemy extends PhysicalEntity
         if(players === undefined || players === null || players.length === 0) 
             return
 
-        const ai = this._ai.compute(t, dt, this, players, this.seesPoint.bind(this), false, this.gameplayScene.navigation.betweenFunc())
+        const ai = this._ai.compute(t, dt, this, players, this._los, false, this.gameplayScene.navigation.betweenFunc())
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
@@ -105,19 +107,21 @@ export class Enemy extends PhysicalEntity
         //this.debugRouteElements(this.point, ai.route)
     }
 
+/*
     public seesPoint(point: Phaser.Geom.Point) : boolean
     {
         const ray = new Phaser.Geom.Line(this.x, this.y, point.x, point.y)
         var intersects = this.gameplayScene.computeWallIntersection(ray)
         return intersects
     }
+*/
 
     public seesPointFromAllEdges(point: Phaser.Geom.Point) : boolean
     {
         const w = this.width / 2
         const h = this.height / 2
         const points = [ new Point(this.x + w, this.y), new Point(this.x - w, this.y), new Point(this.x, this.y + h), new Point(this.x, this.y - h) ]
-        const visible = points.map(p => { const ray = new Phaser.Geom.Line(p.x, p.y, point.x, point.y); return this.gameplayScene.computeWallIntersection(ray) })
+        const visible = points.map(p => this._los.seesPoint(p, point))
         const reduced = visible.reduce((a, b) => a && b)
         return reduced
     }

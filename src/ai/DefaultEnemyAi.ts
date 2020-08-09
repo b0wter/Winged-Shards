@@ -1,4 +1,4 @@
-import { EnemyAi, NavigateBetween, SeesPoint } from './EnemyAi';
+import { EnemyAi, NavigateBetween } from './EnemyAi';
 import { PlayerEntity } from '~/entities/Player';
 import AiResult from './AiResult';
 import { Enemy } from '~/entities/Enemy';
@@ -8,6 +8,7 @@ import Point = Phaser.Geom.Point
 import RAD_TO_DEG = Phaser.Math.RAD_TO_DEG
 import DEG_TO_RAD = Phaser.Math.DEG_TO_RAD
 import Vector2 = Phaser.Math.Vector2
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver';
 
 export default class DefaultEnemyAi extends EnemyAi
 {
@@ -37,17 +38,17 @@ export default class DefaultEnemyAi extends EnemyAi
         super()
     }
             
-    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, groupActive: boolean, navigateBetween: NavigateBetween) : AiResult
+    public compute(t: number, dt: number, enemy: Enemy, players: PlayerEntity[], lineOfSight: ILineOfSightProvider, groupActive: boolean, navigateBetween: NavigateBetween) : AiResult
     {
         // Make some basic checks to see if we can compute anything useful.
         //
         if(enemy === undefined) return this.inactivityAiResult(enemy)
         if(players === undefined || players === null || players.length === 0) return this.inactivityAiResult(enemy)
 
-        const visiblePlayers = players.filter(p => enemy.seesPoint(p.point))
+        const visiblePlayers = players.filter(p => lineOfSight.seesPoint(enemy.point, p.point))
         if(visiblePlayers.length === 0 && this.lastPlayerSeenAt === undefined) return this.inactivityAiResult(enemy)
 
-        const target = this.findPriorityTarget(enemy, players, seesPoint, this.lastPlayerSeenAt)
+        const target = this.findPriorityTarget(enemy, players, this.lastPlayerSeenAt)
         if(target.target === undefined) {
             this.active = false
             return this.inactivityAiResult(enemy)
@@ -76,7 +77,7 @@ export default class DefaultEnemyAi extends EnemyAi
         }
     }
 
-    private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], seesPoint: SeesPoint, lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
+    private findPriorityTarget(enemy: Enemy, players: PlayerEntity[], lastPlaterSeenAt?: Point) : {target: PlayerEntity | Point | undefined, hasLineOfSight: boolean }
     {
         /*
         function fourPointSeesPlayer(p: PlayerEntity) {

@@ -4,13 +4,13 @@ import { PlayerEntity } from '~/entities/Player';
 import { Enemy } from '~/entities/Enemy';
 import Phaser from 'phaser'
 import Point = Phaser.Geom.Point
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver';
 
-export type SeesPoint = (origin: Phaser.Geom.Point, target: Phaser.Geom.Point) => boolean
 export type NavigateBetween = (a: Point, b: Point) => Point[]
 
 export abstract class EnemyAi extends Ai
 {
-    public abstract compute(x: number, y: number, enemey: Enemy, players: PlayerEntity[], seesPlayer: SeesPoint, groupActive, navigateBetween: NavigateBetween) : AiResult
+    public abstract compute(x: number, y: number, enemey: Enemy, players: PlayerEntity[], lineOfSight: ILineOfSightProvider, groupActive, navigateBetween: NavigateBetween) : AiResult
 
     protected active = false
 

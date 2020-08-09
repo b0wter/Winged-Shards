@@ -24,9 +24,10 @@ import { EnemyMarker } from '~/entities/EnemyMarker';
 import { FacebookInstantGamesPlugin } from 'phaser';
 import { Mrpas } from 'mrpas'
 import { HeightLayer } from '~/utilities/HeightLayer';
-import { ScenePlayerProvider, SceneEnemyProvider } from '~/providers/EntityProvider';
+import { ScenePlayerProvider, SceneEnemyProvider, IEnemyProvider, IPlayerProvider } from '~/providers/EntityProvider';
 import { IInputProvider, SceneInputProvider } from '~/providers/InputProvider';
 import InitialPosition from '~/utilities/InitialPosition';
+import { ILineOfSightProvider, SceneLineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -111,9 +112,10 @@ export default abstract class GameplayScene extends BaseScene
     private lastVisibilityCheck = 0
     private readonly visibilityCheckInterval = 333
 
-    private playerProvider = new ScenePlayerProvider(() => this.players)
-    private enemyProvider = new SceneEnemyProvider(() => this.enemies)
+    private playerProvider : IPlayerProvider = new ScenePlayerProvider(() => this.players)
+    private enemyProvider : IEnemyProvider = new SceneEnemyProvider(() => this.enemies)
     private inputProvider = (playerIndex: number) => this.userInputs[playerIndex]
+    private lineOfSightProvider : ILineOfSightProvider = new SceneLineOfSightProvider(this.computeLineOfSight.bind(this))
 
     constructor(name: string)
     {
@@ -259,7 +261,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private createEnemy(x, y, angle, template: EnemyTemplate)
     {
-        const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.playerProvider)
+        const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.playerProvider, this.lineOfSightProvider)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         enemy.addVisibilityChangedCallback((e, isVisible) => {
             if(!isVisible) {
@@ -343,7 +345,13 @@ export default abstract class GameplayScene extends BaseScene
         this.scene.switch(sceneName)
     }
 
-    public computeWallIntersection(ray: Phaser.Geom.Line)
+    protected computeLineOfSight(from: Phaser.Geom.Point, to: Phaser.Geom.Point)
+    {
+        const ray = new Phaser.Geom.Line(from.x, from.y, to.x, to.y)
+        return this.computeWallIntersection(ray)
+    }
+
+    protected computeWallIntersection(ray: Phaser.Geom.Line)
     {
         const tiles = this.collisionLayer.getTilesWithinShape(ray)
         return tiles.every(t => t.index === -1)

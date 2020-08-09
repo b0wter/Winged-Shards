@@ -7,6 +7,7 @@ import { Teams } from '../Teams'
 import { TripleLaserTemplate, TripleLaser, LightLaser, LightLaserTemplate } from './Weapons'
 import InitialPosition from '~/utilities/InitialPosition'
 import { ScenePlayerProvider, IPlayerProvider } from '~/providers/EntityProvider'
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export abstract class EnemyTemplate
 {
@@ -18,10 +19,10 @@ export abstract class EnemyTemplate
     public readonly abstract maxVelocity
     public readonly abstract equipment : TriggeredEquipmentTemplate[]
 
-    public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, playerProvider: IPlayerProvider)
+    public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, playerProvider: IPlayerProvider, lineOfSight: ILineOfSightProvider)
     {
         const equipment = this.equipment.map(e => e())
-        return new Enemy(scene, position, this.spriteKey, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment, playerProvider)
+        return new Enemy(scene, position, this.spriteKey, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), this.maxVelocity, equipment, playerProvider, lineOfSight)
     }
 }
 
