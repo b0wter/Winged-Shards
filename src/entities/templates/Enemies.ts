@@ -24,7 +24,21 @@ export abstract class EnemyTemplate
     public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, playerProvider: IPlayerProvider, lineOfSight: ILineOfSightProvider)
     {
         const equipment = this.equipment.map(e => e())
-        return new Enemy(scene, position, this.spriteKey, colliderFunc, bulletsColliderFunc, new ClampedNumber(this.shield), new ClampedNumber(this.hull), new ClampedNumber(this.structure), new ClampedNumber(this.maxHeat, 0, 0), this.heatDissipation, this.maxVelocity, equipment, playerProvider, lineOfSight)
+        return new Enemy(scene, 
+                         position, 
+                         this.spriteKey, 
+                         new ClampedNumber(this.shield), 
+                         new ClampedNumber(this.hull), 
+                         new ClampedNumber(this.structure), 
+                         new ClampedNumber(this.maxHeat, 0, 0), 
+                         this.heatDissipation, 
+                         this.maxVelocity, 
+                         colliderFunc, 
+                         bulletsColliderFunc, 
+                         equipment, 
+                         playerProvider, 
+                         lineOfSight
+                        )
     }
 }
 

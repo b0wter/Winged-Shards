@@ -35,14 +35,14 @@ export class Enemy extends PhysicalEntity
     constructor(scene: GameplayScene, 
                 position: InitialPosition,
                 spriteKey: string, 
-                collider: AddEntityFunc, 
-                private _projectileCollider: AddProjectileFunc,
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
                 heat: ClampedNumber,
                 private _heatDissipation: number,
                 private _maxVelocity: number,
+                collider: AddEntityFunc, 
+                private _projectileCollider: AddProjectileFunc,
                 private _equipment: TriggeredEquipment[],
                 private _playerProvider: IPlayerProvider,
                 private _los: ILineOfSightProvider
@@ -83,7 +83,6 @@ export class Enemy extends PhysicalEntity
     public update(t: number, dt: number)
     {
         this.updatePlayerInteraction(t, dt, this._playerProvider.all())
-        console.log(this.heatValue, this.remainingHeatBudget)
         this.heatValue.substract(this._heatDissipation * dt / 1000)
     }
 
