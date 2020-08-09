@@ -7,7 +7,8 @@ export interface ILineOfSightProvider
 
 export class SceneLineOfSightProvider implements ILineOfSightProvider
 {
-    constructor(private _los: (from: Point, to: Point) => boolean)
+    constructor(private _los: (from: Point, to: Point) => boolean,
+                private _tileVisibility: (point: Point) => boolean)
     {
         //
     }
@@ -15,5 +16,10 @@ export class SceneLineOfSightProvider implements ILineOfSightProvider
     public seesPoint(from: Point, to: Point)
     {
         return this._los(from, to)
+    }
+
+    public atLeastOnePlayerSeesTileAtWorldXY(point: Point)
+    {
+        this._tileVisibility(point)
     }
 }

@@ -115,7 +115,8 @@ export default abstract class GameplayScene extends BaseScene
     private playerProvider : IPlayerProvider = new ScenePlayerProvider(() => this.players)
     private enemyProvider : IEnemyProvider = new SceneEnemyProvider(() => this.enemies)
     private inputProvider = (playerIndex: number) => this.userInputs[playerIndex]
-    private lineOfSightProvider : ILineOfSightProvider = new SceneLineOfSightProvider(this.computeLineOfSight.bind(this))
+    private lineOfSightProvider : ILineOfSightProvider = new SceneLineOfSightProvider(this.computeLineOfSight.bind(this), this.computeTileVisibility.bind(this))
+    private tileVisiblity : boolean[][] = []
 
     constructor(name: string)
     {
@@ -131,6 +132,7 @@ export default abstract class GameplayScene extends BaseScene
             this.events.on("resume", this.resume)
             this.events.on("pause", () => console.log("paused"))
             this.map = this.createMap(this.mapName)
+            this.initVisibilityMap()
             this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
             this.colliders = new ColliderCollection(this, 
                                                     this.collisionLayer, 
@@ -167,6 +169,19 @@ export default abstract class GameplayScene extends BaseScene
         }
         for (let index = 0; index < playerStates.length; index++) {
             this.players[index].importState(playerStates[index])
+        }
+    }
+
+    private initVisibilityMap()
+    {
+        for(let x = 0; x < this.map.width; x++)
+        {
+            const row : boolean[] = []
+            for(let y = 0; y < this.map.height; y++)
+            {
+                row.push(false)
+            }
+            this.tileVisiblity.push(row)
         }
     }
 
@@ -357,6 +372,12 @@ export default abstract class GameplayScene extends BaseScene
         return tiles.every(t => t.index === -1)
     }
 
+    protected computeTileVisibility(point: Phaser.Geom.Point)
+    {
+        const v = this.map.worldToTileXY(point.x, point.y)
+        return this.tileVisiblity[v.x][v.y]
+    }
+
     private updateProjectileVisibility(projectiles: Phaser.GameObjects.GameObject[], players: PlayerEntity[])
     {
         function check(players: PlayerEntity[], projectile: Phaser.GameObjects.GameObject, scene: GameplayScene) : boolean
@@ -406,6 +427,8 @@ export default abstract class GameplayScene extends BaseScene
             return
         this.lastVisibilityCheck = t
 
+        this.tileVisiblity.map((row) => row.map(r => r = false))
+
         for(let x = 0; x < map.width; x++) {
             for(let y = 0; y < map.height; y++) {
                 const tile = layer.getTileAt(x, y)
@@ -426,7 +449,10 @@ export default abstract class GameplayScene extends BaseScene
                 (x, y) => {
                     const tile = layer.getTileAt(x, y)
                     if(tile)
+                    {
                         tile.alpha = 1
+                        this.tileVisiblity[x][y] = true
+                    }
                 }
             )
         })
