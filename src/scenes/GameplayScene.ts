@@ -24,6 +24,9 @@ import { EnemyMarker } from '~/entities/EnemyMarker';
 import { FacebookInstantGamesPlugin } from 'phaser';
 import { Mrpas } from 'mrpas'
 import { HeightLayer } from '~/utilities/HeightLayer';
+import { ScenePlayerProvider, SceneEnemyProvider } from '~/providers/EntityProvider';
+import { IInputProvider, SceneInputProvider } from '~/providers/InputProvider';
+import InitialPosition from '~/utilities/InitialPosition';
 
 export default abstract class GameplayScene extends BaseScene
 {
@@ -107,6 +110,10 @@ export default abstract class GameplayScene extends BaseScene
 
     private lastVisibilityCheck = 0
     private readonly visibilityCheckInterval = 333
+
+    private playerProvider = new ScenePlayerProvider(() => this.players)
+    private enemyProvider = new SceneEnemyProvider(() => this.enemies)
+    private inputProvider = (playerIndex: number) => this.userInputs[playerIndex]
 
     constructor(name: string)
     {
@@ -230,7 +237,7 @@ export default abstract class GameplayScene extends BaseScene
         const data = this.registry.get(index.toString()) as PrefitTank
 
         const tank = data.tank.instantiate()
-        const player = new PlayerEntity(this, x, y, angle, tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index)
+        const player = new PlayerEntity(this, new InitialPosition(x, y, angle, 0), tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index, new SceneInputProvider(() => this.inputProvider(index)))
         for(let i = 0; i < data.triggeredEquipment.length; i++)
         {
             const weapon = data.triggeredEquipment[i]()
@@ -252,7 +259,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private createEnemy(x, y, angle, template: EnemyTemplate)
     {
-        const enemy = template.instatiate(this, x, y, angle, this.colliders.addEntityFunc, this.colliders.addProjectileFunc)
+        const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.playerProvider)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         enemy.addVisibilityChangedCallback((e, isVisible) => {
             if(!isVisible) {
@@ -279,9 +286,9 @@ export default abstract class GameplayScene extends BaseScene
     {
         this.userInputs.forEach(x => x.update())
         for(let i = 0; i < this.players.length; i++)
-            this.players[i].update(t, dt, this.userInputs[i])
+            this.players[i].update(t, dt)
 
-        this.enemies.forEach(x => x.update(t, dt, this.players))
+        this.enemies.forEach(x => x.update(t, dt))
 
         this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
 

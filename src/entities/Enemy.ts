@@ -1,15 +1,15 @@
 import Phaser from 'phaser'
 import { Teams } from './Teams'
-import { Damage } from './DamageType'
 import PhysicalEntity from './PhysicalEntity'
 import { PlayerEntity } from './Player'
 import ClampedNumber from './../utilities/ClampedNumber'
 import DefaultEnemyAi from '~/ai/DefaultEnemyAi'
-import { TriggeredEquipment, TriggeredEquipmentTemplate } from './TriggeredEquipment'
-import { AddEntityFunc, AddEnemyProjectileFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
+import { TriggeredEquipment } from './TriggeredEquipment'
+import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point
-import { HardPoint, HardPointSize, HardPointType, HardPointPosition } from './Hardpoint'
+import InitialPosition from '~/utilities/InitialPosition'
+import { ScenePlayerProvider, IPlayerProvider } from '~/providers/EntityProvider'
 
 export type VisibilityChangedCallback = (_: Enemy, isVisible: boolean) => void
 
@@ -32,20 +32,20 @@ export class Enemy extends PhysicalEntity
     private _visibilityChangedCallbacks: VisibilityChangedCallback[] = []
 
     constructor(scene: GameplayScene, 
-                x: number, y: number, 
+                position: InitialPosition,
                 spriteKey: string, 
-                angle: number, 
                 collider: AddEntityFunc, 
                 private _projectileCollider: AddProjectileFunc,
                 shields: ClampedNumber, 
                 hull: ClampedNumber, 
                 structure: ClampedNumber, 
                 private _maxVelocity: number,
-                private _equipment: TriggeredEquipment[]
+                private _equipment: TriggeredEquipment[],
+                private _playerProvider: IPlayerProvider
                )
     {
         super(scene, 
-              x, y, 
+              position,
               spriteKey, 
               Teams.Enemies, 
               shields,
@@ -53,8 +53,7 @@ export class Enemy extends PhysicalEntity
               structure,
               new ClampedNumber(Number.MAX_SAFE_INTEGER), 
               collider,
-              angle,
-              0)
+             )
         this.visible = false
     }
 
@@ -77,9 +76,9 @@ export class Enemy extends PhysicalEntity
         setTimeout(() => emitter.remove(), 750)
     }   
 
-    public update(t: number, dt: number, players: PlayerEntity[])
+    public update(t: number, dt: number)
     {
-        this.updatePlayerInteraction(t, dt, players)
+        this.updatePlayerInteraction(t, dt, this._playerProvider.all())
     }
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])

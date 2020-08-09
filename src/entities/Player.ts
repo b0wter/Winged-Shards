@@ -11,6 +11,8 @@ import { HardPoint, HardPointPosition } from './Hardpoint'
 import GameplayScene from '~/scenes/GameplayScene'
 import PlayerColor from '~/utilities/PlayerColor'
 import DamageDealt from './DamageDealt'
+import InitialPosition from '~/utilities/InitialPosition'
+import { IInputProvider } from '~/providers/InputProvider'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -27,9 +29,9 @@ export class PlayerEntity extends PhysicalEntity
     private _turretSprite: Phaser.GameObjects.Image
     private _turretDirection: Phaser.GameObjects.Line
 
-    constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc, index: number)
+    constructor(scene: GameplayScene, position: InitialPosition, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc, index: number, private _input: IInputProvider)
     {
-        super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), colliderGroupFunc, angle, undefined)
+        super(scene, position, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), colliderGroupFunc)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
         this._turretSprite = scene.add.image(_tank.turretOffset.x, _tank.turretOffset.y, _tank.turretSpriteKey) 
         this.add(this._turretSprite)
@@ -66,11 +68,11 @@ export class PlayerEntity extends PhysicalEntity
         })
     }
 
-    public update(t: number, dt: number, input: PlayerInput)
+    public update(t: number, dt: number)
     {
         if(this.inactive) return
         this.updateEquipment(t, dt, this.x, this.y, this.angle)
-        this.handleInput(input, t, dt)
+        this.handleInput(this._input.request(), t, dt)
     }
 
     private updateEquipment(t, dt, x, y, angle)

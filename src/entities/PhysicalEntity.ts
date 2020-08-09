@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
 import { Teams } from './Teams'
 import * as Damage from './DamageType'
-import ClampedValue from '~/utilities/ClampedValue'
 import ClampedNumber from '~/utilities/ClampedNumber'
 import { Guid } from "guid-typescript";
 import { AddEntityFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
 import DamageDealt from './DamageDealt'
+import InitialPosition from '~/utilities/InitialPosition'
 
 type PhysicalEntityCallbacks = (_: PhysicalEntity) => void
 
@@ -87,18 +87,17 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
     protected gameplayScene = this.scene as GameplayScene
 
     constructor(scene: GameplayScene, 
-                x: number, y: number, 
+                position: InitialPosition,
                 spriteKey, 
                 team, 
                 shields: ClampedNumber,
                 hull: ClampedNumber,
                 structure: ClampedNumber,
                 heat: ClampedNumber,
-                colliderGroupFunc: AddEntityFunc,
-                angle?: number, 
-                velocity?: number)
+                colliderGroupFunc: AddEntityFunc
+               )
     {
-        super(scene, x, y, undefined)
+        super(scene, position.x, position.y, undefined)
         this.name = Guid.create().toString()
 
         this._shields = shields
@@ -120,7 +119,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         colliderGroupFunc(this, team)
         scene.add.existing(this)
 
-        this.setAngleAndVelocity(angle, velocity)
+        this.setAngleAndVelocity(position.angle, position.velocity)
     }
 
     private setAngleAndVelocity(angle, velocity)
