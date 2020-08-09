@@ -52,8 +52,6 @@ export class Enemy extends PhysicalEntity
               hull,
               structure,
               new ClampedNumber(Number.MAX_SAFE_INTEGER), 
-              2, 
-              Number.MAX_SAFE_INTEGER, 
               collider,
               angle,
               0)
@@ -81,7 +79,6 @@ export class Enemy extends PhysicalEntity
 
     public update(t: number, dt: number, players: PlayerEntity[])
     {
-        super.internalUpdate(t, dt)
         this.updatePlayerInteraction(t, dt, players)
     }
 

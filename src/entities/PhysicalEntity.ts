@@ -94,11 +94,9 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
                 hull: ClampedNumber,
                 structure: ClampedNumber,
                 heat: ClampedNumber,
-                private _shieldRegenerationPerSecond: number,
-                private _heatDissipationPerSecond: number,
                 colliderGroupFunc: AddEntityFunc,
                 angle?: number, 
-                velocity?: number,)
+                velocity?: number)
     {
         super(scene, x, y, undefined)
         this.name = Guid.create().toString()
@@ -134,13 +132,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         const body = this.body as Phaser.Physics.Arcade.Body
         body.setVelocity(vX, vY)
         body.setImmovable(true)
-    }
-
-    protected internalUpdate(d: number, dt: number)
-    {
-        // Previously heat and shield have been handled here but
-        // since the player is now a much more complex object
-        // there is no common code between enemies and players.
     }
 
     public takeDamage(damage: Damage.Damage) : DamageDealt

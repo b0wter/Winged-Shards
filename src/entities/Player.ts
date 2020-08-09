@@ -29,7 +29,7 @@ export class PlayerEntity extends PhysicalEntity
 
     constructor(scene: GameplayScene, x: number, y: number, angle: number, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc, index: number)
     {
-        super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), 0, 0, colliderGroupFunc, angle, undefined)
+        super(scene, x, y, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), colliderGroupFunc, angle, undefined)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
         this._turretSprite = scene.add.image(_tank.turretOffset.x, _tank.turretOffset.y, _tank.turretSpriteKey) 
         this.add(this._turretSprite)
@@ -69,7 +69,6 @@ export class PlayerEntity extends PhysicalEntity
     public update(t: number, dt: number, input: PlayerInput)
     {
         if(this.inactive) return
-        super.internalUpdate(t, dt)
         this.updateEquipment(t, dt, this.x, this.y, this.angle)
         this.handleInput(input, t, dt)
     }
