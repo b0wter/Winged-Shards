@@ -3,7 +3,7 @@ import { TriggeredEquipment } from '~/entities/TriggeredEquipment';
 import { MagazineProjectileWeapon, Weapon, ProjectileWeapon } from '~/entities/Weapon';
 import { INFINITY_SYMBOL } from '~/utilities/Constants';
 
-const DefaultBarHeight = 6
+const DefaultBarHeight = 12
 const DefaultBorderSize = 0
 const DefaultBackground = Phaser.Display.Color.HexStringToColor("#2E3436") //new Phaser.Display.Color(200, 200, 200) // new Color(200, 200, 200)
 const DefaultForeground = Phaser.Display.Color.HexStringToColor("#808080") //new Phaser.Display.Color(40, 40, 40)
