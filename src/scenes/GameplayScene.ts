@@ -257,9 +257,10 @@ export default abstract class GameplayScene extends BaseScene
         const player = new PlayerEntity(this, new InitialPosition(x, y, angle, 0), tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index, new SceneInputProvider(() => this.inputProvider(index)))
         for(let i = 0; i < data.triggeredEquipment.length; i++)
         {
-            const weapon = data.triggeredEquipment[i]()
+            const weapon = data.triggeredEquipment[i][0]()
+            const group = data.triggeredEquipment[i][1]
             player.tank.hardpoints[i].equipment = asHardPointEquipment(weapon)
-            player.tank.hardpoints[i].equipmentGroup = i
+            player.tank.hardpoints[i].equipmentGroup = group
         }
 
         for(let i = 0; i < data.equipment.length; i++)

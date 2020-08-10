@@ -19,8 +19,8 @@ export class MediumTankTemplate extends TankTemplate
     turretAngularSpeed = 180
     hardpoints = [
         HardPoint.empty(HardPointSize.Large, HardPointType.WithoutExtras, HardPointPosition.Turret, 10, 0, 0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0),
-        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 0, 0, 0)
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 5, -13, 0),
+        HardPoint.empty(HardPointSize.Small, HardPointType.WithoutExtras, HardPointPosition.Hull, 5,  13, 0)
     ]
     turretOffset = new Point(0, 0)
     description = "Versatile"

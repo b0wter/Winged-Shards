@@ -11,19 +11,18 @@ export abstract class PrefitTank
 {
     public abstract readonly tank: TankTemplate
     public abstract readonly equipment: Equipment[]
-    public abstract readonly triggeredEquipment: TriggeredEquipmentTemplate[]
+    public abstract readonly triggeredEquipment: [TriggeredEquipmentTemplate, number][]
 }
 
 export class MediumTank extends PrefitTank
 {
     tank = Tanks.MediumTank
     equipment = [
-        new ShieldGenerators.SmallShieldGenerator(),
-        new ShieldGenerators.SmallShieldGenerator()
     ]
-    triggeredEquipment =[
-        Weapons.HeavyAutoCannonTemplate,
-        Weapons.LightAutoCannonTemplate
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.HeavyAutoCannonTemplate, 0],
+        [Weapons.LightAutoCannonTemplate, 1],
+        [Weapons.LightAutoCannonTemplate, 1]
     ]
 }
 
@@ -34,9 +33,9 @@ export class TestingTank extends PrefitTank
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
     ]
-    triggeredEquipment = [
-        Weapons.TestLaserTemplate,
-        DummyAbilityTemplate
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.TestLaserTemplate, 0],
+        [DummyAbilityTemplate, 1]
     ]
 }
 
@@ -47,8 +46,8 @@ export class HoverScout extends PrefitTank
         new ShieldGenerators.SmallShieldGenerator(),
         new ShieldGenerators.SmallShieldGenerator()
     ]
-    triggeredEquipment = [
-        Weapons.LightMultiLaserTemplate
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.LightMultiLaserTemplate, 0]
     ]
 }
 
@@ -61,8 +60,8 @@ export class SupportHoverTank extends PrefitTank
         new HeatExchangers.SmallHeatExchanger(),
         new HeatExchangers.SmallHeatExchanger()
     ]
-    triggeredEquipment = [
-        Weapons.LightLaserTemplate
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.LightLaserTemplate, 0]
     ]
 }
 
@@ -73,8 +72,8 @@ export class LightHoverTank extends PrefitTank
         new ShieldGenerators.SmallShieldGenerator(),
         new HeatExchangers.SmallHeatExchanger(),
     ]
-    triggeredEquipment = [
-        Weapons.SpreadLaserTemplate
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.SpreadLaserTemplate, 0]
     ]
 }
 
