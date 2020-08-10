@@ -97,8 +97,9 @@ export default class PlayerPlate
     {
         const plates: TriggeredEquipmentPlate[] = []
         weapons.forEach(([index, equipment]) => {
+            const barHeight = plates.reduce((acc, plate) => acc + plate.height + 5, 0)
             if(equipment.length !== 0)
-                plates.push(new TriggeredEquipmentPlate(scene, xOffset, yOffset, index, equipment))
+                plates.push(new TriggeredEquipmentPlate(scene, xOffset, yOffset + barHeight, index, equipment))
         })
         return plates
     }
