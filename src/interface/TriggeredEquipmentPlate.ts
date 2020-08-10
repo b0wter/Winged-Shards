@@ -26,6 +26,6 @@ export class TriggeredEquipmentPlate
             this._bars.push(bar)
             scene.add.existing(bar)
         })
-        this._equipmentGroupText = scene.add.text(x, y, _equipmentGroup.toString())
+        this._equipmentGroupText = scene.add.text(x, y + 1, _equipmentGroup.toString(), {fontSize: 12})
     }
 }
