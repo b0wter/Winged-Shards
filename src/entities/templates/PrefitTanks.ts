@@ -22,7 +22,8 @@ export class MediumTank extends PrefitTank
         new ShieldGenerators.SmallShieldGenerator()
     ]
     triggeredEquipment =[
-        Weapons.TripleLaserTemplate,
+        Weapons.HeavyAutoCannonTemplate,
+        Weapons.LightAutoCannonTemplate
     ]
 }
 
@@ -73,7 +74,7 @@ export class LightHoverTank extends PrefitTank
         new HeatExchangers.SmallHeatExchanger(),
     ]
     triggeredEquipment = [
-        Weapons.LightAutoCannonTemplate
+        Weapons.SpreadLaserTemplate
     ]
 }
 

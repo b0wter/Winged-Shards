@@ -264,7 +264,10 @@ export default abstract class GameplayScene extends BaseScene
 
         for(let i = 0; i < data.equipment.length; i++)
         {
-            player.tank.hardpoints[i + data.triggeredEquipment.length].equipment = asHardPointEquipment(data.equipment[i])
+            if(i + data.triggeredEquipment.length >= player.tank.hardpoints.length)
+                console.warn("Tried to create a tank with more equipment than hardpoints. Skipping creating of", data.equipment[i])
+            else
+                player.tank.hardpoints[i + data.triggeredEquipment.length].equipment = asHardPointEquipment(data.equipment[i])
         }
 
         this.createInterface(player, this.playerInterfaces)

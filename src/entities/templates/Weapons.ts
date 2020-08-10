@@ -145,7 +145,7 @@ export class LightAutoCannon extends ProjectileWeapon
     shotsPerTrigger = 5
     projectilesPerShot = 1
     heatPerTrigger = 2
-    spread = RandomSpread(5)
+    spread = RandomSpread(4)
     initialDelay = 0
     delayBetweenShots = 50
     hardPointSize = HardPointSize.Small
@@ -156,3 +156,29 @@ export class LightAutoCannon extends ProjectileWeapon
     price = 100
 }
 export const LightAutoCannonTemplate : WeaponTemplate = () => new LightAutoCannon()
+
+export class MediumAutoCannon extends LightAutoCannon
+{
+    cooldown = 4500
+    shotsPerTrigger = 10
+    heatPerTrigger = 5
+    spread = RandomSpread(5)
+    delayBetweenShots = 40
+    hardPointSize = HardPointSize.Medium
+    maxAmmo = 100
+    price = 250
+}
+export const MediumAutoCannonTemplate : WeaponTemplate = () => new MediumAutoCannon()
+
+export class HeavyAutoCannon extends LightAutoCannon
+{
+    cooldown = 5500
+    shotsPerTrigger = 20
+    heatPerTrigger = 12
+    spread = RandomSpread(6)
+    delayBetweenShots = 30
+    hardPointSize = HardPointSize.Large
+    maxAmmo = 35
+    price = 400
+}
+export const HeavyAutoCannonTemplate : WeaponTemplate = () => new HeavyAutoCannon()
