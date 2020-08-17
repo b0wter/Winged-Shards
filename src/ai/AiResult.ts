@@ -12,8 +12,8 @@ export default class AiResult
 
     get isVisible() { return this._isVisible }
 
-    constructor(private _desiredAngle,
-                private _desiredVelocity,
+    constructor(private _desiredAngle : number,
+                private _desiredVelocity : Phaser.Math.Vector2,
                 private _equipmentTriggers : [TriggeredEquipment, boolean][],
                 private _route: Phaser.Geom.Point[],
                 private _isVisible: boolean
