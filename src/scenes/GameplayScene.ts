@@ -24,7 +24,7 @@ import { EnemyMarker } from '~/entities/EnemyMarker';
 import { FacebookInstantGamesPlugin } from 'phaser';
 import { Mrpas } from 'mrpas'
 import { HeightLayer } from '~/utilities/HeightLayer';
-import { ScenePlayerProvider, SceneEnemyProvider, IEnemyProvider, IPlayerProvider } from '~/providers/EntityProvider';
+import { ScenePlayerProvider, SceneEnemyProvider, IEnemyProvider, IPlayerProvider, PlayerProviderCollection, EnemyProviderCollection, IProviderCollection } from '~/providers/EntityProvider';
 import { IInputProvider, SceneInputProvider } from '~/providers/InputProvider';
 import InitialPosition from '~/utilities/InitialPosition';
 import { ILineOfSightProvider, SceneLineOfSightProvider } from '~/providers/LineOfSightProdiver'
@@ -117,6 +117,8 @@ export default abstract class GameplayScene extends BaseScene
     private inputProvider = (playerIndex: number) => this.userInputs[playerIndex]
     private lineOfSightProvider : ILineOfSightProvider = new SceneLineOfSightProvider(this.computeLineOfSight.bind(this), this.computeTileVisibility.bind(this))
     private tileVisiblity : boolean[][] = []
+    private playerProviderCollection! : IProviderCollection
+    private enemyProviderCollection! : IProviderCollection
 
     constructor(name: string)
     {
@@ -131,6 +133,8 @@ export default abstract class GameplayScene extends BaseScene
             console.log("Initializing a scene.")
             this.events.on("resume", this.resume)
             this.events.on("pause", () => console.log("paused"))
+            this.playerProviderCollection = new PlayerProviderCollection(this.playerProvider, this.enemyProvider, this.lineOfSightProvider)
+            this.enemyProviderCollection = new EnemyProviderCollection(this.playerProvider, this.enemyProvider, this.lineOfSightProvider)
             this.map = this.createMap(this.mapName)
             this.initVisibilityMap()
             this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
@@ -254,7 +258,7 @@ export default abstract class GameplayScene extends BaseScene
         const data = this.registry.get(index.toString()) as PrefitTank
 
         const tank = data.tank.instantiate()
-        const player = new PlayerEntity(this, new InitialPosition(x, y, angle, 0), tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index, new SceneInputProvider(() => this.inputProvider(index)))
+        const player = new PlayerEntity(this, new InitialPosition(x, y, angle, 0), tank, this.colliders.addEntityFunc, this.colliders.addPlayerProjectileFunc, index, new SceneInputProvider(() => this.inputProvider(index)), this.playerProviderCollection)
         for(let i = 0; i < data.triggeredEquipment.length; i++)
         {
             const weapon = data.triggeredEquipment[i][0]()
@@ -280,7 +284,7 @@ export default abstract class GameplayScene extends BaseScene
 
     private createEnemy(x, y, angle, template: EnemyTemplate)
     {
-        const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.playerProvider, this.lineOfSightProvider)
+        const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.enemyProviderCollection)
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         enemy.addVisibilityChangedCallback((e, isVisible) => {
             if(!isVisible) {

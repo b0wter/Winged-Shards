@@ -3,6 +3,9 @@ import PhysicalEntity from './PhysicalEntity'
 import * as Damage from './DamageType'
 import { Teams } from './Teams'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
+import InitialPosition from '~/utilities/InitialPosition'
+import { IEnemyProvider, IPlayerProvider, IPhysicalEntityProvider } from '~/providers/EntityProvider'
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite
 {
@@ -20,10 +23,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     private _originY: number
 
     constructor(scene: Phaser.Scene, 
-                x: number, y: number, 
+                position: InitialPosition,
                 spriteKey: string, 
-                angle: number, 
-                velocity: number | undefined, 
                 protected _team: Teams,
                 protected _damage: Damage.Damage,
                 private _colliderFunc: AddProjectileFunc,
@@ -36,23 +37,26 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _ownerId: string,
                 protected _angularSpeed: number,
                 protected _size: Phaser.Math.Vector2,
+                private _friendliesProvider: IPhysicalEntityProvider<PhysicalEntity>,
+                private _enemiesProvider: IPhysicalEntityProvider<PhysicalEntity>,
+                private _los: ILineOfSightProvider,
                 private _scale = 1
                 )
     {
         // the super call needs to be the first thing that is done, thus we cannot compute v_x and v_y beforehand.
-        super(scene, x, y, spriteKey)
+        super(scene, position.x, position.y, spriteKey)
         scene.add.existing(this)
         scene.physics.add.existing(this)
         this._colliderFunc(this)
-        this.setAngle(angle)
+        this.setAngle(position.angle)
         this.setImmovable(true)
-        const v = velocity ?? 0
+        const v = position.velocity ?? 0
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
         this.setVelocity(vX, vY)
         this.setCollideWorldBounds(true)
-        this._originX = x
-        this._originY = y
+        this._originX = position.x
+        this._originY = position.y
         if(_size !== Phaser.Math.Vector2.ZERO)
             this.body.setSize(_size.x, _size.y)
     }
@@ -126,14 +130,22 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, template: ProjectileTemplate, colliderFunc: AddProjectileFunc, ownerId: string)
+export function fromTemplate(scene: Phaser.Scene, 
+                             x: number, y: number, 
+                             team: Teams, 
+                             angle: number, 
+                             template: ProjectileTemplate, 
+                             colliderFunc: AddProjectileFunc, 
+                             ownerId: string, 
+                             friendliesProvider: IPhysicalEntityProvider<PhysicalEntity>, 
+                             enemiesProvider: IPhysicalEntityProvider<PhysicalEntity>,
+                             los: ILineOfSightProvider
+                            )
 {
     return new Projectile(
         scene,
-        x, y, 
+        new InitialPosition(x, y, angle, template.velocity),
         template.spriteKey, 
-        angle, 
-        template.velocity, 
         team, 
         template.damage, 
         colliderFunc,
@@ -145,7 +157,10 @@ export function fromTemplate(scene: Phaser.Scene, x: number, y: number, team: Te
         template.pierceHitsContinuously,
         ownerId,
         template.angularSpeed,
-        template.size
+        template.size,
+        friendliesProvider,
+        enemiesProvider,
+        los
         )
 }
 

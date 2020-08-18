@@ -9,7 +9,7 @@ import { AddEntityFunc, AddProjectileFunc } from '~/scenes/ColliderCollection'
 import GameplayScene from '~/scenes/GameplayScene'
 import Point = Phaser.Geom.Point
 import InitialPosition from '~/utilities/InitialPosition'
-import { ScenePlayerProvider, IPlayerProvider } from '~/providers/EntityProvider'
+import { ScenePlayerProvider, IPlayerProvider, IProviderCollection } from '~/providers/EntityProvider'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export type VisibilityChangedCallback = (_: Enemy, isVisible: boolean) => void
@@ -44,8 +44,7 @@ export class Enemy extends PhysicalEntity
                 collider: AddEntityFunc, 
                 private _projectileCollider: AddProjectileFunc,
                 private _equipment: TriggeredEquipment[],
-                private _playerProvider: IPlayerProvider,
-                private _los: ILineOfSightProvider
+                private _providerCollection: IProviderCollection
                )
     {
         super(scene, 
@@ -82,16 +81,16 @@ export class Enemy extends PhysicalEntity
 
     public update(t: number, dt: number)
     {
-        this.updatePlayerInteraction(t, dt, this._playerProvider.all())
+        this.updatePlayerInteraction(t, dt, this._providerCollection.players.all())
         this.heatValue.substract(this._heatDissipation * dt / 1000)
     }
 
     private updatePlayerInteraction(t: number, dt: number, players: PlayerEntity[])
     {
-        if(players === undefined || players === null || players.length === 0) 
+        if(players === undefined || players === null || players.length === 0)
             return
 
-        const ai = this._ai.compute(t, dt, this, players, this._los, false, this.gameplayScene.navigation.betweenFunc())
+        const ai = this._ai.compute(t, dt, this, players, this._providerCollection.los, false, this.gameplayScene.navigation.betweenFunc())
 
         // Difference in degrees of the actual direction the enemy is facing and the target.
         // This is the amount of turning the enemy needs to do.
@@ -115,7 +114,7 @@ export class Enemy extends PhysicalEntity
         const w = this.width / 2
         const h = this.height / 2
         const points = [ new Point(this.x + w, this.y), new Point(this.x - w, this.y), new Point(this.x, this.y + h), new Point(this.x, this.y - h) ]
-        const visible = points.map(p => this._los.seesPoint(p, point))
+        const visible = points.map(p => this._providerCollection.los.seesPoint(p, point))
         const reduced = visible.reduce((a, b) => a && b)
         return reduced
     }
@@ -127,7 +126,7 @@ export class Enemy extends PhysicalEntity
 
         if(this.remainingHeatBudget >= e.heatPerTrigger)
         {
-            const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, t, this.name, this.team)
+            const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, position, angle, this._providerCollection, t, this.name, this.team)
             this.heatValue.add(heatGenerated)
         }
     }

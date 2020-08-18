@@ -6,7 +6,7 @@ import ClampedNumber from '~/utilities/ClampedNumber'
 import { Teams } from '../Teams'
 import { TripleLaserTemplate, TripleLaser, LightLaser, LightLaserTemplate } from './Weapons'
 import InitialPosition from '~/utilities/InitialPosition'
-import { ScenePlayerProvider, IPlayerProvider } from '~/providers/EntityProvider'
+import { ScenePlayerProvider, IPlayerProvider, IProviderCollection } from '~/providers/EntityProvider'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export abstract class EnemyTemplate
@@ -21,8 +21,9 @@ export abstract class EnemyTemplate
     public readonly abstract heatDissipation
     public readonly abstract equipment : TriggeredEquipmentTemplate[]
 
-    public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, playerProvider: IPlayerProvider, lineOfSight: ILineOfSightProvider)
+    public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, providerCollection: IProviderCollection)
     {
+        console.log(providerCollection)
         const equipment = this.equipment.map(e => e())
         return new Enemy(scene, 
                          position, 
@@ -36,8 +37,7 @@ export abstract class EnemyTemplate
                          colliderFunc, 
                          bulletsColliderFunc, 
                          equipment, 
-                         playerProvider, 
-                         lineOfSight
+                         providerCollection
                         )
     }
 }

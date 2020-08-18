@@ -9,6 +9,9 @@ import { Manufacturers, manufacturerToString } from '~/utilities/Manufacturers'
 import { EquipmentTypes } from './Equipment'
 import GameplayScene from '~/scenes/GameplayScene'
 import ClampedNumber from '~/utilities/ClampedNumber'
+import { IPhysicalEntityProvider, IProviderCollection, IProjectileProvider } from '~/providers/EntityProvider'
+import PhysicalEntity from './PhysicalEntity'
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export interface None { kind: string }
 export interface Angular { degreesDistance: number, kind: string }
@@ -72,7 +75,12 @@ export abstract class Weapon extends TriggeredEquipment
     /**
      * Triggers this weapon without checking conditions (cooldown, heat, ...).
      */
-    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string, team: Teams) {
+    protected internalTrigger(scene: GameplayScene, 
+                              colliderFunc: AddProjectileFunc, 
+                              equipmentPosition: EquipmentPositionCallback, 
+                              angleFunc: EquipmentAngleCallback, 
+                              providerCollection: IProviderCollection,
+                              time: number, ownerId: string, team: Teams) {
         const fire = () => { 
             const pos = equipmentPosition(angleFunc)
             const angle = angleFunc()
@@ -82,7 +90,7 @@ export abstract class Weapon extends TriggeredEquipment
                     if(this.projectilesPerShot > 1)
                         console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want? The projectiles will overlay.")
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
                     break
                 case "Angular":
                     if(this.projectilesPerShot === 1)
@@ -90,13 +98,13 @@ export abstract class Weapon extends TriggeredEquipment
                     const angularSpread = this.spread as Angular
                     const angularStart = -(this.projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
                     break
                 case "Random":
                     const randomSpread = this.spread as Random
                     for(let i = 0; i < this.projectilesPerShot; i++) {
                         const s = Math.random() * randomSpread.maxDegrees
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
                     }
                     break
                 case "Parallel":
@@ -108,7 +116,7 @@ export abstract class Weapon extends TriggeredEquipment
                         const rot = Phaser.Math.Rotate(new Phaser.Geom.Point(0, parallelStart + i * parallelSpread.distanceToNext), angle * Phaser.Math.DEG_TO_RAD)
                         const posX = pos.x + rot.x
                         const posY = pos.y + rot.y
-                        Projectile.fromTemplate(scene, posX, posY, team, angle, this.projectile, colliderFunc, ownerId) 
+                        Projectile.fromTemplate(scene, posX, posY, team, angle, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
                     }
                     break
             }
@@ -159,9 +167,9 @@ export abstract class ProjectileWeapon extends Weapon
         return this.ammo.current > 0
     }
 
-    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, time: number, ownerId: string, team: Teams)
+    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angleFunc: EquipmentAngleCallback, providerCollection: IProviderCollection, time: number, ownerId: string, team: Teams)
     {
-        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, providerCollection, time, ownerId, team)
         this.ammo.current -= 1
         this.triggerNumberOfUsesCallbacks(this.ammo.current)
     }
@@ -204,9 +212,9 @@ export abstract class MagazineProjectileWeapon extends ProjectileWeapon
         return super.canBeTriggered && this._isReloadingMagazine === false && this._shotsLeftInMagazine !== 0
     }
 
-    protected internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+    protected internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, providerCollection: IProviderCollection, time, ownerId, team)
     {
-        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, time, ownerId, team)
+        super.internalTrigger(scene, colliderFunc, equipmentPosition, angleFunc, providerCollection, time, ownerId, team)
         this._shotsLeftInMagazine--
         if(this._shotsLeftInMagazine === 0 && this.ammo.current !== 0)
             this.reload(time)

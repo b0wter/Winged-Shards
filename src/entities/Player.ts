@@ -13,6 +13,8 @@ import PlayerColor from '~/utilities/PlayerColor'
 import DamageDealt from './DamageDealt'
 import InitialPosition from '~/utilities/InitialPosition'
 import { IInputProvider } from '~/providers/InputProvider'
+import { IPlayerProvider, IEnemyProvider, IProviderCollection } from '~/providers/EntityProvider'
+import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -29,7 +31,15 @@ export class PlayerEntity extends PhysicalEntity
     private _turretSprite: Phaser.GameObjects.Image
     private _turretDirection: Phaser.GameObjects.Line
 
-    constructor(scene: GameplayScene, position: InitialPosition, private _tank: Tank, colliderGroupFunc: AddEntityFunc, private _projectileCollider: AddProjectileFunc, index: number, private _input: IInputProvider)
+    constructor(scene: GameplayScene, 
+                position: InitialPosition, 
+                private _tank: Tank, 
+                colliderGroupFunc: AddEntityFunc, 
+                private _projectileCollider: AddProjectileFunc, 
+                index: number, 
+                private _input: IInputProvider, 
+                private _providerCollection: IProviderCollection
+                )
     {
         super(scene, position, _tank.spriteKey, Teams.Players, new ClampedNumber(_tank.shield), new ClampedNumber(_tank.hull), new ClampedNumber(_tank.structure), new ClampedNumber(100, 0, 0), colliderGroupFunc)
         _tank.addEquipmentChangedListener((s, __, ___, ____) => { this.shieldValue.max = s.shield; this.hullValue.max = s.hull; this.structureValue.max = s.structure; this.heatValue.max = s.maxHeat; })
@@ -62,7 +72,7 @@ export class PlayerEntity extends PhysicalEntity
                     return new Phaser.Geom.Point(this.x + offset.x, this.y + offset.y)
                 }
                 const angle = isHullMounted ? hullAngleCallbackFunc(this, h.angle) : turretAngleCallbackFunc(this, h.angle)
-                const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, positionCallback, angle, t, this.name, this.team)
+                const heatGenerated = e.trigger(this.scene as GameplayScene, this._projectileCollider, positionCallback, angle, this._providerCollection, t, this.name, this.team)
                 this.heatValue.add(heatGenerated)
             }
         })
