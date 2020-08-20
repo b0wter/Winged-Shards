@@ -135,19 +135,19 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-export class ProjectileTemplate
+export abstract class ProjectileTemplate
 {
-    public spriteKey = ''
-    public velocity = 0
-    public damage = Damage.None
-    public friendlyFire = false
-    public ignoresShields = false
-    public ignoresHull = false
-    public range = 0
-    public pierces = false
-    public pierceHitsContinuously = false
-    public innerRotationSpeed = 0
-    public size = Phaser.Math.Vector2.ZERO
+    public abstract spriteKey
+    public abstract velocity 
+    public abstract damage
+    public abstract friendlyFire
+    public abstract ignoresShields
+    public abstract ignoresHull
+    public abstract range
+    public abstract pierces
+    public abstract pierceHitsContinuously
+    public abstract innerRotationSpeed
+    public abstract size
 
     public instantiate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, colliderFunc: AddProjectileFunc, ownerId: string, providerCollection: IProviderCollection)
     {
