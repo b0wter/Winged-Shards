@@ -90,7 +90,7 @@ export abstract class Weapon extends TriggeredEquipment
                     if(this.projectilesPerShot > 1)
                         console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want? The projectiles will overlay.")
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle, colliderFunc, ownerId, providerCollection)
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle, colliderFunc, ownerId, providerCollection, time)
                     break
                 case "Angular":
                     if(this.projectilesPerShot === 1)
@@ -98,13 +98,13 @@ export abstract class Weapon extends TriggeredEquipment
                     const angularSpread = this.spread as Angular
                     const angularStart = -(this.projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, colliderFunc, ownerId, providerCollection)
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, colliderFunc, ownerId, providerCollection, time)
                     break
                 case "Random":
                     const randomSpread = this.spread as Random
                     for(let i = 0; i < this.projectilesPerShot; i++) {
                         const s = Math.random() * randomSpread.maxDegrees
-                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, colliderFunc, ownerId, providerCollection)
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, colliderFunc, ownerId, providerCollection, time)
                     }
                     break
                 case "Parallel":
@@ -116,7 +116,7 @@ export abstract class Weapon extends TriggeredEquipment
                         const rot = Phaser.Math.Rotate(new Phaser.Geom.Point(0, parallelStart + i * parallelSpread.distanceToNext), angle * Phaser.Math.DEG_TO_RAD)
                         const posX = pos.x + rot.x
                         const posY = pos.y + rot.y
-                        this.projectile.instantiate(scene, posX, posY, team, angle, colliderFunc, ownerId, providerCollection)
+                        this.projectile.instantiate(scene, posX, posY, team, angle, colliderFunc, ownerId, providerCollection, time)
                     }
                     break
             }

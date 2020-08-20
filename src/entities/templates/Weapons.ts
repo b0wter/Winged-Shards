@@ -184,9 +184,9 @@ export class HeavyAutoCannon extends LightAutoCannon
 }
 export const HeavyAutoCannonTemplate : WeaponTemplate = () => new HeavyAutoCannon()
 
-export class SmallMissileLauncher extends Weapon
+export class SmallMissileLauncher extends ProjectileWeapon
 {
-    cooldown = 200
+    cooldown = 1500
     projectile = SmallMissile
     shotsPerTrigger = 1
     projectilesPerShot = 1
@@ -202,3 +202,22 @@ export class SmallMissileLauncher extends Weapon
     price = 80    
 }
 export const SmallMissleLauncherTemplate : WeaponTemplate = () => new SmallMissileLauncher()
+
+export class SmallSpreadMissileLauncher extends ProjectileWeapon
+{
+    cooldown = 1500
+    projectile = SmallMissile
+    shotsPerTrigger = 1
+    projectilesPerShot = 4
+    heatPerTrigger = 0
+    spread = AngularSpread(15)
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithAmmoBox
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "SML-4P"
+    maxAmmo = 15
+    price = 200
+}
+export const SmallSpreadMissleLauncherTemplate : WeaponTemplate = () => new SmallSpreadMissileLauncher()

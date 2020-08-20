@@ -31,6 +31,9 @@ export class Missile extends Projectile
                 providerCollection: IProviderCollection,
                 public readonly acquisitionRange: number,
                 public readonly angularSpeed: number,
+                public readonly isHoming: boolean,
+                public activationDelay: number,
+                public currentTime: number,
                 scale = 1
                 )
     {
@@ -51,6 +54,7 @@ export class Missile extends Projectile
             innerRotationSpeed,
             size,
             providerCollection,
+            currentTime,
             scale
         )
         this.maxSpeed = position.velocity
@@ -58,12 +62,16 @@ export class Missile extends Projectile
    
     public internalUpdate(t: number, dt: number, providerCollection: IProviderCollection)
     {
+        if(this.isHoming === false || this._createdAt + this.activationDelay > t) {
+            console.log("Missile inactive")
+            return
+        }
+
         let distanceToTarget = -1
         if(this.isLastTargetStillValid(this._lastTarget, providerCollection) === false)
         {
             const result = this.findTarget(providerCollection)
             if(result !== undefined) {
-                console.log("Neues Ziel erfasst.")
                 result[0].addKilledCallback((p) => this._lastTarget = undefined)
                 distanceToTarget = result[1]
                 this._lastTarget = result[0]
@@ -71,11 +79,9 @@ export class Missile extends Projectile
         }
 
         if(this._lastTarget === undefined) {
-            console.log("Kein Gegner sichtbar.")
             return
         }
 
-        console.log("Gegner gefunden!")
         const desiredAngle = Phaser.Math.Angle.BetweenPoints(this.point, this._lastTarget) * Phaser.Math.RAD_TO_DEG
         const difference = Phaser.Math.Angle.ShortestBetween(this.angle, desiredAngle)
         const sign = Math.sign(difference)
@@ -130,6 +136,8 @@ export abstract class MissileTemplate extends ProjectileTemplate
 {
     public abstract acquisitionRange: number
     public abstract angularSpeed: number
+    public abstract homing: boolean
+    public abstract activationDelay: number
 
     public instantiate(scene: Phaser.Scene, 
                        x: number, y: number, 
@@ -137,7 +145,8 @@ export abstract class MissileTemplate extends ProjectileTemplate
                        angle: number, 
                        colliderFunc: AddProjectileFunc, 
                        ownerId: string, 
-                       providerCollection: IProviderCollection)
+                       providerCollection: IProviderCollection,
+                       currentTime: number)
     {
         return new Missile(
             scene,
@@ -157,7 +166,10 @@ export abstract class MissileTemplate extends ProjectileTemplate
             this.size,
             providerCollection,
             this.acquisitionRange,
-            this.angularSpeed
+            this.angularSpeed,
+            this.homing,
+            this.activationDelay,
+            currentTime
             )
     }
 }

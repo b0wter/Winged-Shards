@@ -21,6 +21,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     private piercedEnemyIds: string[] = []
     private _originX: number
     private _originY: number
+    protected readonly _createdAt: number
 
     constructor(scene: Phaser.Scene, 
                 position: InitialPosition,
@@ -38,6 +39,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _innerRotationSpeed: number,
                 protected _size: Phaser.Math.Vector2,
                 protected _providerCollection: IProviderCollection,
+                currentTime: number,
                 private _scale = 1
                 )
     {
@@ -57,6 +59,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         this._originY = position.y
         if(_size !== Phaser.Math.Vector2.ZERO)
             this.body.setSize(_size.x, _size.y)
+        this._createdAt = currentTime
     }
 
     public update(t: number, dt: number)
@@ -149,7 +152,7 @@ export abstract class ProjectileTemplate
     public abstract innerRotationSpeed
     public abstract size
 
-    public instantiate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, colliderFunc: AddProjectileFunc, ownerId: string, providerCollection: IProviderCollection)
+    public instantiate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, colliderFunc: AddProjectileFunc, ownerId: string, providerCollection: IProviderCollection, currentTime: number)
     {
         return new Projectile(
             scene,
@@ -167,7 +170,8 @@ export abstract class ProjectileTemplate
             ownerId,
             this.innerRotationSpeed,
             this.size,
-            providerCollection
+            providerCollection,
+            currentTime
             )        
     }
 }

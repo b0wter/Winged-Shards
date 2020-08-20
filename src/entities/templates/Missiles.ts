@@ -20,5 +20,7 @@ export class SmallMissileTemplate extends MissileTemplate
     public spriteKey = "small-missile"
     public damage = new Damage(5, 0, 20, 5)
     public range = 1200
+    public homing = true
+    public activationDelay = 350
 }
 export const SmallMissile = new SmallMissileTemplate()
