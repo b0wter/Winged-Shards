@@ -70,7 +70,7 @@ export default class PlayerPlate
     private addEquipmentStatusBars(scene: Phaser.Scene, equipment: [number, TriggeredEquipment[]][], xOffset: number, yOffset: number, height: number) 
     {
         const abilities : [number, AbilityEquipment[]][] = equipment.filter(([index, items]) => items.length > 0 && items.every(i => i.kind === AbilityEquipment.class))
-                                                                    .map(([index, items]) => [index, items.map(i => <AbilityEquipment>i)])
+                                                                    .map(([index, items]) => [index, items.map(i => (<unknown>i as AbilityEquipment))])
 
         const weapons : [number, Weapon[]][] = equipment.filter(([index, items]) => items.every(i => i.kind === Weapon.class))
                                                         .map(([index, items]) => [index, items.map(i => <Weapon>i)])
