@@ -46,8 +46,8 @@ export class ColliderCollection
 
     private addCollisionCallbacks(playerHitsPlayer, playerHitsEnemy, enemyHitsEnemy, enemyHitsPlayer)
     {
-        this._scene.physics.add.collider(this.playerProjectiles, this.environment, (a, _) => { this.playerProjectiles.remove(a); a.destroy()})
-        this._scene.physics.add.collider(this.enemyProjectiles, this.environment, (a, _) => { this.enemyProjectiles.remove(a); a.destroy()})
+        this._scene.physics.add.collider(this.playerProjectiles, this.environment, (a, _) => { this.playerProjectiles.remove(a); (a as Projectile).kill()})
+        this._scene.physics.add.collider(this.enemyProjectiles, this.environment, (a, _) => { this.enemyProjectiles.remove(a); (a as Projectile).kill()})
         this._scene.physics.add.collider(this.playerProjectiles, this.enemies, playerHitsEnemy)
         this._scene.physics.add.collider(this.playerProjectiles, this.players, playerHitsPlayer)
         this._scene.physics.add.collider(this.enemyProjectiles, this.players, enemyHitsPlayer)
@@ -125,7 +125,7 @@ export class ColliderCollection
 
     public addPlayerProjectile(projectile: Projectile)
     {
-        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => bullet.destroy())
+        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => (bullet as Projectile).kill())
         this.playerProjectiles.add(projectile)
         //TODO: add kill callback
     }
@@ -137,7 +137,7 @@ export class ColliderCollection
 
     public addEnemyProjectile(projectile: Projectile)
     {
-        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => bullet.destroy())
+        this._scene.physics.add.collider(projectile, this.environment, (bullet, _) => (bullet as Projectile).kill())
         this.enemyProjectiles.add(projectile)
         //TODO: add kill callback
     }
