@@ -130,6 +130,20 @@ export class Missile extends Projectile
         } , initialValue)
         return nearestTarget
     }
+
+    protected killEffect()
+    {
+        if(this.visible === false)
+        return
+        const particles = this.scene.add.particles('particle_red_mini')
+        const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*500})
+        emitter.setPosition(this.x, this.y)
+        emitter.setSpeed(150)
+        emitter.setAlpha((p, k, t) => Math.sqrt(1 - t)) //1 - t)
+        emitter.stop()
+        emitter.explode(20, this.x, this.y)
+        setTimeout(() => emitter.remove(), 500)
+    }
 }
 
 export abstract class MissileTemplate extends ProjectileTemplate
@@ -148,7 +162,7 @@ export abstract class MissileTemplate extends ProjectileTemplate
                        providerCollection: IProviderCollection,
                        currentTime: number)
     {
-        return new Missile(
+        const missile = new Missile(
             scene,
             new InitialPosition(x, y, angle, this.velocity),
             this.spriteKey, 
@@ -171,5 +185,6 @@ export abstract class MissileTemplate extends ProjectileTemplate
             this.activationDelay,
             currentTime
             )
+        return <Projectile><unknown>missile
     }
 }

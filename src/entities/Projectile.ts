@@ -134,7 +134,13 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
 
     public kill()
     {
+        this.killEffect()
         this.destroy()
+    }
+
+    protected killEffect()
+    {
+        //
     }
 }
 
