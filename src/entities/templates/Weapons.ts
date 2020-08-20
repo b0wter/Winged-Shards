@@ -3,6 +3,7 @@ import { NoSpread, Weapon, AngularSpread, ParallelSpread, RandomSpread, WeaponTe
 import { HardPointSize, HardPointType } from '../Hardpoint'
 import { Manufacturers } from '~/utilities/Manufacturers'
 import { Projectile } from '../Projectile'
+import { SmallMissile } from './Missiles'
 
 export class LightLaser extends Weapon {
     cooldown = 333
@@ -182,3 +183,22 @@ export class HeavyAutoCannon extends LightAutoCannon
     price = 400
 }
 export const HeavyAutoCannonTemplate : WeaponTemplate = () => new HeavyAutoCannon()
+
+export class SmallMissileLauncher extends Weapon
+{
+    cooldown = 200
+    projectile = SmallMissile
+    shotsPerTrigger = 1
+    projectilesPerShot = 1
+    heatPerTrigger = 0
+    spread = NoSpread
+    initialDelay = 0
+    delayBetweenShots = 0
+    hardPointSize = HardPointSize.Small
+    hardPointType = HardPointType.WithAmmoBox
+    manufacturer = Manufacturers.BattlePrep
+    modelName = "SML-1"
+    maxAmmo = 36
+    price = 80    
+}
+export const SmallMissleLauncherTemplate : WeaponTemplate = () => new SmallMissileLauncher()

@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import * as Projectile from './Projectile'
 import { Teams } from './Teams'
 import { TriggeredEquipment, EquipmentPositionCallback, EquipmentAngleCallback, TriggeredEquipmentTemplate } from './TriggeredEquipment'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
@@ -12,6 +11,7 @@ import ClampedNumber from '~/utilities/ClampedNumber'
 import { IPhysicalEntityProvider, IProviderCollection, IProjectileProvider } from '~/providers/EntityProvider'
 import PhysicalEntity from './PhysicalEntity'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
+import { ProjectileTemplate } from './Projectile'
 
 export interface None { kind: string }
 export interface Angular { degreesDistance: number, kind: string }
@@ -48,7 +48,7 @@ export abstract class Weapon extends TriggeredEquipment
 
     public readonly maxStatusChange = MaxStatusChange.zero
 
-    public abstract readonly projectile: Projectile.ProjectileTemplate
+    public abstract readonly projectile: ProjectileTemplate
     /**
      * A single weapon trigger can trigger multiple shots of multiple projectiles.
      * `shotsPerTrigger` is the number of shots fired. The number of shots
@@ -90,7 +90,7 @@ export abstract class Weapon extends TriggeredEquipment
                     if(this.projectilesPerShot > 1)
                         console.warn("Triggered a weapon with multiple shots but no spread! Is this what you want? The projectiles will overlay.")
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle, colliderFunc, ownerId, providerCollection)
                     break
                 case "Angular":
                     if(this.projectilesPerShot === 1)
@@ -98,13 +98,13 @@ export abstract class Weapon extends TriggeredEquipment
                     const angularSpread = this.spread as Angular
                     const angularStart = -(this.projectilesPerShot - 1) * angularSpread.degreesDistance / 2
                     for(let i = 0; i < this.projectilesPerShot; i++)
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + angularStart + i * angularSpread.degreesDistance, colliderFunc, ownerId, providerCollection)
                     break
                 case "Random":
                     const randomSpread = this.spread as Random
                     for(let i = 0; i < this.projectilesPerShot; i++) {
                         const s = Math.random() * randomSpread.maxDegrees
-                        Projectile.fromTemplate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
+                        this.projectile.instantiate(scene, pos.x, pos.y, team, angle + s - randomSpread.maxDegrees / 2, colliderFunc, ownerId, providerCollection)
                     }
                     break
                 case "Parallel":
@@ -116,7 +116,7 @@ export abstract class Weapon extends TriggeredEquipment
                         const rot = Phaser.Math.Rotate(new Phaser.Geom.Point(0, parallelStart + i * parallelSpread.distanceToNext), angle * Phaser.Math.DEG_TO_RAD)
                         const posX = pos.x + rot.x
                         const posY = pos.y + rot.y
-                        Projectile.fromTemplate(scene, posX, posY, team, angle, this.projectile, colliderFunc, ownerId, providerCollection.friendlies, providerCollection.foes, providerCollection.los) 
+                        this.projectile.instantiate(scene, posX, posY, team, angle, colliderFunc, ownerId, providerCollection)
                     }
                     break
             }

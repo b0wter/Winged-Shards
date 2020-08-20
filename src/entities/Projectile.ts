@@ -4,7 +4,7 @@ import * as Damage from './DamageType'
 import { Teams } from './Teams'
 import { AddProjectileFunc } from '~/scenes/ColliderCollection'
 import InitialPosition from '~/utilities/InitialPosition'
-import { IEnemyProvider, IPlayerProvider, IPhysicalEntityProvider } from '~/providers/EntityProvider'
+import { IEnemyProvider, IPlayerProvider, IPhysicalEntityProvider, IProviderCollection, ProviderCollection } from '~/providers/EntityProvider'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite
@@ -35,11 +35,9 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
                 protected _pierces: boolean,
                 protected _pierceHitsContinuously: boolean,
                 protected _ownerId: string,
-                protected _angularSpeed: number,
+                protected _innerRotationSpeed: number,
                 protected _size: Phaser.Math.Vector2,
-                private _friendliesProvider: IPhysicalEntityProvider<PhysicalEntity>,
-                private _enemiesProvider: IPhysicalEntityProvider<PhysicalEntity>,
-                private _los: ILineOfSightProvider,
+                protected _providerCollection: IProviderCollection,
                 private _scale = 1
                 )
     {
@@ -67,7 +65,14 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         if(distance >= this._range)
             this.kill()
 
-        this.angle += dt * this._angularSpeed / 1000
+        this.angle += dt * this._innerRotationSpeed / 1000
+
+        this.internalUpdate(t, dt, this._providerCollection)
+    }
+
+    public internalUpdate(t: number, dt: number, providerCollection: IProviderCollection)
+    {
+        // This is here to be overwritten if necessary.
     }
 
     /**
@@ -130,40 +135,6 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     }
 }
 
-export function fromTemplate(scene: Phaser.Scene, 
-                             x: number, y: number, 
-                             team: Teams, 
-                             angle: number, 
-                             template: ProjectileTemplate, 
-                             colliderFunc: AddProjectileFunc, 
-                             ownerId: string, 
-                             friendliesProvider: IPhysicalEntityProvider<PhysicalEntity>, 
-                             enemiesProvider: IPhysicalEntityProvider<PhysicalEntity>,
-                             los: ILineOfSightProvider
-                            )
-{
-    return new Projectile(
-        scene,
-        new InitialPosition(x, y, angle, template.velocity),
-        template.spriteKey, 
-        team, 
-        template.damage, 
-        colliderFunc,
-        template.friendlyFire, 
-        template.ignoresShields, 
-        template.ignoresHull,
-        template.range,
-        template.pierces,
-        template.pierceHitsContinuously,
-        ownerId,
-        template.angularSpeed,
-        template.size,
-        friendliesProvider,
-        enemiesProvider,
-        los
-        )
-}
-
 export class ProjectileTemplate
 {
     public spriteKey = ''
@@ -175,7 +146,29 @@ export class ProjectileTemplate
     public range = 0
     public pierces = false
     public pierceHitsContinuously = false
-    public angularSpeed = 0
+    public innerRotationSpeed = 0
     public size = Phaser.Math.Vector2.ZERO
+
+    public instantiate(scene: Phaser.Scene, x: number, y: number, team: Teams, angle: number, colliderFunc: AddProjectileFunc, ownerId: string, providerCollection: IProviderCollection)
+    {
+        return new Projectile(
+            scene,
+            new InitialPosition(x, y, angle, this.velocity),
+            this.spriteKey, 
+            team, 
+            this.damage, 
+            colliderFunc,
+            this.friendlyFire, 
+            this.ignoresShields, 
+            this.ignoresHull,
+            this.range,
+            this.pierces,
+            this.pierceHitsContinuously,
+            ownerId,
+            this.innerRotationSpeed,
+            this.size,
+            providerCollection
+            )        
+    }
 }
 

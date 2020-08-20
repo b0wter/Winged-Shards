@@ -23,7 +23,6 @@ export abstract class EnemyTemplate
 
     public instatiate(scene: GameplayScene, position: InitialPosition, colliderFunc: AddEntityFunc, bulletsColliderFunc: AddProjectileFunc, providerCollection: IProviderCollection)
     {
-        console.log(providerCollection)
         const equipment = this.equipment.map(e => e())
         return new Enemy(scene, 
                          position, 

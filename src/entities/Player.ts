@@ -80,7 +80,7 @@ export class PlayerEntity extends PhysicalEntity
 
     public update(t: number, dt: number)
     {
-        if(this.inactive) return
+        if(this.active === false) return
         this.updateEquipment(t, dt, this.x, this.y, this.angle)
         this.handleInput(this._input.request(), t, dt)
     }

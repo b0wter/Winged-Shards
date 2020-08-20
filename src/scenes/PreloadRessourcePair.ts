@@ -100,6 +100,9 @@ export class FullRessourceList extends PreloadRessourceList
         this.addImage('bullet', 'images/projectiles/bullet.png')
         this.addImage('bullet_medium', 'images/projectiles/bullet_medium.png')
 
+        // --- MISSILES ---
+        this.addImage('small-missile', 'images/missiles/small-missile.png')
+
         // --- EFFECTS ---
         this.addImage('debris', 'images/effects/debris.png')
         this.addImage('particle_blue', 'images/effects/particle-blue.png')

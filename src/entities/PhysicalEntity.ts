@@ -79,11 +79,6 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
 
     private readonly killedCallbacks: PhysicalEntityCallbacks[] = []
 
-    /**
-     * Deactives any updates (both from the game logic as well as player input).
-     */
-    protected inactive = false
-
     protected gameplayScene = this.scene as GameplayScene
 
     constructor(scene: GameplayScene, 
@@ -203,7 +198,7 @@ export default abstract class PhysicalEntity extends Phaser.GameObjects.Containe
         if(this.killEffect)
             this.killEffect()
         this.destroy()
-        this.inactive = true
+        this.active = false
         this.killedCallbacks.forEach(x => x(this))
     }
 

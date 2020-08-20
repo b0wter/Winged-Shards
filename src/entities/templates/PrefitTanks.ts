@@ -5,7 +5,7 @@ import * as Tanks from './Tanks'
 import * as Weapons from './Weapons'
 import * as ShieldGenerators from './ShieldGenerators'
 import * as HeatExchangers from './HeatExchangers'
-import { DummyAbility, DummyAbilityTemplate } from './Abilities'
+import { DummyAbilityTemplate } from './Abilities'
 
 export abstract class PrefitTank
 {
@@ -61,7 +61,7 @@ export class SupportHoverTank extends PrefitTank
         new HeatExchangers.SmallHeatExchanger()
     ]
     triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
-        [Weapons.LightLaserTemplate, 0]
+        [Weapons.SmallMissleLauncherTemplate, 0]
     ]
 }
 

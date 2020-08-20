@@ -14,7 +14,7 @@ export class LightLaserTemplate extends ProjectileTemplate
     range = 500
     pierces = false
     pierceHitsContinuously = false
-    angularSpeed = 0
+    innerRotationSpeed = 0
     size = new Vector2(23, 9)
 }
 export const LightLaser = new LightLaserTemplate()
@@ -36,7 +36,7 @@ export class FusionGunTemplate extends ProjectileTemplate
     range = 1000
     pierces = true
     pierceHitsContinuously = false
-    angularSpeed = 45
+    innerRotationSpeed = 45
     size = new Vector2(44, 44)
 }
 export const FusionGun = new FusionGunTemplate()
@@ -52,7 +52,7 @@ export class BulletTemplate extends ProjectileTemplate
     range = 400
     pierces = false
     pierceHitsContinuously = false
-    angularSpeed = 0
+    innerRotationSpeed = 0
     size = new Vector2(6,6)
 }
 export const Bullet = new BulletTemplate()
