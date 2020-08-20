@@ -61,7 +61,7 @@ export class SupportHoverTank extends PrefitTank
         new HeatExchangers.SmallHeatExchanger()
     ]
     triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
-        [Weapons.SmallSpreadMissleLauncherTemplate, 0]
+        [Weapons.SmallSpreadDummyMissleLauncherTemplate, 0]
     ]
 }
 

@@ -24,3 +24,9 @@ export class SmallMissileTemplate extends MissileTemplate
     public activationDelay = 350
 }
 export const SmallMissile = new SmallMissileTemplate()
+
+export class SmallDummyMissileTemplate extends SmallMissileTemplate
+{
+    homing = false
+}
+export const SmallDummyMissile = new SmallDummyMissileTemplate()
