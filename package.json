@@ -27,6 +27,7 @@
 	},
 	"dependencies": {
 		"guid-typescript": "^1.0.9",
+		"is-svg": "^4.2.2",
 		"mrpas": "^2.0.0",
 		"phaser": "^3.24.1",
 		"phaser-navmesh": "^2.0.5",
