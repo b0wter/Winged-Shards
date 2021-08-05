@@ -12,6 +12,8 @@ export class Missile extends Projectile
 
     public get point() { return new Phaser.Geom.Point(this.x, this.y) }
     public readonly maxSpeed;
+    
+    private lastLineOfSightUpdate = 0
 
     constructor(scene: Phaser.Scene, 
                 position: InitialPosition,
@@ -102,8 +104,13 @@ export class Missile extends Projectile
         if(target.active === false)
             return false
 
+        if(provider.los.isVisiblePoint(target.point) === false)
+            return false
+
+        /*
         if(provider.los.seesPoint(target.point, this.point) === false)
             return false
+        */
 
         return true
     }
@@ -111,7 +118,8 @@ export class Missile extends Projectile
     private findTarget(providerCollection: IProviderCollection) : [PhysicalEntity, number] | undefined
     {
         const foesInRange = providerCollection.foes.all().filter(p => Phaser.Math.Distance.BetweenPoints(this.point, p.point) <= this.acquisitionRange)
-        const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.seesPoint(p.point, this.point))
+        const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.isVisiblePoint(p.point))
+        //const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.seesPoint(p.point, this.point))
         if(visibleFoesInRange.length === 0)
             return undefined
         

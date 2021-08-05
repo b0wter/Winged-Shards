@@ -184,7 +184,7 @@ export class HeavyAutoCannon extends LightAutoCannon
 }
 export const HeavyAutoCannonTemplate : WeaponTemplate = () => new HeavyAutoCannon()
 
-export class SmallMissileLauncher extends ProjectileWeapon
+export class SmallHomingMissileLauncher extends ProjectileWeapon
 {
     cooldown = 1500
     projectile = SmallMissile
@@ -201,7 +201,7 @@ export class SmallMissileLauncher extends ProjectileWeapon
     maxAmmo = 36
     price = 80    
 }
-export const SmallMissleLauncherTemplate : WeaponTemplate = () => new SmallMissileLauncher()
+export const SmallHomingMissleLauncherTemplate : WeaponTemplate = () => new SmallHomingMissileLauncher()
 
 export class SmallSpreadMissileLauncher extends ProjectileWeapon
 {
@@ -216,7 +216,7 @@ export class SmallSpreadMissileLauncher extends ProjectileWeapon
     hardPointSize = HardPointSize.Small
     hardPointType = HardPointType.WithAmmoBox
     manufacturer = Manufacturers.BattlePrep
-    modelName = "SML-4P"
+    modelName = "SML-4H"
     maxAmmo = 15
     price = 200
 }
@@ -235,7 +235,7 @@ export class SmallSpreadDummyMissileLauncher extends ProjectileWeapon
     hardPointSize = HardPointSize.Small
     hardPointType = HardPointType.WithAmmoBox
     manufacturer = Manufacturers.BattlePrep
-    modelName = "SML-4P"
+    modelName = "SML-3D"
     maxAmmo = 15
     price = 200
 }

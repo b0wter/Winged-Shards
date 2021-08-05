@@ -4,6 +4,7 @@ import { AddProjectileFunc } from '~/scenes/ColliderCollection';
 import { Teams } from './Teams';
 import { CurrentStatusChange } from './StatusChanges';
 import { EquipmentTypes } from './Equipment'
+import { IProviderCollection } from '~/providers/EntityProvider';
 
 export abstract class AbilityEquipment extends TriggeredEquipment
 {
@@ -19,7 +20,12 @@ export abstract class AbilityEquipment extends TriggeredEquipment
         //
     }
 
-    protected internalTrigger(scene: GameplayScene, colliderFunc: AddProjectileFunc, equipmentPosition: EquipmentPositionCallback, angle: EquipmentAngleCallback, time, ownerId: string, team: Teams)
+    protected internalTrigger(scene: GameplayScene, 
+                              colliderFunc: AddProjectileFunc, 
+                              equipmentPosition: EquipmentPositionCallback, 
+                              angle: EquipmentAngleCallback, 
+                              providerCollection: IProviderCollection,
+                              time, ownerId: string, team: Teams)
     {
         //
     }
