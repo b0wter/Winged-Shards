@@ -27,6 +27,7 @@
 	},
 	"dependencies": {
 		"browserslist": ">=4.16.5",
+		"color-string": ">=1.5.5",
 		"glob-parent": ">=5.1.2",
 		"guid-typescript": "^1.0.9",
 		"is-svg": "^4.2.2",
