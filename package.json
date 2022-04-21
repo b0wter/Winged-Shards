@@ -31,7 +31,7 @@
 		"color-string": ">=1.5.5",
 		"glob-parent": ">=5.1.2",
 		"guid-typescript": "^1.0.9",
-		"is-svg": "^4.2.2",
+		"is-svg": "^4.3.0",
 		"mrpas": "^2.0.0",
 		"normalize-url": ">=4.5.1",
 		"nth-check": ">=2.0.1",
