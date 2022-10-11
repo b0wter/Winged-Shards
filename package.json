@@ -29,15 +29,17 @@
 		"ansi-regex": ">=5.0.1",
 		"browserslist": ">=4.16.5",
 		"color-string": ">=1.5.5",
-		"glob-parent": ">=5.1.2",
+		"glob-parent": ">=6.0.1",
 		"guid-typescript": "^1.0.9",
 		"is-svg": ">=4.3.0",
 		"mrpas": "^2.0.0",
 		"normalize-url": ">=4.5.1",
 		"nth-check": ">=2.0.1",
+		"parcel-bundler": "^1.12.5",
 		"phaser": "^3.24.1",
 		"phaser-navmesh": "^2.0.5",
 		"postcss": ">=7.0.36",
+		"terser": ">=5.14.2",
 		"ts-nameof": "^5.0.0"
 	},
 	"parcelCleanPaths": [
