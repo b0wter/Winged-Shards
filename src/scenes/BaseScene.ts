@@ -45,7 +45,7 @@ export default abstract class BaseScene extends Scene
     protected createTilemapLayer(map: Phaser.Tilemaps.Tilemap, definition: TilemapDefinition) //layerName: string, tilesetName: string, tilesetResourceKey: string)
     {
         const tilesetImage = map.addTilesetImage(definition.tilesetName, definition.tilesetRessourceKey)
-        const layer = map.createStaticLayer(definition.layerName, tilesetImage)
+        const layer =  map.createLayer(definition.layerName, tilesetImage!)
         return layer
     }
 

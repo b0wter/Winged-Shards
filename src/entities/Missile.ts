@@ -5,6 +5,7 @@ import InitialPosition from '~/utilities/InitialPosition';
 import { Teams } from './Teams';
 import { Damage } from './DamageType';
 import { AddProjectileFunc } from '~/scenes/ColliderCollection';
+import { ParticleHelpers } from '~/helpers/Particles';
 
 export class Missile extends Projectile
 {
@@ -81,6 +82,7 @@ export class Missile extends Projectile
         }
 
         if(this._lastTarget === undefined) {
+            console.log('missile did not find target')
             return
         }
 
@@ -118,8 +120,8 @@ export class Missile extends Projectile
     private findTarget(providerCollection: IProviderCollection) : [PhysicalEntity, number] | undefined
     {
         const foesInRange = providerCollection.foes.all().filter(p => Phaser.Math.Distance.BetweenPoints(this.point, p.point) <= this.acquisitionRange)
-        const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.isVisiblePoint(p.point))
-        //const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.seesPoint(p.point, this.point))
+        //const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.isVisiblePoint(p.point))
+        const visibleFoesInRange = foesInRange.filter(p => providerCollection.los.seesPoint(p.point, this.point))
         if(visibleFoesInRange.length === 0)
             return undefined
         
@@ -141,16 +143,10 @@ export class Missile extends Projectile
 
     protected killEffect()
     {
+        console.log('pew pew')
         if(this.visible === false)
-        return
-        const particles = this.scene.add.particles('particle_red_mini')
-        const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*500})
-        emitter.setPosition(this.x, this.y)
-        emitter.setSpeed(150)
-        emitter.setAlpha((p, k, t) => Math.sqrt(1 - t)) //1 - t)
-        emitter.stop()
-        emitter.explode(20, this.x, this.y)
-        setTimeout(() => emitter.remove(), 500)
+            return
+        ParticleHelpers.killEffect(this.scene, this.x, this.y)
     }
 }
 

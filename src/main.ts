@@ -7,12 +7,13 @@ import TankSelectionScene from './scenes/TankSelectionScene';
 import * as Campaign01 from './scenes/campaign_01/Campaign_01';
 
 const isLinux = window.navigator.platform.indexOf("Linux") >= 0
-const renderer = Phaser.Canvas //isLinux ? Phaser.CANVAS : Phaser.WEBGL
+const renderer = isLinux ? Phaser.CANVAS : Phaser.WEBGL
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: renderer,
 	width: 1920,
 	height: 1080,
+	backgroundColor: '#000000',
 	plugins: {
 		scene: [
 		  { key: "NavMeshPlugin", plugin: PhaserNavMeshPlugin, mapping: "navMeshPlugin", start: true }

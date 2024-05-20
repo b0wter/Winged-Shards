@@ -11,6 +11,7 @@ import Point = Phaser.Geom.Point
 import InitialPosition from '~/utilities/InitialPosition'
 import { ScenePlayerProvider, IPlayerProvider, IProviderCollection } from '~/providers/EntityProvider'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
+import { ParticleHelpers } from '~/helpers/Particles'
 
 export type VisibilityChangedCallback = (_: Enemy, isVisible: boolean) => void
 
@@ -69,14 +70,7 @@ export class Enemy extends PhysicalEntity
     {
         if(this.visible === false)
             return
-        const particles = this.scene.add.particles('particle_red')
-        const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*750})
-        emitter.setPosition(this.x, this.y)
-        emitter.setSpeed(150)
-        emitter.setAlpha((p, k, t) => Math.sqrt(1 - t)) //1 - t)
-        emitter.stop()
-        emitter.explode(20, this.x, this.y)
-        setTimeout(() => emitter.remove(), 750)
+        ParticleHelpers.killEffect(this.scene, this.x, this.y, 2.0)
     }   
 
     public update(t: number, dt: number)
