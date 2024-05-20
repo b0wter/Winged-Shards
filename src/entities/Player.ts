@@ -15,6 +15,7 @@ import InitialPosition from '~/utilities/InitialPosition'
 import { IInputProvider } from '~/providers/InputProvider'
 import { IPlayerProvider, IEnemyProvider, IProviderCollection } from '~/providers/EntityProvider'
 import { ILineOfSightProvider } from '~/providers/LineOfSightProdiver'
+import { ParticleHelpers } from '~/helpers/Particles'
 
 export class PlayerEntity extends PhysicalEntity
 {
@@ -168,6 +169,8 @@ export class PlayerEntity extends PhysicalEntity
 
     protected killEffect()
     {
+        ParticleHelpers.explosionBigWith(this.scene, this.x, this.y, 1.5, 'particle_blue', 750, 150);
+        /*
         const particles = this.scene.add.particles('particle_blue')
         const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*750})
         emitter.setPosition(this.x, this.y)
@@ -176,6 +179,7 @@ export class PlayerEntity extends PhysicalEntity
         emitter.stop()
         emitter.explode(20, this.x, this.y)
         setTimeout(() => emitter.remove(), 750)
+        */
     }
 
     public exportState()

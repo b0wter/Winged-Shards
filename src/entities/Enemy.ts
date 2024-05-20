@@ -70,7 +70,7 @@ export class Enemy extends PhysicalEntity
     {
         if(this.visible === false)
             return
-        ParticleHelpers.killEffect(this.scene, this.x, this.y, 2.0)
+        ParticleHelpers.explosionRegular(this.scene, this.x, this.y, 2.0)
     }   
 
     public update(t: number, dt: number)

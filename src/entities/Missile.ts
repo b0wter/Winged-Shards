@@ -146,7 +146,7 @@ export class Missile extends Projectile
         console.log('pew pew')
         if(this.visible === false)
             return
-        ParticleHelpers.killEffect(this.scene, this.x, this.y)
+        ParticleHelpers.explosionRegular(this.scene, this.x, this.y)
     }
 }
 
