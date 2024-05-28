@@ -134,8 +134,10 @@ export default class KeyboardMouseInput extends PlayerInput
 		const deltaY = this.pointer.deltaY
 
 		let direction = 0;
-		if((this.pointer.worldX !== 0 || this.pointer.worldY !== 0) && this.player !== undefined)
-			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.pointer.worldX, this.pointer.worldY) * Phaser.Math.RAD_TO_DEG
+		if((this.pointer.worldX !== 0 || this.pointer.worldY !== 0) && this.player !== undefined) {
+			const look = this.pointer.positionToCamera(this.scene.cameras.main) as Phaser.Math.Vector2
+			direction = Phaser.Math.Angle.Between(this.player.x, this.player.y, look.x, look.y) * Phaser.Math.RAD_TO_DEG
+		}
 
 		const displacement = deltaX + deltaY === 0 ? 0 : 1
 
