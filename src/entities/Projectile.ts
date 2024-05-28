@@ -53,7 +53,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         this.setAngle(position.angle)
         this.setImmovable(true)
         this._velocity = position.velocity
-        this._maxLifetimeInMs = _range / this._velocity * 1000 * 1.1 // the extra .1 give some leeway for guns with delays/continious fire
+        this._maxLifetimeInMs = _range / this._velocity * 1000 * 2 // give some extra leeway; this is mainly to prevent infinitely running projectiles
         const v = position.velocity ?? 0
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)

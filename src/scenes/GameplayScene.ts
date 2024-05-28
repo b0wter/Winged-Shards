@@ -21,7 +21,6 @@ import { WeaponTemplate } from '~/entities/Weapon';
 import { Equipment } from '~/entities/Equipment';
 import { DefeatScene } from './DefeatScene';
 import { EnemyMarker } from '~/entities/EnemyMarker';
-import { FacebookInstantGamesPlugin } from 'phaser';
 import { Mrpas } from 'mrpas'
 import { HeightLayer } from '~/utilities/HeightLayer';
 import { ScenePlayerProvider, SceneEnemyProvider, IEnemyProvider, IPlayerProvider, PlayerProviderCollection, EnemyProviderCollection, IProviderCollection } from '~/providers/EntityProvider';
