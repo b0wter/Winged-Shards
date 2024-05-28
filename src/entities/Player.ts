@@ -106,21 +106,21 @@ export class PlayerEntity extends PhysicalEntity
 
     private handleTriggers(input: PlayerInput, t)
     {
-        let group: [TriggeredEquipment, HardPoint][] = []
+        let groups: [TriggeredEquipment, HardPoint][][] = []
         if(input.bumperLeft.isDown)
-            group = this.tank.triggeredEquipmentGroup(0)
-        else if(input.bumperRight.isDown)
-            group = this.tank.triggeredEquipmentGroup(1)
-        else if(input.action1.isDown)
-            group = this.tank.triggeredEquipmentGroup(2)
-        else if(input.action2.isDown)
-            group = this.tank.triggeredEquipmentGroup(3)
-        else if(input.action3.isDown)
-            group = this.tank.triggeredEquipmentGroup(4)
-        else if(input.action4.isDown)
-            group = this.tank.triggeredEquipmentGroup(5)
+            groups.push(this.tank.triggeredEquipmentGroup(0))
+        if(input.bumperRight.isDown)
+            groups.push(this.tank.triggeredEquipmentGroup(1))
+        if(input.action1.isDown)
+            groups.push(this.tank.triggeredEquipmentGroup(2))
+        if(input.action2.isDown)
+            groups.push(this.tank.triggeredEquipmentGroup(3))
+        if(input.action3.isDown)
+            groups.push(this.tank.triggeredEquipmentGroup(4))
+        if(input.action4.isDown)
+            groups.push(this.tank.triggeredEquipmentGroup(5))
 
-        this.triggerEquipmentGroup(group, t)
+        this.triggerEquipmentGroup(groups.flat(), t)
     }
 
     private handleControls(input: PlayerInput, dt: number)
