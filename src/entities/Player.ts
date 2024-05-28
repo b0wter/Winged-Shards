@@ -170,16 +170,6 @@ export class PlayerEntity extends PhysicalEntity
     protected killEffect()
     {
         ParticleHelpers.explosionBigWith(this.scene, this.x, this.y, 1.5, 'particle_blue', 750, 150);
-        /*
-        const particles = this.scene.add.particles('particle_blue')
-        const emitter = particles.createEmitter({ lifespan: (a) => Math.random()*750})
-        emitter.setPosition(this.x, this.y)
-        emitter.setSpeed(150)
-        emitter.setAlpha((p, k, t) => Math.sqrt(1 - t)) //1 - t)
-        emitter.stop()
-        emitter.explode(20, this.x, this.y)
-        setTimeout(() => emitter.remove(), 750)
-        */
     }
 
     public exportState()
