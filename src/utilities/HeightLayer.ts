@@ -1,6 +1,6 @@
 export class HeightLayer
 {
-    constructor(private _layer: Phaser.Tilemaps.StaticTilemapLayer)
+    constructor(private _layer: Phaser.Tilemaps.TilemapLayer)
     {
         _layer.setVisible(false)
     }

@@ -383,7 +383,7 @@ export default abstract class GameplayScene extends BaseScene
     protected computeTileVisibility(point: Phaser.Geom.Point)
     {
         const v = this.map.worldToTileXY(point.x, point.y)
-        return this.tileVisiblity[v.x][v.y]
+        return this.tileVisiblity[v!.x][v!.y]
     }
 
     private updateProjectileVisibility(projectiles: Phaser.GameObjects.GameObject[], players: PlayerEntity[])
@@ -405,7 +405,7 @@ export default abstract class GameplayScene extends BaseScene
         projectiles.forEach(p => (p as Projectile).visible = check(players, p, this))
     }
 
-    private updateEnemyVisibility(layer: Phaser.Tilemaps.StaticTilemapLayer, players: PlayerEntity[], enemies: Enemy[])
+    private updateEnemyVisibility(layer: Phaser.Tilemaps.TilemapLayer, players: PlayerEntity[], enemies: Enemy[])
     {
         function check(enemy: Enemy, losCheck: (ray: Phaser.Geom.Line) => boolean) {
             const tile = layer.getTileAtWorldXY(enemy.x, enemy.y)
@@ -428,7 +428,7 @@ export default abstract class GameplayScene extends BaseScene
         })
     }
 
-    private updateTileVisibility(t: number, fov: Mrpas, players: PlayerEntity[], layer: Phaser.Tilemaps.StaticTilemapLayer, map: Phaser.Tilemaps.Tilemap)
+    private updateTileVisibility(t: number, fov: Mrpas, players: PlayerEntity[], layer: Phaser.Tilemaps.TilemapLayer, map: Phaser.Tilemaps.Tilemap)
     {
         const timePassed = t - this.lastVisibilityCheck
         if(timePassed < this.visibilityCheckInterval)
@@ -446,7 +446,7 @@ export default abstract class GameplayScene extends BaseScene
         }
         players.forEach(p => {
             const tilePositon = this.map.worldToTileXY(p.x, p.y)
-            fov.compute(tilePositon.x, tilePositon.y, Infinity, 
+            fov.compute(tilePositon!.x, tilePositon!.y, Infinity, 
                 (x, y) => {
                     const tile = layer.getTileAt(x, y)
                     if(tile)

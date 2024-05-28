@@ -23,12 +23,12 @@ export class ColliderCollection
     protected playerProjectiles!: Phaser.Physics.Arcade.Group
     protected enemies!: Phaser.Physics.Arcade.Group
     protected enemyProjectiles!: Phaser.Physics.Arcade.Group
-    protected readonly environment : Phaser.Tilemaps.StaticTilemapLayer
+    protected readonly environment : Phaser.Tilemaps.TilemapLayer
     protected readonly environmentColliders: Phaser.Physics.Arcade.Collider[] = []
 
     private _scene: Phaser.Scene
 
-    constructor(scene: Phaser.Scene, environment: Phaser.Tilemaps.StaticTilemapLayer, playerHitsPlayer, playerHitsEnemy, enemyHitsEnemy, enemyHitsPlayer)
+    constructor(scene: Phaser.Scene, environment: Phaser.Tilemaps.TilemapLayer, playerHitsPlayer, playerHitsEnemy, enemyHitsEnemy, enemyHitsPlayer)
     {
         this._scene = scene
         this.environment = environment
