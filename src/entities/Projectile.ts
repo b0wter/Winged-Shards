@@ -21,6 +21,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     private piercedEnemyIds: string[] = []
     private _originX: number
     private _originY: number
+    private _velocity: number
+    private _maxLifetimeInMs: number
     protected readonly _createdAt: number
 
     constructor(scene: Phaser.Scene, 
@@ -50,6 +52,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         this._colliderFunc(this)
         this.setAngle(position.angle)
         this.setImmovable(true)
+        this._velocity = position.velocity
+        this._maxLifetimeInMs = _range / this._velocity * 1000
         const v = position.velocity ?? 0
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
@@ -58,7 +62,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         this._originX = position.x
         this._originY = position.y
         if(_size !== Phaser.Math.Vector2.ZERO)
-            this.body.setSize(_size.x, _size.y)
+            this.body!.setSize(_size.x, _size.y)
         this._createdAt = currentTime
     }
 
@@ -66,6 +70,9 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
     {
         const distance = Phaser.Math.Distance.Between(this.x, this.y, this._originX, this._originY)
         if(distance >= this._range)
+            this.kill()
+
+        if(t - this._createdAt > this._maxLifetimeInMs)
             this.kill()
 
         this.angle += dt * this._innerRotationSpeed / 1000
