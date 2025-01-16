@@ -58,7 +58,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite
         const vX = v * Math.cos(this.angle * Phaser.Math.DEG_TO_RAD)
         const vY = v * Math.sin(this.angle * Phaser.Math.DEG_TO_RAD)
         this.setVelocity(vX, vY)
-        this.setCollideWorldBounds(true)
+        this.setCollideWorldBounds(false)
         this._originX = position.x
         this._originY = position.y
         if(_size !== Phaser.Math.Vector2.ZERO)

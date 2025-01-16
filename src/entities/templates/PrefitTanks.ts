@@ -26,6 +26,17 @@ export class MediumTank extends PrefitTank
     ]
 }
 
+export class HeavyTank extends PrefitTank
+{
+    tank = Tanks.HeavyTank
+    equipment = []
+    triggeredEquipment : [TriggeredEquipmentTemplate, number][] = [
+        [Weapons.HeavyAutoCannonTemplate, 0],
+        [Weapons.MediumAutoCannonTemplate, 1],
+        [Weapons.MediumAutoCannonTemplate, 1]
+    ]
+}
+
 export class TestingTank extends PrefitTank
 {
     tank = Tanks.TestingTank
@@ -77,4 +88,4 @@ export class LightHoverTank extends PrefitTank
     ]
 }
 
-export const AllPrefits = [ new TestingTank(), new MediumTank(), new HoverScout(), new SupportHoverTank(), new LightHoverTank() ]
+export const AllPrefits = [ new TestingTank(), new MediumTank(), new HeavyTank(), new HoverScout(), new SupportHoverTank(), new LightHoverTank() ]

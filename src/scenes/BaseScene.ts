@@ -52,6 +52,9 @@ export default abstract class BaseScene extends Scene
     protected createCollisionTilemapLayer(map: Phaser.Tilemaps.Tilemap, definition: TilemapDefinition) //layerName: string, tilesetName: string, tilesetResourceKey: string)
     {
         const layer = this.createTilemapLayer(map, definition)
+        if (!layer) {
+            throw new Error("Could not create collision layer")
+        }
         layer.setCollisionByExclusion([-1], true)
         layer.setVisible(false)
         return layer
@@ -60,6 +63,9 @@ export default abstract class BaseScene extends Scene
     protected createHeightTilemapLayer(map: Phaser.Tilemaps.Tilemap, definition: TilemapDefinition)
     {
         const layer = this.createTilemapLayer(map, definition)
+        if (!layer) {
+            throw new Error("Could not create height layer")
+        }
         return new HeightLayer(layer)   
     }
 

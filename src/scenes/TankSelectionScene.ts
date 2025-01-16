@@ -5,8 +5,9 @@ import { manufacturerToString } from '~/utilities/Manufacturers';
 import PlayerInput from '~/input/PlayerInput';
 import KeyboardMouseInput from '~/input/KeyboardMouseInput';
 import GamePadInput from '~/input/GamePadInput';
-import Campaign_01_Room_001 from './campaign_01/Campaign_01_Room_001';
 import { PlayerEntity } from '~/entities/Player';
+import Defense_01_Room_001 from './defense_01/Defense_01_Room_001';
+import Campaign_01_Room_001 from './campaign_01/Campaign_01_Room_001';
 
 class SelectorBox
 {
@@ -192,7 +193,7 @@ export default class TankSelectionScene extends InterfaceScene
                 this.cameras.main.fadeOut(500, 0, 0, 0, (_, progress) => {
                     if(progress >= 0.9999) {
                         this.scene.stop()
-                        this.scene.start(Campaign_01_Room_001.SceneName)
+                        this.scene.start(Defense_01_Room_001.SceneName)
                     }
                 })
             }, 500)

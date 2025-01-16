@@ -4,6 +4,29 @@ import { TankTemplate } from '../Tank'
 import Point = Phaser.Geom.Point
 import { TripleLaser } from './Weapons'
 
+export class HeavyTankTemplate extends TankTemplate
+{
+    modelName = "Claymore"
+    manufacturer = Manufacturers.Roskosmos
+    spriteKey = "green_tank"
+    turretSpriteKey = "green_tank_turret"
+    hull = 140
+    structure = 70
+    heatDissipation = 7
+    maxHeat = 135
+    maxSpeed = 60
+    angularSpeed = 55
+    turretAngularSpeed = 180
+    hardpoints = [
+        HardPoint.empty(HardPointSize.Large, HardPointType.WithoutExtras, HardPointPosition.Turret, 10, 0, 0),
+        HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Hull, 5, -13, 0),
+        HardPoint.empty(HardPointSize.Medium, HardPointType.WithoutExtras, HardPointPosition.Hull, 5,  13, 0)
+    ]
+    turretOffset = new Point(0, 0)
+    description = "Breaker"
+}
+export const HeavyTank = new HeavyTankTemplate()
+
 export class MediumTankTemplate extends TankTemplate
 {
     modelName = "Broadsword"
@@ -14,7 +37,7 @@ export class MediumTankTemplate extends TankTemplate
     structure = 50
     heatDissipation = 5
     maxHeat = 100
-    maxSpeed = 125
+    maxSpeed = 65
     angularSpeed = 90
     turretAngularSpeed = 180
     hardpoints = [
@@ -58,7 +81,7 @@ export class HoverScoutTemplate extends TankTemplate
     structure = 35
     heatDissipation = 4
     maxHeat = 50
-    maxSpeed = 175
+    maxSpeed = 90
     angularSpeed = 135
     turretSpriteKey = "hover_tank_turret_single_barrel"
     turretAngularSpeed = 180
@@ -81,7 +104,7 @@ export class SupportHoverTankTemplate extends TankTemplate
     structure = 50
     heatDissipation = 8
     maxHeat = 120
-    maxSpeed = 125
+    maxSpeed = 70
     angularSpeed = 135
     turretSpriteKey = "hover_tank_turret_single_barrel"
     turretAngularSpeed = 180
@@ -106,7 +129,7 @@ export class LightHoverTankTemplate extends TankTemplate
     structure = 35
     heatDissipation = 6
     maxHeat = 100
-    maxSpeed = 150
+    maxSpeed = 80
     angularSpeed = 120
     turretSpriteKey = "hover_tank_turret_single_barrel"
     turretOffset = new Point(0, 0)
@@ -120,4 +143,4 @@ export class LightHoverTankTemplate extends TankTemplate
 }
 export const LightHoverTank = new LightHoverTankTemplate()
 
-export const AllTemplates : TankTemplate[] = [ TestingTank, MediumTank, LightHoverTank, SupportHoverTank, HoverScout ]
+export const AllTemplates : TankTemplate[] = [ TestingTank, MediumTank, HeavyTank, LightHoverTank, SupportHoverTank, HoverScout ]

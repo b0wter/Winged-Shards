@@ -38,10 +38,10 @@ export class ColliderCollection
 
     private createGroups(scene: Phaser.Scene)
     {
-        this.players = scene.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: true})
-        this.playerProjectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true, collideWorldBounds: true})
-        this.enemies= scene.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: true})
-        this.enemyProjectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true, collideWorldBounds: true})
+        this.players = scene.physics.add.group({ classType: PlayerEntity, runChildUpdate: true, collideWorldBounds: false})
+        this.playerProjectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true, collideWorldBounds: false})
+        this.enemies= scene.physics.add.group({ classType: Enemy, runChildUpdate: true, collideWorldBounds: false})
+        this.enemyProjectiles = scene.physics.add.group({ classType: Projectile, runChildUpdate: true, collideWorldBounds: false})
     }
 
     private addCollisionCallbacks(playerHitsPlayer, playerHitsEnemy, enemyHitsEnemy, enemyHitsPlayer)

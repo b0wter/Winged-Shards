@@ -27,11 +27,13 @@ import { ScenePlayerProvider, SceneEnemyProvider, IEnemyProvider, IPlayerProvide
 import { IInputProvider, SceneInputProvider } from '~/providers/InputProvider';
 import InitialPosition from '~/utilities/InitialPosition';
 import { ILineOfSightProvider, SceneLineOfSightProvider } from '~/providers/LineOfSightProdiver'
+import { DummySpawner, Spawner } from '~/entities/Spawner';
 
 export default abstract class GameplayScene extends BaseScene
 {
     private static readonly PlayerSpawnTag = "spawn_player"
     private static readonly EnemySpawnTag = "spawn_enemy"
+    private static readonly EnemySpawnerTag = "enemy_spawner"
     private static readonly EntitiesTag = "entities"
     private static readonly ObjectivesTag = "objectives"
     private static readonly ObjectivesTargetTag = "target"
@@ -50,6 +52,7 @@ export default abstract class GameplayScene extends BaseScene
      * This collection is irrelevant for collision detection.
      */
     protected enemies: Enemy[] = []
+    protected spawners: Spawner[] = []
     protected userInputs: PlayerInput[] = []
     /**
      * Handles all collision interaction.
@@ -62,12 +65,12 @@ export default abstract class GameplayScene extends BaseScene
     /**
      * Main layer of this level's tilemap.
      */
-    protected readonly layers: Phaser.Tilemaps.StaticTilemapLayer[] = []
+    protected readonly layers: Phaser.Tilemaps.TilemapLayer[] = []
 
     /**
      * Tilemap layer used for collisions with the map itself.
      */
-    protected collisionLayer!: Phaser.Tilemaps.StaticTilemapLayer
+    protected collisionLayer!: Phaser.Tilemaps.TilemapLayer
 
     /**
      * Tilemap layer used to determine the height of the playing field.
@@ -136,7 +139,7 @@ export default abstract class GameplayScene extends BaseScene
             this.enemyProviderCollection = new EnemyProviderCollection(this.playerProvider, this.enemyProvider, this.lineOfSightProvider)
             this.map = this.createMap(this.mapName)
             this.initVisibilityMap()
-            this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)
+            this.collisionLayer = this.createCollisionTilemapLayer(this.map, this.collisionTilemapDefinition)!
             this.colliders = new ColliderCollection(this, 
                                                     this.collisionLayer, 
                                                     this.playerBulletHitsPlayer.bind(this),
@@ -146,12 +149,17 @@ export default abstract class GameplayScene extends BaseScene
                                                     )
             this.heightsLayer = this.createHeightTilemapLayer(this.map, this.heightTilemapDefition)
             this.objectivesLayer = this.map.objects.find(l => l.name === GameplayScene.ObjectivesTag)
-            this.navmeshLayer = this.map.getObjectLayer("navmesh")
+            this.navmeshLayer = this.map.getObjectLayer("navmesh")!
             this.navigation = new Navigation(this.navMesh.buildMeshFromTiled("mesh", this.navmeshLayer, 16))
-            this.tilemapDefinitions.forEach(def => this.layers.push(this.createTilemapLayer(this.map, def)))
+            this.tilemapDefinitions.forEach(def => this.layers.push(this.createTilemapLayer(this.map, def)!))
             this.createEntities(this.map.objects)
             this.userInputs.push(new KeyboardMouseInput(this, this.players[0]))
             this.fov = this.initFov(this.map)
+
+            console.log(`map size (in pixels): ${this.map.widthInPixels}, ${this.map.heightInPixels}`)
+            //this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels)
+            this.cameras.main.setZoom(1.25)
+            this.cameras.main.centerOn(this.map.widthInPixels / 2, this.map.heightInPixels / 2)
         }
         this.finishedInitialization = true
     }
@@ -208,7 +216,7 @@ export default abstract class GameplayScene extends BaseScene
         return fov
     }
 
-    protected createCollisionCollection(environment: Phaser.Tilemaps.StaticTilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
+    protected createCollisionCollection(environment: Phaser.Tilemaps.TilemapLayer, playerBulletHitsPlayer, playerBulletHitsEnemy, enemyBulletHitsEnemy, enemyBulletHitsPlayer)
     {
         return new ColliderCollection(this, 
             environment, 
@@ -238,6 +246,7 @@ export default abstract class GameplayScene extends BaseScene
     {
         const playerSpawn = GameplayScene.PlayerSpawnTag
         const enemySpawn = GameplayScene.EnemySpawnTag
+        const enemySpawner = GameplayScene.EnemySpawnerTag
         const layer = layers.find(x => x.name === GameplayScene.EntitiesTag)
         layer?.objects.forEach(x => { 
             if(x.type === playerSpawn) { 
@@ -247,6 +256,25 @@ export default abstract class GameplayScene extends BaseScene
             else if(x.type === enemySpawn) {
                 const properties = EnemyTiledObject.fromTileObject(x)
                 this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.template])
+            }
+            else
+            {
+                const playerSpawnProperty = x.properties.find(p => p.value === playerSpawn)
+                const enemySpawnProperty = x.properties.find(p => p.value === enemySpawn)
+                const spawner = x.properties.find(p => p.value === enemySpawner)
+
+                if(playerSpawnProperty) {
+                    if(this.players.length < this.numberOfPlayers) {
+                        const player = this.createPlayer(x.x, x.y, 0, this.players.length)
+                        this.players.push(player);
+                    }
+
+                } else if(enemySpawnProperty) {
+                    const properties = EnemyTiledObject.fromTileObject(x)
+                    this.createEnemy(x.x, x.y, properties!.angle, EnemyTemplates[properties!.template])
+                } else if(spawner) {
+                    this.spawners.push(new DummySpawner(this, new InitialPosition(x.x, x.y, 0, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.playerProviderCollection));
+                }
             }
         })
         this.previousPlayerState = []
@@ -274,6 +302,10 @@ export default abstract class GameplayScene extends BaseScene
                 player.tank.hardpoints[i + data.triggeredEquipment.length].equipment = asHardPointEquipment(data.equipment[i])
         }
 
+        if(index === 0) {
+            this.cameras.main.startFollow(player.body!)
+        }
+
         this.createInterface(player, this.playerInterfaces)
         player.addKilledCallback(this.onPlayerKilled.bind(this))
         if(this.previousPlayerState.length !== 0)
@@ -284,6 +316,14 @@ export default abstract class GameplayScene extends BaseScene
     private createEnemy(x, y, angle, template: EnemyTemplate)
     {
         const enemy = template.instatiate(this, new InitialPosition(x, y, angle, 0), this.colliders.addEntityFunc, this.colliders.addProjectileFunc, this.enemyProviderCollection)
+        this.attachEnemy(enemy);
+    }
+
+    /**
+     * Adds all the necessary callbacks to an instantiated enemy so its lifecycle can be managed by this scene
+     */
+    private attachEnemy(enemy: Enemy)
+    {
         enemy.addKilledCallback(x => this.removeEnemy(x as Enemy))
         enemy.addVisibilityChangedCallback((e, isVisible) => {
             if(!isVisible) {
@@ -313,6 +353,11 @@ export default abstract class GameplayScene extends BaseScene
             this.players[i].update(t, dt)
 
         this.enemies.forEach(x => x.update(t, dt))
+
+        if(this.enemies.length === 0) {
+            const spawnedEnemies = this.spawners.flatMap(x => x.nextWave())
+            spawnedEnemies.forEach(x => this.attachEnemy(x));
+        }
 
         this.updateProjectileVisibility(this.colliders.allProjectiles, this.players)
 
